@@ -38,6 +38,9 @@ Also, any supported (non-primitive) object type can be returned as array value o
 
 Since primitive types cannot be explicitly `null`, they will be returned with a fallback value.
 
+<details>
+  <summary>Click to show</summary>
+
 * `char` or `'\0'`
 * `boolean` or `Boolean.FALSE`
 * `byte` or `Byte.MIN_VALUE`
@@ -47,9 +50,14 @@ Since primitive types cannot be explicitly `null`, they will be returned with a 
 * `long` or `Long.MIN_VALUE`
 * `double` or `Double.MIN_VALUE`
 
+</details>
+
 ### Objects
 
 Well known Java objects and the accepted types to properly parse them.
+
+<details>
+  <summary>Click to show</summary>
 
 * `java.lang.Object`
 * `java.lang.String`
@@ -106,7 +114,14 @@ Well known Java objects and the accepted types to properly parse them.
     3. 7-length `Number[]` (year, month, day, hour, minute, second, nanoOfSecond)
     4. ISO-8601 `String` separated by `T` with time formatted as `hour:minute:second.nanoOfSecond`
 
+</details>
+
 ### Generic
+
+Typical Java objects with parameters.
+
+<details>
+  <summary>Click to show</summary>
 
 * `java.lang.Enum<?>`
     1. Name `String` (case-insensitive)
@@ -116,12 +131,21 @@ Well known Java objects and the accepted types to properly parse them.
 
 (The type parameters `E`, `K` and `V` can be any supported type)
 
+</details>
+
 ### Functional
+
+Functional Java objects to handle any type parser in a flexible way.
+
+<details>
+  <summary>Click to show</summary>
 
 * `java.util.Optional<E>` - Contains parsed value, empty optional type is return when parse fails or throw exception
 * `java.util.concurrent.CompletableFuture<E>` - Maintain parse function into non-null return value (may throw NullPointerException)
 
 (The type parameter `E` can be any supported type)
+
+</details>
 
 ## Usage
 
