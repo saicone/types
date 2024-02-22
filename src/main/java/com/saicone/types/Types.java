@@ -46,6 +46,12 @@ public class Types {
     public static final TypeParser<String> TEXT = TypeParser.single(String.class, (object) -> {
         if (object instanceof Object[]) {
             return Arrays.toString((Object[]) object);
+        } else if (object.getClass().isArray()) {
+            final StringJoiner joiner = new StringJoiner(", ", "[", "]");
+            for (Object o : IterableType.of(object)) {
+                joiner.add(String.valueOf(o));
+            }
+            return joiner.toString();
         } else {
             return String.valueOf(object);
         }
