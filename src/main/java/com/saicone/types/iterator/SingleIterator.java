@@ -42,9 +42,9 @@ public abstract class SingleIterator<T> extends TypeIterator<T> {
 
     @Override
     public void remove() {
-        if (consumed || getValue() == null) {
+        if (consumed) {
+            this.value = null;
             setValue(null);
-            consumed = false;
         } else {
             throw new IllegalStateException();
         }

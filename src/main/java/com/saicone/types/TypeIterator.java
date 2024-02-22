@@ -13,7 +13,10 @@ import java.util.Iterator;
  */
 public abstract class TypeIterator<T> implements Iterator<T> {
 
-    private final Object value;
+    /**
+     * The iterated object.
+     */
+    protected Object value;
 
     /**
      * Constructs a type iterator.

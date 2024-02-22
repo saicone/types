@@ -92,18 +92,21 @@ public abstract class ArrayIterator<T> extends TypeIterator<T> {
      *
      * @param index the index.
      */
-    @SuppressWarnings("unchecked")
     public void remove(int index) {
         final int size = size();
         if (size == 0 || index >= size) {
             throw new ConcurrentModificationException();
         }
         Object newArray = Array.newInstance(getValue().getClass().getComponentType(), size - 1);
+        boolean decrement = false;
         for (int i = 0; i < size; i++) {
             if (i != index) {
-                Array.set(newArray, i, get(i));
+                Array.set(newArray, decrement ? i - 1 : i, get(i));
+            } else {
+                decrement = true;
             }
         }
-        setValue((T) newArray);
+        this.value = newArray;
+        setValue(newArray);
     }
 }
