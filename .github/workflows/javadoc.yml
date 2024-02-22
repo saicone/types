@@ -17,7 +17,7 @@ jobs:
           java-version: 11
 
       - name: Build javadoc with Gradle
-        run: gradle allJavadoc
+        run: gradle javadoc
         shell: bash
 
       - name: Deploy javadoc to Github repository
