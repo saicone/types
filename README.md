@@ -22,9 +22,73 @@
 
 Types library convert any object type into required object type, also can iterate hover any java object.
 
+```java
+String str = "1234";
+int number = Types.INTEGER.parse(str);
+
+double[] array = new double[] { 10.3, 8.4, 5.0 };
+List<Float> list = ValueType.of(array).asList(Types.FLOAT);
+
+Map<String, String> from = Map.of("1234", "true", "55", "false", "10", "true");
+Map<Integer, Boolean> to = new TypeOf<Map<Integer, Boolean>>(){}.parse(from);
+```
+
 ## Dependency
 
 How to add Types library in your project.
+
+<details>
+  <summary>build.gradle</summary>
+
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly 'com.saicone.types:types:1.0'
+}
+```
+
+</details>
+
+<details>
+  <summary>build.gradle.kts</summary>
+
+```kotlin
+repositories {
+  maven("https://jitpack.io")
+}
+
+dependencies {
+  compileOnly("com.saicone.types:types:1.0")
+}
+```
+
+</details>
+
+<details>
+  <summary>pom.xml</summary>
+
+```xml
+<repositories>
+  <repository>
+    <id>Jitpack</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>com.saicone.types</groupId>
+    <artifactId>types</artifactId>
+    <version>1.0</version>
+    <scope>provided</scope>
+  </dependency>
+</dependencies>
+```
+
+</details>
 
 ## Supported types
 
@@ -32,7 +96,7 @@ A "supported" type (for example) doesn't mean you can magically convert a `Map<S
 every object type that you want to parse must have a minimum sense with the conversion or `null` will be return,
 for example a `"1.4"` can be converted into any `Number` type.
 
-Also, any supported (non-primitive) object type can be returned as array value of its type.
+Also, any supported (primitive) object type can be returned as array value of its type.
 
 ### Primitives
 
@@ -161,4 +225,4 @@ How to iterate into any object value.
 
 ### Register
 
-How to register types.
+How to register your own types.
