@@ -119,7 +119,7 @@ public class Types {
     /**
      * Integer type parser.
      */
-    public static final TypeParser<Integer> INT = TypeParser.number(Integer.class, (object) -> object instanceof Number ? ((Number) object).intValue() : Integer.parseInt(String.valueOf(object)));
+    public static final TypeParser<Integer> INTEGER = TypeParser.number(Integer.class, (object) -> object instanceof Number ? ((Number) object).intValue() : Integer.parseInt(String.valueOf(object)));
     /**
      * Float type parser.
      */
@@ -430,9 +430,9 @@ public class Types {
             final Short num = SHORT.parse(object);
             return num != null ? num : Short.MIN_VALUE;
         }));
-        add(Integer.class, INT);
+        add(Integer.class, INTEGER);
         add(int.class, TypeParser.of(int.class, object -> {
-            final Integer num = INT.parse(object);
+            final Integer num = INTEGER.parse(object);
             return num != null ? num : Integer.MIN_VALUE;
         }));
         add(Float.class, FLOAT);

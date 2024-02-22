@@ -40,7 +40,7 @@ public class TypeParserTest {
 
     @Test
     public void testCollection() {
-        final TypeParser<List<Integer>> parser = TypeParser.collection(Types.INT, ArrayList::new);
+        final TypeParser<List<Integer>> parser = TypeParser.collection(Types.INTEGER, ArrayList::new);
         final List<Integer> expected = ImmutableList.of(1234, 55, 4, 20);
         assertEquals(expected, parser.parse(ImmutableList.of("1234", "55", "4", "20")));
         assertEquals(expected, parser.parse(new double[] { 1234.1, 55.2, 4.5, 20.22 }));
@@ -57,7 +57,7 @@ public class TypeParserTest {
 
     @Test
     public void testMap() {
-        final TypeParser<Map<Integer, Boolean>> parser = TypeParser.map(Types.INT, Types.BOOLEAN, HashMap::new);
+        final TypeParser<Map<Integer, Boolean>> parser = TypeParser.map(Types.INTEGER, Types.BOOLEAN, HashMap::new);
         final Map<Integer, Boolean> expected = ImmutableMap.of(1, true, 4, false);
         final Map<String, String> actual = ImmutableMap.of("1", "true", "4", "false");
 

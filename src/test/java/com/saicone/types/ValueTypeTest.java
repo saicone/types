@@ -58,15 +58,15 @@ public class ValueTypeTest {
         assertEquals("test", ValueType.of(ImmutableList.of("test")).asString());
         assertEquals("1234", ValueType.of(ImmutableList.of(1234)).asString());
         assertEquals(ImmutableList.of("test"), ValueType.of("test").asList(Types.STRING));
-        assertEquals(ImmutableList.of(1234), ValueType.of("1234").asList(Types.INT));
+        assertEquals(ImmutableList.of(1234), ValueType.of("1234").asList(Types.INTEGER));
         assertEquals(ImmutableList.of("true", "true", "false"), ValueType.of(ImmutableList.of(true, true, false)).asList(Types.STRING));
-        assertEquals(ImmutableList.of(1, 2, 3), ValueType.of(ImmutableList.of("1", "2", "3")).asList(Types.INT));
+        assertEquals(ImmutableList.of(1, 2, 3), ValueType.of(ImmutableList.of("1", "2", "3")).asList(Types.INTEGER));
     }
 
     @Test
     public void testSet() {
         assertEquals(ImmutableSet.of("true", "false"), ValueType.of(ImmutableList.of(true, true, false)).asSet(Types.STRING));
-        assertEquals(ImmutableSet.of(1, 2, 3), ValueType.of(ImmutableList.of("1", "2", "2", "3", "3", "3")).asSet(Types.INT));
+        assertEquals(ImmutableSet.of(1, 2, 3), ValueType.of(ImmutableList.of("1", "2", "2", "3", "3", "3")).asSet(Types.INTEGER));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ValueTypeTest {
         final Map<Integer, Boolean> expected = ImmutableMap.of(1, true, 4, false);
         final Map<String, String> actual = ImmutableMap.of("1", "true", "4", "false");
 
-        assertEquals(expected, ValueType.of(actual).asMap(Types.INT, Types.BOOLEAN, new HashMap<>()));
+        assertEquals(expected, ValueType.of(actual).asMap(Types.INTEGER, Types.BOOLEAN, new HashMap<>()));
     }
 
     @Test

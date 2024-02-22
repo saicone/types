@@ -391,19 +391,19 @@ public interface ValueType<T> {
     /**
      * Convert this object into an integer.
      *
-     * @see Types#INT
+     * @see Types#INTEGER
      *
      * @return an integer, null if conversion fails.
      */
     @Nullable
     default Integer asInt() {
-        return as(Types.INT);
+        return as(Types.INTEGER);
     }
 
     /**
      * Convert this object into an integer.
      *
-     * @see Types#INT
+     * @see Types#INTEGER
      *
      * @param def the default string.
      * @return    an integer, default integer if conversion fails.
@@ -411,7 +411,7 @@ public interface ValueType<T> {
     @Nullable
     @Contract("!null -> !null")
     default Integer asInt(@Nullable Integer def) {
-        return as(Types.INT, def);
+        return as(Types.INTEGER, def);
     }
 
     /**

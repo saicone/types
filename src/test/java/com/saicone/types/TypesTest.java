@@ -18,7 +18,7 @@ public class TypesTest {
 
     @Test
     public void testParser() {
-        assertEquals(1234, Types.INT.parse("1234"));
+        assertEquals(1234, Types.INTEGER.parse("1234"));
         assertEquals(3f, Types.FLOAT.parse('3'));
         assertEquals(1L, Types.LONG.parse(true));
         assertEquals(20.5D, Types.DOUBLE.parse(20.5D));
