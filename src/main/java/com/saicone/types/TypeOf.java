@@ -290,7 +290,7 @@ public abstract class TypeOf<T> implements TypeParser<T> {
     @NotNull
     @SuppressWarnings("all")
     private TypeParser<?> getArrayParser(@NotNull Class<?> raw) {
-        final Class<?> component = raw.componentType();
+        final Class<?> component = raw.getComponentType();
         final TypeParser<?> parser = Types.of(component);
         return (object) -> {
             return parser.parseArray(Array.newInstance(component, 0), object);

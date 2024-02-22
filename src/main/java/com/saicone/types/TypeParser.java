@@ -475,7 +475,7 @@ public interface TypeParser<T> {
         if (object == null) {
             return array;
         }
-        final Class<?> component = array.getClass().componentType();
+        final Class<?> component = array.getClass().getComponentType();
         Object finalArray = array;
         final int size = Array.getLength(finalArray);
         int index = 0;
