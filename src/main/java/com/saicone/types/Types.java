@@ -185,11 +185,10 @@ public class Types {
     public static final TypeParser<java.util.UUID> UUID = TypeParser.first(java.util.UUID.class, (object) -> {
         if (object instanceof java.util.UUID) {
             return (java.util.UUID) object;
-        } else if (object instanceof int[]) {
-            final int[] array = (int[]) object;
-            if (array.length == 4) {
+        } else if (object instanceof int[] || object instanceof Integer[]) {
+            if (Array.getLength(object) == 4) {
                 StringBuilder builder = new StringBuilder();
-                for (int i : array) {
+                for (int i : IterableType.<Integer>ofAny(object)) {
                     String hex = Integer.toHexString(i);
                     builder.append(new String(new char[8 - hex.length()]).replace('\0', '0')).append(hex);
                 }
