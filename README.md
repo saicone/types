@@ -25,28 +25,50 @@ Types library convert any object type into required object type, also can iterat
 ```java
 String str = "1234";
 int number = Types.INTEGER.parse(str);
+for (int i : IterableType.<Integer>ofAny(number)) {
+    // do something
+}
 
 double[] array = new double[] { 10.3, 8.4, 5.0 };
 List<Float> list = ValueType.of(array).asList(Types.FLOAT);
+for (double d : IterableType.of(array)) {
+    // do something
+}
 
 Map<String, String> from = Map.of("1234", "true", "55", "false", "10", "true");
 Map<Integer, Boolean> to = new TypeOf<Map<Integer, Boolean>>(){}.parse(from);
+for (Map.Entry<Integer, Boolean> entry : IterableType.of(to)) {
+    // do something
+}
 ```
 
 ## Dependency
 
-How to add Types library in your project.
+How to implement Types library in your project.
 
 <details>
   <summary>build.gradle</summary>
 
 ```groovy
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compileOnly 'com.saicone.types:types:1.0'
+    implementation 'com.saicone.types:types:1.0'
+}
+
+jar.dependsOn (shadowJar)
+
+shadowJar {
+    // Relocate types (DO NOT IGNORE THIS)
+    relocate 'com.saicone.types', project.group + '.libs.types'
+    // Exclude unused classes (optional)
+    minimize()
 }
 ```
 
@@ -56,12 +78,29 @@ dependencies {
   <summary>build.gradle.kts</summary>
 
 ```kotlin
+plugins {
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
 repositories {
-  maven("https://jitpack.io")
+    maven("https://jitpack.io")
 }
 
 dependencies {
-  compileOnly("com.saicone.types:types:1.0")
+    implementation("com.saicone.types:types:1.0")
+}
+
+tasks {
+    jar {
+        dependsOn(tasks.shadowJar)
+    }
+
+    shadowJar {
+        // Relocate types (DO NOT IGNORE THIS)
+        relocate("com.saicone.types", "${project.group}.libs.types")
+        // Exclude unused classes (optional)
+        minimize()
+    }
 }
 ```
 
@@ -72,20 +111,47 @@ dependencies {
 
 ```xml
 <repositories>
-  <repository>
-    <id>Jitpack</id>
-    <url>https://jitpack.io</url>
-  </repository>
+    <repository>
+        <id>Jitpack</id>
+        <url>https://jitpack.io</url>
+    </repository>
 </repositories>
 
 <dependencies>
-  <dependency>
-    <groupId>com.saicone.types</groupId>
-    <artifactId>types</artifactId>
-    <version>1.0</version>
-    <scope>provided</scope>
-  </dependency>
+    <dependency>
+        <groupId>com.saicone.types</groupId>
+        <artifactId>types</artifactId>
+        <version>1.0</version>
+        <scope>compile</scope>
+    </dependency>
 </dependencies>
+
+<build>
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+            <relocations>
+                <!-- Relocate types (DO NOT IGNORE THIS) -->
+                <relocation>
+                    <pattern>com.saicone.types</pattern>
+                    <shadedPattern>${project.groupId}.libs.types</shadedPattern>
+                </relocation>
+            </relocations>
+            <!-- Exclude unused classes (optional) -->
+            <minimizeJar>true</minimizeJar>
+        </configuration>
+        <executions>
+            <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>shade</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+</build>
 ```
 
 </details>
@@ -96,7 +162,8 @@ A "supported" type (for example) doesn't mean you can magically convert a `Map<S
 every object type that you want to parse must have a minimum sense with the conversion or `null` will be return,
 for example a `"1.4"` can be converted into any `Number` type.
 
-Also, any supported (primitive) object type can be returned as array value of its type.
+> [!NOTE]
+> Any supported (primitive) object type can be returned as array value of its type.
 
 ### Primitives
 
@@ -135,48 +202,48 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.lang.Long`
 * `java.lang.Double`
 * `java.math.BigInteger`
-    1. `String`
-    2. `Number`
+  1. `String`
+  2. `Number`
 * `java.math.BigDecimal`
-    1. `String`
-    2. `Number`
+  1. `String`
+  2. `Number`
 * `java.lang.Class<?>`
-    1. `String`
+  1. `String`
 * `java.util.UUID`
-    1. `String`
-    2. 4-length `int[]`
+  1. `String`
+  2. 4-length `int[]` or `Integer[]`
 * `java.net.URI`
-    1. `String`
-    2. `URL`
-    3. `File`
-    4. `Path`
+  1. `String`
+  2. `URL`
+  3. `File`
+  4. `Path`
 * `java.net.URL`
-    1. `String`
-    2. `URI`
-    3. `File`
-    4. `Path`
+  1. `String`
+  2. `URI`
+  3. `File`
+  4. `Path`
 * `java.io.File`
-    1. `String` separated by `/`
-    2. `String[]`
+  1. `String` separated by `/`
+  2. `String[]`
 * `java.nio.file.Path`
-    1. `String` separated by `/`
-    2. `String[]`
+  1. `String` separated by `/`
+  2. `String[]`
 * `java.time.LocalDate`
-    1. Epoch day `Long`
-    2. 2-length `Number[]` (year, dayOfYear)
-    3. 3-length `Number[]` (year, month, day)
-    4. ISO-8601 `String`
+  1. Epoch day `Long`
+  2. 2-length `Number[]` (year, dayOfYear)
+  3. 3-length `Number[]` (year, month, day)
+  4. ISO-8601 `String`
 * `java.time.LocalTime`
-    1. Seconds of day `Long`
-    2. 2-length `Number[]` (hour, minute)
-    3. 3-length `Number[]` (hour, minute, second)
-    4. 4-length `Number[]` (hour, minute, second, nanoOfSecond)
-    5. `String` formatted as `hour:minute:second.nanoOfSecond`, examples: `"10:30"`, `"10:40:05"`, `"09:08:21.35"`
+  1. Seconds of day `Long`
+  2. 2-length `Number[]` (hour, minute)
+  3. 3-length `Number[]` (hour, minute, second)
+  4. 4-length `Number[]` (hour, minute, second, nanoOfSecond)
+  5. `String` formatted as `hour:minute:second.nanoOfSecond`, examples: `"10:30"`, `"10:40:05"`, `"09:08:21.35"`
 * `java.time.LocalDateTime`
-    1. 5-length `Number[]` (year, month, day, hour, minute)
-    2. 6-length `Number[]` (year, month, day, hour, minute, second)
-    3. 7-length `Number[]` (year, month, day, hour, minute, second, nanoOfSecond)
-    4. ISO-8601 `String` separated by `T` with time formatted as `hour:minute:second.nanoOfSecond`
+  1. 5-length `Number[]` (year, month, day, hour, minute)
+  2. 6-length `Number[]` (year, month, day, hour, minute, second)
+  3. 7-length `Number[]` (year, month, day, hour, minute, second, nanoOfSecond)
+  4. ISO-8601 `String` separated by `T` with time formatted as `hour:minute:second.nanoOfSecond`
 
 </details>
 
@@ -188,8 +255,8 @@ Typical Java objects with parameters.
   <summary>Click to show</summary>
 
 * `java.lang.Enum<?>`
-    1. Name `String` (case-insensitive)
-    2. Ordinal `Number`
+  1. Name `String` (case-insensitive)
+  2. Ordinal `Number`
 * `java.util.Collection<E>` - Can be any Java object that implements `Collection`
 * `java.util.Map<K, V>` - Can be any Java object that implements `Map`
 
@@ -217,12 +284,173 @@ How to use Types library.
 
 ### Conversion
 
-How to convert object types.
+By default, Types library can convert 5 data types using 4 different methods.
+
+* TypeParser - Make your own implementation of type conversion.
+* Types - Same as TypeParser, but every parser is cached.
+* ValueType - Encapsulated object with methods to convert with Types or create one-time use TypeParser.
+* TypeOf - Same as Types, but computes automatically the required type object parser (including generic objects).
+
+**Single objects**:
+
+```java
+String str = "1234";
+
+// Using TypeParser
+TypeParser<Double> parser = (object) -> Double.parseDouble(String.valueOf(object));
+double number = parser.parse(str);
+
+// Using Types (Same as TypeParser, but extract first element of any iterable or array object)
+int number = Types.INTEGER.parse(str);
+
+// Using ValueType
+float number = ValueType.of(str).asFloat();
+
+// Using TypeOf
+TypeOf<Long> type = new TypeOf<Long>(){};
+long number = type.parse(str);
+```
+
+**Collections**:
+
+```java
+int number = 1234;
+
+// Using TypeParser
+TypeParser<List<Integer>> parser = TypeParser.collection(Types.INTEGER, ArrayList::new);
+List<Integer> list = parser.parse(number);
+
+// Using Types
+List<Double> list = Types.DOUBLE.list(number);
+
+// Using ValueType
+List<Float> list = ValueType.of(number).asList(Types.FLOAT);
+
+// Using TypeOf
+TypeOf<List<Long>> type = new TypeOf<List<Long>>(){};
+List<Long> list = type.parse(number);
+```
+
+**Object Arrays**:
+
+```java
+String str = "1234";
+
+// Using TypeParser
+TypeParser<String> parser = TypeParser.of(String.class, String::valueOf);
+String[] array = parser.array(str);
+
+// Using Types
+Integer[] array = Types.INTEGER.array(str);
+
+// Using ValueType
+String[] array = ValueType.of(str).asList(Types.STRING);
+
+// Using TypeOf
+TypeOf<Integer[]> type = new TypeOf<Integer[]>(){};
+Integer[] array = type.parse(str);
+```
+
+**Primitive Arrays**:
+
+```java
+String str = "1234";
+
+// Using TypeParser
+TypeParser<Integer> parser = TypeParser.of(int.class, object -> Integer.parseInt(String.valueOf(object)));
+int[] array = parser.array(str);
+
+// Using Types
+float[] array = Types.of(float.class).array(str);
+
+// Using ValueType
+double[] array = ValueType.of(str).asArray(Types.of(double.class));
+
+// Using TypeOf
+TypeOf<long[]> type = new TypeOf<long[]>(){};
+long[] array = type.parse(str);
+```
+
+**Enums**:
+
+```java
+String str = "VALUE_NAME";
+
+// Using TypeParser
+TypeParser<MyEnum> parser = TypeParser.enumeration(MyEnum.class);
+MyEnum value = parser.parse(str);
+
+// Using ValueType
+MyEnum value = ValueType.of(str).asEnum(MyEnum.class);
+
+// Using TypeOf
+TypeOf<MyEnum> type = new TypeOf<MyEnum>(){};
+MyEnum value = type.parse(str);
+```
+
+**Maps**:
+
+```java
+Map<String, String> map = new HashMap<>();
+map.put("1234", "true");
+map.put("55", "false");
+map.put("12", "true")
+
+// Using TypeParser
+TypeParser<Map<Integer, Boolean>> parser = TypeParser.map(Types.INTEGER, Types.BOOLEAN, HashMap::new);
+Map<Integer, Boolean> value = parser.parse(map);
+
+// Using ValueType
+Map<Integer, Boolean> value = ValueType.of(map).asMap(Types.INTEGER, Types.BOOLEAN, new HashMap<>());
+
+// Using TypeOf
+TypeOf<Map<Integer, Boolean>> type = new TypeOf<Map<Integer, Boolean>>(){};
+Map<Integer, Boolean> value = type.parse(map);
+```
+
+> [!TIP]
+> If you create a `TypeParser` or use `TypeOf` is suggested to save as `static final` field.
 
 ### Iterate
 
-How to iterate into any object value.
+How to iterate any object value.
+
+```java
+// Single object
+String value = "text";
+for (String str : IterableType.<String>ofAny(value)) {
+    // do something
+}
+
+// Array / Collection
+Integer[] value = new Integer[] { 1, 2, 3, 4 };
+int[] value = new int[] { 1, 2, 3, 4 };
+List<Integer> value = new ArrayList<>();
+for (int i : IterableType.of(value)) {
+    // do something
+}
+
+// Map
+Map<String, Integer> value = new HashMap<>();
+for (Map.Entry<String, Integer> entry : IterableType.of(value)) {
+    // do something
+}
+```
 
 ### Register
 
 How to register your own types.
+
+```java
+// Register
+TypeParser<MyObject> parser = (object) -> {
+    // Convert into MyObject...
+};
+Types.add(MyObject.class, parser);
+
+// Unregister
+Types.remove(MyObject.class);
+
+// Get
+TypeParser<MyObject> parser = Types.of(MyObject.class);
+```
