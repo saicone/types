@@ -708,7 +708,7 @@ public interface TypeParser<T> {
     default <A> A array(@Nullable Object object, @Nullable T def) {
         final Type type = getType();
         if (type instanceof Class) {
-            return (A) parseArray(Array.newInstance((Class<?>) type), object, def);
+            return (A) parseArray(Array.newInstance((Class<?>) type, 0), object, def);
         }
         throw new RuntimeException("The current type parser doesn't support array creation");
     }
