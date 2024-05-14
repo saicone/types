@@ -110,7 +110,7 @@ public abstract class TypeOf<T> implements TypeParser<T> {
     public boolean isNotNull() {
         if (notNull == null) {
             for (Annotation annotation : getAnnotated().getAnnotations()) {
-                switch (annotation.getClass().getSimpleName().toLowerCase()) {
+                switch (annotation.annotationType().getSimpleName().toLowerCase()) {
                     case "notnull":
                     case "nonnull":
                     case "notnls":
@@ -138,7 +138,7 @@ public abstract class TypeOf<T> implements TypeParser<T> {
     public boolean isNullable() {
         if (nullable == null) {
             for (Annotation annotation : getAnnotated().getAnnotations()) {
-                switch (annotation.getClass().getSimpleName().toLowerCase()) {
+                switch (annotation.annotationType().getSimpleName().toLowerCase()) {
                     case "nullable":
                     case "checkfornull":
                     case "optional":
