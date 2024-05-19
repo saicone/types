@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -492,6 +493,55 @@ public interface TypeParser<T> {
             }
         }
         return (A) finalArray;
+    }
+
+    /**
+     * Create a type parsed that get the result of current parser, and then parse
+     * any non-null result with the provided parser.
+     *
+     * @param parser the parser to apply after non-null value is return by this parser.
+     * @return       a type parser that first parse any object and then apply the provided parser.
+     * @param <E>    the type result of the function.
+     */
+    @NotNull
+    default <E> TypeParser<E> andThen(@NotNull TypeParser<E> parser) {
+        return new TypeParser<E>() {
+            @Override
+            public @Nullable Type getType() {
+                return parser.getType();
+            }
+
+            @Override
+            public @Nullable E parse(@NotNull Object object) {
+                final T t = TypeParser.this.parse(object);
+                return t == null ? null : parser.parse(t);
+            }
+        };
+    }
+
+    /**
+     * Create a type-checked parser that get the result of current parse, and then apply
+     * any non-null result with the provided function.
+     *
+     * @param type     the associated type with the parser.
+     * @param function the function to apply non-null value is return by this parser.
+     * @return         a type parser that first parse any object and then apply the provided function.
+     * @param <E>      the type result of the function.
+     */
+    @NotNull
+    default <E> TypeParser<E> andThen(@Nullable Type type, @NotNull Function<T, E> function) {
+        return new TypeParser<E>() {
+            @Override
+            public @Nullable Type getType() {
+                return type;
+            }
+
+            @Override
+            public @Nullable E parse(@NotNull Object object) {
+                final T t = TypeParser.this.parse(object);
+                return t == null ? null : function.apply(t);
+            }
+        };
     }
 
     /**

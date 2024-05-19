@@ -73,6 +73,17 @@ public class TypeParserTest {
         assertArrayEquals(primitve, Types.of(int.class).array(ImmutableList.of(15.2, "1234", 14.8, true)));
     }
 
+    @Test
+    public void testChaining() {
+        TypeParser<Boolean> parser = Types.STRING.andThen(Types.BOOLEAN);
+        assertEquals(true, parser.parse(1));
+        assertEquals(false, parser.parse(0));
+
+        parser = Types.STRING.andThen(Boolean.class, str -> str.equals("1"));
+        assertEquals(true, parser.parse(1));
+        assertEquals(false, parser.parse(0));
+    }
+
     enum EnumType {
         FIRST,
         SECOND,
