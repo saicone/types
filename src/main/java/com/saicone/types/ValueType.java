@@ -4,7 +4,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a value that can be converted into different types of objects.
@@ -37,8 +44,8 @@ public interface ValueType<T> {
 
     /**
      * Convert this object into given class type.
-     * 
-     * @see Types#parse(Class, Object) 
+     *
+     * @see Types#parse(Class, Object)
      *
      * @param type the class type.
      * @return     a converted value type, null otherwise.
@@ -51,8 +58,8 @@ public interface ValueType<T> {
 
     /**
      * Convert this object into given class type.
-     * 
-     * @see Types#parse(Class, Object, Object) 
+     *
+     * @see Types#parse(Class, Object, Object)
      *
      * @param type the class type.
      * @param def  the type object to return if the conversion fails.
@@ -67,8 +74,8 @@ public interface ValueType<T> {
 
     /**
      * Convert this object with the given type parser.
-     * 
-     * @see TypeParser#parse(Object) 
+     *
+     * @see TypeParser#parse(Object)
      *
      * @param parser the parser to apply this object into.
      * @return       a converted value type, null otherwise.
@@ -81,8 +88,8 @@ public interface ValueType<T> {
 
     /**
      * Convert this object with the given type parser.
-     * 
-     * @see TypeParser#parse(Object, Object) 
+     *
+     * @see TypeParser#parse(Object, Object)
      *
      * @param parser the parser to apply this object into.
      * @param def    the type object to return if parse fails.
@@ -167,8 +174,8 @@ public interface ValueType<T> {
 
     /**
      * Convert this object into an ArrayList with the given type parser.
-     * 
-     * @see TypeParser#list(Object) 
+     *
+     * @see TypeParser#list(Object)
      *
      * @param parser the parser to apply this object into.
      * @return       a type list containing the parsed values.
@@ -181,8 +188,8 @@ public interface ValueType<T> {
 
     /**
      * Convert this object into a HashSet with the given type parser.
-     * 
-     * @see TypeParser#set(Object) 
+     *
+     * @see TypeParser#set(Object)
      *
      * @param parser the parser to apply this object into.
      * @return       a type set containing the parsed values.

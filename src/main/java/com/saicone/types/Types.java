@@ -20,7 +20,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 /**
@@ -204,9 +207,9 @@ public class Types {
      * LocalDateTime parser type.<br>
      * This parser accept any ISO-8601 String separated by {@code T} with time format {@code hour:minute:second.nanoOfSecond}
      * or Number array with date time values.
-     * 
+     *
      * @see LocalDateTime#parse(CharSequence)
-     * @see LocalDateTime#ofEpochSecond(long, int, ZoneOffset) 
+     * @see LocalDateTime#ofEpochSecond(long, int, ZoneOffset)
      * @see LocalDateTime#of(int, int, int, int, int)
      * @see LocalDateTime#of(int, int, int, int, int, int)
      * @see LocalDateTime#of(int, Month, int, int, int, int, int)
