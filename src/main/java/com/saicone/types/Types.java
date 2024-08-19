@@ -147,7 +147,7 @@ public class Types {
             return (Class<?>) object;
         }
         try {
-            return Class.forName(String.valueOf(object));
+            return Class.forName(String.valueOf(object), false, Types.class.getClassLoader());
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
