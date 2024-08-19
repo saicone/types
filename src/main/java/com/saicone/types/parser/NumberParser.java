@@ -8,8 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -48,10 +46,58 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
 
         @Override
         public @NotNull Number parseNumber(@NotNull String s) throws NumberFormatException {
-            try {
-                return NumberFormat.getInstance().parse(s);
-            } catch (ParseException e) {
-                throw new IllegalArgumentException(e);
+            return parseNumber(s, (parser, str) -> parser.parseNumber(s));
+        }
+
+        @Override
+        public @NotNull Number parseNumber(@NotNull String s, int radix) throws NumberFormatException {
+            return parseNumber(s, (parser, str) -> parser.parseNumber(s, radix));
+        }
+
+        @NotNull
+        private Number parseNumber(@NotNull String s, @NotNull BiFunction<NumberParser<? extends Number>, String, Number> function) {
+            final char last = s.charAt(s.length() - 1);
+            if (Character.isDigit(last)) {
+                final int point = s.indexOf('.');
+                final char first = s.charAt(0);
+                final int start = first == '+' || first == '-' ? 1 : 0;
+
+                if (point > 0) {
+                    if (point - start > 309 || s.length() - point + 1 > 17) {
+                        return function.apply(BIG_DECIMAL, s);
+                    }
+                    return function.apply(DOUBLE, s);
+                } else {
+                    if (s.length() - start > 19) {
+                        return function.apply(BIG_INTEGER, s);
+                    }
+                    return function.apply(LONG, s);
+                }
+            } else {
+                s = s.substring(0, s.length() - 1);
+            }
+
+            switch (last) {
+                case 'b':
+                case 'B':
+                    return function.apply(BYTE, s);
+                case 's':
+                case 'S':
+                    return function.apply(SHORT, s);
+                case 'i':
+                case 'I':
+                    return function.apply(INTEGER, s);
+                case 'f':
+                case 'F':
+                    return function.apply(FLOAT, s);
+                case 'l':
+                case 'L':
+                    return function.apply(LONG, s);
+                case 'd':
+                case 'D':
+                    return function.apply(DOUBLE, s);
+                default:
+                    throw new NumberFormatException("For input string: \"" + s + "\"");
             }
         }
     };
@@ -712,7 +758,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
      */
     @NotNull
     default T parseNumber(boolean bool) {
-        return cast(bool ? 1 : 0);
+        return cast(bool ? (byte) 1 : (byte) 0);
     }
 
     /**

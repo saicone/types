@@ -18,6 +18,7 @@ public class TypesTest {
 
     @Test
     public void testParser() {
+        assertEquals(35.6, Types.NUMBER.parse("35.6"));
         assertEquals(1234, Types.INTEGER.parse("1234"));
         assertEquals(26, Types.INTEGER.parse("0b11010"));
         assertEquals(70, Types.INTEGER.parse("0x46"));

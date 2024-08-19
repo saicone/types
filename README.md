@@ -250,6 +250,20 @@ Well known Java objects and the accepted types to properly parse them.
 
 </details>
 
+> [!NOTE]
+> Any Number type can be parsed from:
+> * Boolean `true = 1 | false = 0`
+> * Decimal, for example `35`
+> * Binary `0[bB][0-1]`, for example `0b11010`
+> * Hex `0[xX][0-9A-Fa-f]`, for example `0x46`
+> * Hex color `#[0-9A-Fa-f]`, for example `#46`
+> * Octal `0[0-7]`, for example `075`
+> 
+> And detect:
+> * Leading sings `+ -`
+> * Unsigned suffix `u`
+> * Number suffixes `b B s S i I f F l L d D`
+
 ### Generic
 
 Typical Java objects with parameters.
