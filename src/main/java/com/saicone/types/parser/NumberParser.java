@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Represents a function that parse any type of object and converts into number type.<br>
+ * Represents a function that try to parse any type of object to number type.<br>
  * This parser is also compatible with boolean and some popular string representation
  * of numbers like binary ({@code 0[bB][0-1]}), hex ({@code 0[xX#][0-9A-Fa-f]}), octal ({@code 0[0-7]}),
  * leading sings ({@code + -}), unsigned suffix ({@code u}) and number suffixes ({@code b B s S i I f F l L d D}).<br>

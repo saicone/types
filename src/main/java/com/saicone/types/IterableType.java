@@ -268,4 +268,28 @@ public interface IterableType<T> extends Iterable<T> {
             return (T) value;
         }
     }
+
+    /**
+     * Convert the current type into the first object representation,
+     * this means that any iterable or array object will be converted
+     * into the first present value to parse.
+     *
+     * @return the first object.
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    default T first() {
+        final Object value = getValue();
+        if (value instanceof Iterable) {
+            final Iterator<Object> iterator = ((Iterable<Object>) value).iterator();
+            final Object obj;
+            if (iterator.hasNext() && (obj = iterator.next()) != null) {
+                return (T) obj;
+            } else {
+                return null;
+            }
+        } else {
+            return (T) value;
+        }
+    }
 }

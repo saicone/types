@@ -59,7 +59,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone:types:1.0'
+    implementation 'com.saicone:types:1.2'
 }
 
 jar.dependsOn (shadowJar)
@@ -87,7 +87,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone:types:1.0")
+    implementation("com.saicone:types:1.2")
 }
 
 tasks {
@@ -121,7 +121,7 @@ tasks {
     <dependency>
         <groupId>com.saicone</groupId>
         <artifactId>types</artifactId>
-        <version>1.0</version>
+        <version>1.2</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
@@ -210,8 +210,10 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.lang.Class<?>`
   1. `String`
 * `java.util.UUID`
-  1. `String`
-  2. 4-length `int[]` or `Integer[]`
+  1. 36-length `String` (with dashes) `00000000-0000-0000-0000-000000000000`
+  2. 32-length `String` (without dashes) `00000000000000000000000000000000`
+  3. 4-length array (converted to int) `[000000000, 000000000, 000000000, 000000000]`
+  4. 2-length array (converted to long) `[mostSigBits, leastSigBits]`
 * `java.net.URI`
   1. `String`
   2. `URL`
@@ -230,20 +232,21 @@ Well known Java objects and the accepted types to properly parse them.
   2. `String[]`
 * `java.time.LocalDate`
   1. Epoch day `Long`
-  2. 2-length `Number[]` (year, dayOfYear)
-  3. 3-length `Number[]` (year, month, day)
+  2. 2-length array (converted to int) `[year, dayOfYear]`
+  3. 3-length array (converted to int) `[year, month, day]`
   4. ISO-8601 `String`
 * `java.time.LocalTime`
   1. Seconds of day `Long`
-  2. 2-length `Number[]` (hour, minute)
-  3. 3-length `Number[]` (hour, minute, second)
-  4. 4-length `Number[]` (hour, minute, second, nanoOfSecond)
+  2. 2-length array (converted to int) `[hour, minute]`
+  3. 3-length array (converted to int) `[hour, minute, second]`
+  4. 4-length array (converted to int) `[hour, minute, second, nanoOfSecond]`
   5. `String` formatted as `hour:minute:second.nanoOfSecond`, examples: `"10:30"`, `"10:40:05"`, `"09:08:21.35"`
 * `java.time.LocalDateTime`
-  1. 5-length `Number[]` (year, month, day, hour, minute)
-  2. 6-length `Number[]` (year, month, day, hour, minute, second)
-  3. 7-length `Number[]` (year, month, day, hour, minute, second, nanoOfSecond)
-  4. ISO-8601 `String` separated by `T` with time formatted as `hour:minute:second.nanoOfSecond`
+  1. Epoch seconds `Long`
+  2. 5-length array (converted to int) `[year, month, day, hour, minute]`
+  3. 6-length array (converted to int) `[year, month, day, hour, minute, second]`
+  4. 7-length array (converted to int) `[year, month, day, hour, minute, second, nanoOfSecond]`
+  5. ISO-8601 `String` separated by `T` with time formatted as `hour:minute:second.nanoOfSecond`
 
 </details>
 

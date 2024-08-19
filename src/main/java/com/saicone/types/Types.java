@@ -1,22 +1,25 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.FileParser;
 import com.saicone.types.parser.NumberParser;
+import com.saicone.types.parser.PathParser;
+import com.saicone.types.parser.TemporalParser;
+import com.saicone.types.parser.UriParser;
+import com.saicone.types.parser.UrlParser;
+import com.saicone.types.parser.UuidParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -156,115 +159,25 @@ public class Types {
      * Unique ID type parser.<br>
      * This parser accepts any String representation of unique ID and also 4-length primitive int array.
      */
-    public static final TypeParser<java.util.UUID> UUID = TypeParser.first(java.util.UUID.class, (object) -> {
-        if (object instanceof java.util.UUID) {
-            return (java.util.UUID) object;
-        } else if (object instanceof int[] || object instanceof Integer[]) {
-            if (Array.getLength(object) == 4) {
-                StringBuilder builder = new StringBuilder();
-                for (int i : IterableType.<Integer>ofAny(object)) {
-                    String hex = Integer.toHexString(i);
-                    builder.append(new String(new char[8 - hex.length()]).replace('\0', '0')).append(hex);
-                }
-                if (builder.length() == 32) {
-                    builder.insert(20, '-').insert(16, '-').insert(12, '-').insert(8, '-');
-                    return java.util.UUID.fromString(builder.toString());
-                } else {
-                    throw new IllegalArgumentException("The final converted UUID '" + builder + "' isn't a 32-length string");
-                }
-            }
-        } else if (object instanceof String) {
-            return java.util.UUID.fromString((String) object);
-        }
-        return null;
-    });
+    public static final TypeParser<java.util.UUID> UUID = new UuidParser();
     /**
      * URI type parser.
      */
-    public static final TypeParser<java.net.URI> URI = TypeParser.single(java.net.URI.class, (object) -> {
-        if (object instanceof java.net.URI) {
-            return (java.net.URI) object;
-        } else if (object instanceof File) {
-            return ((File) object).toURI();
-        } else if (object instanceof Path) {
-            return ((Path) object).toUri();
-        }
-        try {
-            if (object instanceof java.net.URL) {
-                return ((java.net.URL) object).toURI();
-            }
-            return new java.net.URI(String.valueOf(object));
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    });
+    public static final TypeParser<java.net.URI> URI = new UriParser();
     /**
      * URL type parser.
      */
-    public static final TypeParser<java.net.URL> URL = TypeParser.single(java.net.URL.class, (object) -> {
-        if (object instanceof java.net.URL) {
-            return (java.net.URL) object;
-        }
-        try {
-            if (object instanceof java.net.URI) {
-                return ((java.net.URI) object).toURL();
-            } else if (object instanceof File) {
-                return ((File) object).toURI().toURL();
-            } else if (object instanceof Path) {
-                return ((Path) object).toUri().toURL();
-            }
-            return new java.net.URL(String.valueOf(object));
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
-        }
-    });
+    public static final TypeParser<java.net.URL> URL = new UrlParser();
     /**
      * File type parser.<br>
      * This parser can accept any String separated by {@code /} or String array.
      */
-    public static final TypeParser<File> FILE = TypeParser.first(File.class, (object) -> {
-        if (object instanceof File) {
-            return (File) object;
-        } else if (object instanceof Path) {
-            return ((Path) object).toFile();
-        }
-        final String[] array;
-        if (object instanceof String[]) {
-            array = (String[]) object;
-        } else {
-            array = String.valueOf(object).split("/");
-        }
-        File file = null;
-        for (String s : array) {
-            file = new File(file, s);
-        }
-        return file;
-    });
+    public static final TypeParser<File> FILE = new FileParser();
     /**
      * Path type parser.<br>
      * This parser can accept any String separated by {@code /} or String array.
      */
-    public static final TypeParser<Path> PATH = TypeParser.first(Path.class, (object) -> {
-        if (object instanceof Path) {
-            return (Path) object;
-        } else if (object instanceof File) {
-            return ((File) object).toPath();
-        }
-        final String first;
-        String[] more;
-        if (object instanceof String[]) {
-            more = (String[]) object;
-        } else {
-            more = String.valueOf(object).split("/");
-        }
-        first = more[0];
-        if (more.length > 1) {
-            more = Arrays.copyOfRange(more, 1, more.length);
-        } else {
-            more = new String[0];
-        }
-        return Paths.get(first, more);
-    });
+    public static final TypeParser<Path> PATH = new PathParser();
     /**
      * LocalDate type parser.<br>
      * This parser accept any ISO-8601 String or Number array with date values.
@@ -274,26 +187,7 @@ public class Types {
      * @see LocalDate#of(int, int, int)
      * @see LocalDate#ofEpochDay(long)
      */
-    public static final TypeParser<LocalDate> LOCAL_DATE = TypeParser.first(LocalDate.class, (object) -> {
-        if (object.getClass().isArray()) {
-            final int size = Array.getLength(object);
-            if (size >= 2) {
-                final Object year = Array.get(object, 0);
-                if (year instanceof Number) {
-                    if (size == 2) {
-                        return LocalDate.ofYearDay(((Number) year).intValue(), ((Number) Array.get(object, 1)).intValue());
-                    } else {
-                        return LocalDate.of(((Number) year).intValue(), ((Number) Array.get(object, 1)).intValue(), ((Number) Array.get(object, 2)).intValue());
-                    }
-                }
-            }
-            return null;
-        } else if (object instanceof Number) {
-            return LocalDate.ofEpochDay(((Number) object).longValue());
-        } else {
-            return LocalDate.parse(String.valueOf(object));
-        }
-    });
+    public static final TypeParser<LocalDate> LOCAL_DATE = TemporalParser.LOCAL_DATE;
     /**
      * LocalTime parser type.<br>
      * This parser accept any String with the format {@code hour:minute:second.nanoOfSecond}
@@ -305,77 +199,19 @@ public class Types {
      * @see LocalTime#of(int, int, int)
      * @see LocalTime#of(int, int, int, int)
      */
-    public static TypeParser<LocalTime> LOCAL_TIME = TypeParser.first(LocalTime.class, (object) -> {
-        if (object.getClass().isArray()) {
-            final int size = Array.getLength(object);
-            if (size >= 2) {
-                final Object year = Array.get(object, 0);
-                if (year instanceof Number) {
-                    if (size == 2) {
-                        return LocalTime.of(((Number) year).intValue(), ((Number) Array.get(object, 1)).intValue());
-                    } else if (size == 3) {
-                        return LocalTime.of(((Number) year).intValue(), ((Number) Array.get(object, 1)).intValue(), ((Number) Array.get(object, 2)).intValue());
-                    } else {
-                        return LocalTime.of(
-                                ((Number) year).intValue(),
-                                ((Number) Array.get(object, 1)).intValue(),
-                                ((Number) Array.get(object, 2)).intValue(),
-                                ((Number) Array.get(object, 3)).intValue());
-                    }
-                }
-            }
-            return null;
-        } else if (object instanceof Number) {
-            return LocalTime.ofSecondOfDay(((Number) object).longValue());
-        } else {
-            return LocalTime.parse(String.valueOf(object));
-        }
-    });
+    public static TypeParser<LocalTime> LOCAL_TIME = TemporalParser.LOCAL_TIME;
     /**
      * LocalDateTime parser type.<br>
      * This parser accept any ISO-8601 String separated by {@code T} with time format {@code hour:minute:second.nanoOfSecond}
      * or Number array with date time values.
      * 
      * @see LocalDateTime#parse(CharSequence)
+     * @see LocalDateTime#ofEpochSecond(long, int, ZoneOffset) 
      * @see LocalDateTime#of(int, int, int, int, int)
      * @see LocalDateTime#of(int, int, int, int, int, int)
      * @see LocalDateTime#of(int, Month, int, int, int, int, int)
      */
-    public static final TypeParser<LocalDateTime> LOCAL_DATE_TIME = TypeParser.first(LocalDateTime.class, (object) -> {
-        if (object.getClass().isArray()) {
-            final int size = Array.getLength(object);
-            if (size >= 5) {
-                final Object year = Array.get(object, 0);
-                if (year instanceof Number) {
-                    if (size == 5) {
-                        return LocalDateTime.of(((Number) year).intValue(),
-                                ((Number) Array.get(object, 1)).intValue(),
-                                ((Number) Array.get(object, 2)).intValue(),
-                                ((Number) Array.get(object, 3)).intValue(),
-                                ((Number) Array.get(object, 4)).intValue());
-                    } else if (size == 6) {
-                        return LocalDateTime.of(((Number) year).intValue(),
-                                ((Number) Array.get(object, 1)).intValue(),
-                                ((Number) Array.get(object, 2)).intValue(),
-                                ((Number) Array.get(object, 3)).intValue(),
-                                ((Number) Array.get(object, 4)).intValue(),
-                                ((Number) Array.get(object, 5)).intValue());
-                    } else {
-                        return LocalDateTime.of(((Number) year).intValue(),
-                                ((Number) Array.get(object, 1)).intValue(),
-                                ((Number) Array.get(object, 2)).intValue(),
-                                ((Number) Array.get(object, 3)).intValue(),
-                                ((Number) Array.get(object, 4)).intValue(),
-                                ((Number) Array.get(object, 5)).intValue(),
-                                ((Number) Array.get(object, 6)).intValue());
-                    }
-                }
-            }
-            return null;
-        } else {
-            return LocalDateTime.parse(String.valueOf(object));
-        }
-    });
+    public static final TypeParser<LocalDateTime> LOCAL_DATE_TIME = TemporalParser.LOCAL_DATE_TIME;
     /**
      * Map of objects type parser.<br>
      * This is the most typical Map format to save data.

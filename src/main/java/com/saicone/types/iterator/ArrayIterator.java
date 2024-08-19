@@ -1,6 +1,7 @@
 package com.saicone.types.iterator;
 
 import com.saicone.types.TypeIterator;
+import com.saicone.types.TypeParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
@@ -23,6 +24,50 @@ public abstract class ArrayIterator<T> extends TypeIterator<T> {
     private int lastIndex = -1;
 
     /**
+     * Create a read-only array iterator.
+     *
+     * @param value the array to iterate.
+     * @return      an array iterator.
+     * @param <T>   the array type.
+     */
+    @NotNull
+    public static <T> ArrayIterator<T> of(@NotNull Object value) {
+        return new ArrayIterator<T>(value) {
+            @Override
+            public void setValue(Object value) {
+                throw new UnsupportedOperationException("Cannot perform an array value replace with anonymous array iterator");
+            }
+        };
+    }
+
+    /**
+     * Create a read-only array iterator with associated type parser.
+     *
+     * @param value  the array to iterate.
+     * @param parser the parser to use while iteration.
+     * @return       a parsed type array iterator.
+     * @param <T>    the type of type parser.
+     */
+    @NotNull
+    public static <T> ArrayIterator<T> of(@NotNull Object value, @NotNull TypeParser<T> parser) {
+        return new ArrayIterator<T>(value) {
+            @Override
+            public void setValue(Object value) {
+                throw new UnsupportedOperationException("Cannot perform an array value replace with anonymous array iterator");
+            }
+
+            @Override
+            public T get(int index) {
+                if (isObjectArray()) {
+                    return parser.parse(((Object[]) getValue())[index]);
+                } else {
+                    return parser.parse(Array.get(getValue(), index));
+                }
+            }
+        };
+    }
+
+    /**
      * Constructs an array iterator with provided array object.
      *
      * @param value the array to iterate.
@@ -30,6 +75,15 @@ public abstract class ArrayIterator<T> extends TypeIterator<T> {
     public ArrayIterator(@NotNull Object value) {
         super(value);
         this.objectArray = value instanceof Object[];
+    }
+
+    /**
+     * Check if the current array iterator corresponds to an object array.
+     *
+     * @return true if the current array is an object array.
+     */
+    public boolean isObjectArray() {
+        return objectArray;
     }
 
     /**

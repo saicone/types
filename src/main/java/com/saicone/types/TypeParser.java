@@ -113,7 +113,6 @@ public interface TypeParser<T> {
      * @param <T>    the type result of the function.
      */
     @NotNull
-    @SuppressWarnings("unchecked")
     static <T> TypeParser<T> first(@Nullable Type type, @NotNull TypeParser<T> parser) {
         return new TypeParser<T>() {
             @Override
@@ -123,17 +122,11 @@ public interface TypeParser<T> {
 
             @Override
             public @Nullable T parse(@NotNull Object object) {
-                if (object instanceof Iterable) {
-                    final Iterator<Object> iterator = ((Iterable<Object>) object).iterator();
-                    final Object obj;
-                    if (iterator.hasNext() && (obj = iterator.next()) != null) {
-                        return parser.parse(obj);
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return parser.parse(object);
+                final Object first = IterableType.of(object).first();
+                if (first == null) {
+                    return null;
                 }
+                return parser.parse(first);
             }
         };
     }
