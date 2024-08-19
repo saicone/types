@@ -1,5 +1,6 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.NumberParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,8 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -104,66 +103,41 @@ public class Types {
      * Number type parser.<br>
      * This parser convert any object string representation as any type of number.
      */
-    public static final TypeParser<Number> NUMBER = TypeParser.number(Number.class, (object) -> {
-       if (object instanceof Number) {
-           return (Number) object;
-       }
-        try {
-            return NumberFormat.getInstance().parse(String.valueOf(object));
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    });
+    public static final TypeParser<Number> NUMBER = NumberParser.NUMBER;
     /**
      * Byte type parser.
      */
-    public static final TypeParser<Byte> BYTE = TypeParser.number(Byte.class, (object) -> object instanceof Number ? ((Number) object).byteValue() : Byte.parseByte(String.valueOf(object)));
+    public static final TypeParser<Byte> BYTE = NumberParser.BYTE;
     /**
      * Short type parser.
      */
-    public static final TypeParser<Short> SHORT = TypeParser.number(Short.class, (object) -> object instanceof Number ? ((Number) object).shortValue() : Short.parseShort(String.valueOf(object)));
+    public static final TypeParser<Short> SHORT = NumberParser.SHORT;
     /**
      * Integer type parser.
      */
-    public static final TypeParser<Integer> INTEGER = TypeParser.number(Integer.class, (object) -> object instanceof Number ? ((Number) object).intValue() : Integer.parseInt(String.valueOf(object)));
+    public static final TypeParser<Integer> INTEGER = NumberParser.INTEGER;
     /**
      * Float type parser.
      */
-    public static final TypeParser<Float> FLOAT = TypeParser.number(Float.class, (object) -> object instanceof Number ? ((Number) object).floatValue() : Float.parseFloat(String.valueOf(object)));
+    public static final TypeParser<Float> FLOAT = NumberParser.FLOAT;
     /**
      * Long type parser.
      */
-    public static final TypeParser<Long> LONG = TypeParser.number(Long.class, (object) -> object instanceof Number ? ((Number) object).longValue() : Long.parseLong(String.valueOf(object)));
+    public static final TypeParser<Long> LONG = NumberParser.LONG;
     /**
      * Double type parser.
      */
-    public static final TypeParser<Double> DOUBLE = TypeParser.number(Double.class, (object) -> object instanceof Number ? ((Number) object).doubleValue() : Double.parseDouble(String.valueOf(object)));
+    public static final TypeParser<Double> DOUBLE = NumberParser.DOUBLE;
     /**
      * BigInteger type parser.<br>
      * This parser can accept any Number or String representation of BigInteger.
      */
-    public static final TypeParser<BigInteger> BIG_INTEGER = TypeParser.number(BigInteger.class, (object) -> {
-        if (object instanceof BigInteger) {
-            return (BigInteger) object;
-        } else if (object instanceof Number) {
-            return BigInteger.valueOf(((Number) object).longValue());
-        } else {
-            return new BigInteger(String.valueOf(object));
-        }
-    });
+    public static final TypeParser<BigInteger> BIG_INTEGER = NumberParser.BIG_INTEGER;
     /**
      * BigDecimal type parser.<br>
      * This parser can accept any Number or string representation of BigDecimal.
      */
-    public static final TypeParser<BigDecimal> BIG_DECIMAL = TypeParser.number(BigDecimal.class, (object) -> {
-        if (object instanceof BigDecimal) {
-            return (BigDecimal) object;
-        } else if (object instanceof Number) {
-            return BigDecimal.valueOf(((Number) object).doubleValue());
-        } else {
-            return new BigDecimal(String.valueOf(object));
-        }
-    });
+    public static final TypeParser<BigDecimal> BIG_DECIMAL = NumberParser.BIG_DECIMAL;
     /**
      * Class type parser.<br>
      * This parser can accept any string representation of Class name.

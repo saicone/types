@@ -3,7 +3,9 @@ package com.saicone.types;
 import com.saicone.types.iterator.ArrayIterator;
 import com.saicone.types.iterator.SingleIterator;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -226,6 +228,44 @@ public interface IterableType<T> extends Iterable<T> {
                     IterableType.this.setValue(value);
                 }
             };
+        }
+    }
+
+    /**
+     * Convert the current type into a single object representation,
+     * this means that any iterable or array object will be converted
+     * into single object by taking the first list or array value.
+     *
+     * @return a single object.
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    default T single() {
+        final Object value = getValue();
+        if (value instanceof Iterable) {
+            final Iterator<T> iterator = ((Iterable<T>) value).iterator();
+            final T t;
+            if (iterator.hasNext() && (t = iterator.next()) != null) {
+                return t;
+            } else {
+                return null;
+            }
+        } else if (value instanceof Object[]) {
+            final Object obj;
+            if (((Object[]) value).length > 0 && (obj = ((Object[]) value)[0]) != null) {
+                return (T) obj;
+            } else {
+                return null;
+            }
+        } else if (value.getClass().isArray()) {
+            final Object obj;
+            if (Array.getLength(value) > 0 && (obj = Array.get(value, 0)) != null) {
+                return (T) obj;
+            } else {
+                return null;
+            }
+        } else {
+            return (T) value;
         }
     }
 }

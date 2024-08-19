@@ -2,6 +2,7 @@ package com.saicone.types;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.saicone.types.parser.NumberParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -27,12 +28,7 @@ public class TypeParserTest {
 
     @Test
     public void testNumber() {
-        final TypeParser<Integer> parser = TypeParser.number((object) -> {
-            if (object instanceof Number) {
-                return ((Number) object).intValue();
-            }
-            return Integer.parseInt(String.valueOf(object));
-        });
+        final TypeParser<Integer> parser = NumberParser.of(Integer.class, 'i', Integer.MIN_VALUE, Integer.MAX_VALUE, Number::intValue, Integer::parseInt);
         assertEquals(1234, parser.parse("1234"));
         assertEquals(15, parser.parse(ImmutableList.of(15.2, 14.42)));
         assertEquals(1234, parser.parse(new double[] { 1234, 55, 4 }));

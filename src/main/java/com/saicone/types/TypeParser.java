@@ -70,7 +70,6 @@ public interface TypeParser<T> {
      * @param <T>    the type result of the function.
      */
     @NotNull
-    @SuppressWarnings("unchecked")
     static <T> TypeParser<T> single(@Nullable Type type, @NotNull TypeParser<T> parser) {
         return new TypeParser<T>() {
             @Override
@@ -80,24 +79,11 @@ public interface TypeParser<T> {
 
             @Override
             public @Nullable T parse(@NotNull Object object) {
-                if (object instanceof Iterable) {
-                    final Iterator<Object> iterator = ((Iterable<Object>) object).iterator();
-                    final Object obj;
-                    if (iterator.hasNext() && (obj = iterator.next()) != null) {
-                        return parser.parse(obj);
-                    } else {
-                        return null;
-                    }
-                } else if (object.getClass().isArray()) {
-                    final Object obj;
-                    if (Array.getLength(object) > 0 && (obj = Array.get(object, 0)) != null) {
-                        return parser.parse(obj);
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return parser.parse(object);
+                final Object single = IterableType.of(object).single();
+                if (single == null) {
+                    return null;
                 }
+                return parser.parse(single);
             }
         };
     }
@@ -150,41 +136,6 @@ public interface TypeParser<T> {
                 }
             }
         };
-    }
-
-    /**
-     * Create a type parser that return a number type.<br>
-     * This method is a superset of {@link TypeParser#single(Type, TypeParser)} that
-     * convert any boolean value into integer after parse it.
-     *
-     * @param parser the delegate parser that process any single non-boolean object.
-     * @return       a type parser that return a number type.
-     * @param <T>    the number type result of the function.
-     */
-    @NotNull
-    static <T extends Number> TypeParser<T> number(@NotNull TypeParser<T> parser) {
-        return number(null, parser);
-    }
-
-    /**
-     * Create a type parser with associated type that return a number type.<br>
-     * This method is a superset of {@link TypeParser#single(Type, TypeParser)} that
-     * convert any boolean value into integer after parse it.
-     *
-     * @param type   the associated type with the parser.
-     * @param parser the delegate parser that process any single non-boolean object.
-     * @return       a type parser that return a number type.
-     * @param <T>    the number type result of the function.
-     */
-    @NotNull
-    static <T extends Number> TypeParser<T> number(@Nullable Type type, @NotNull TypeParser<T> parser) {
-        return single(type, (object) -> {
-            if (object instanceof Boolean) {
-                return parser.parse(Boolean.TRUE.equals(object) ? 1 : 0);
-            } else {
-                return parser.parse(object);
-            }
-        });
     }
 
     /**
