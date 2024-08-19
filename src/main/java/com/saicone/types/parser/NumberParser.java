@@ -54,6 +54,16 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
             return parseNumber(s, (parser, str) -> parser.parseNumber(s, radix));
         }
 
+        @Override
+        public @NotNull Number parseUnsignedNumber(@NotNull String s) throws NumberFormatException {
+            return parseNumber(s, (parser, str) -> parser.parseUnsignedNumber(s));
+        }
+
+        @Override
+        public @NotNull Number parseUnsignedNumber(@NotNull String s, int radix) throws NumberFormatException {
+            return parseNumber(s, (parser, str) -> parser.parseUnsignedNumber(s, radix));
+        }
+
         @NotNull
         private Number parseNumber(@NotNull String s, @NotNull BiFunction<NumberParser<? extends Number>, String, Number> function) {
             final char last = s.charAt(s.length() - 1);

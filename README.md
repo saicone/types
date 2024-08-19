@@ -259,7 +259,7 @@ Well known Java objects and the accepted types to properly parse them.
 > * Hex color `#[0-9A-Fa-f]`, for example `#46`
 > * Octal `0[0-7]`, for example `075`
 > 
-> And detect:
+> And also detect:
 > * Leading sings `+ -`
 > * Unsigned suffix `u`
 > * Number suffixes `b B s S i I f F l L d D`
