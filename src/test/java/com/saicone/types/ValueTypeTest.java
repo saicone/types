@@ -50,7 +50,9 @@ public class ValueTypeTest {
     public void testUniqueId() {
         UUID expected = UUID.fromString("7ca003dc-175f-4f1f-b490-5651045311ad");
         assertEquals(expected, ValueType.of("7ca003dc-175f-4f1f-b490-5651045311ad").asUniqueId());
+        assertEquals(expected, ValueType.of("7ca003dc175f4f1fb4905651045311ad").asUniqueId());
         assertEquals(expected, ValueType.of(new int[] { 2090861532, 392122143, -1265609135, 72552877 }).asUniqueId());
+        assertEquals(expected, ValueType.of(new long[] { 8980181900796579615L, -5435749844271296083L }).asUniqueId());
     }
 
     @Test
