@@ -202,11 +202,7 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.lang.Long`
 * `java.lang.Double`
 * `java.math.BigInteger`
-  1. `String`
-  2. `Number`
 * `java.math.BigDecimal`
-  1. `String`
-  2. `Number`
 * `java.lang.Class<?>`
   1. `String`
 * `java.util.UUID`
@@ -301,7 +297,7 @@ How to use Types library.
 
 ### Conversion
 
-By default, Types library can convert 5 data types using 4 different methods.
+By default, Types library can convert 6 data types using 4 different methods.
 
 * TypeParser - Make your own implementation of type conversion.
 * Types - Same as TypeParser, but every parser is cached.

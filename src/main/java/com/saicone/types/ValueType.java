@@ -4,6 +4,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -497,6 +499,58 @@ public interface ValueType<T> {
     @Contract("!null -> !null")
     default Double asDouble(@Nullable Double def) {
         return as(Types.DOUBLE, def);
+    }
+
+    /**
+     * Convert this object into a BigInteger.
+     *
+     * @see Types#BIG_INTEGER
+     *
+     * @return a BigInteger, null if conversion fails.
+     */
+    @Nullable
+    default BigInteger asBigInteger() {
+        return as(Types.BIG_INTEGER);
+    }
+
+    /**
+     * Convert this object into a BigInteger.
+     *
+     * @see Types#BIG_INTEGER
+     *
+     * @param def the default string.
+     * @return    a BigInteger, default BigInteger if conversion fails.
+     */
+    @Nullable
+    @Contract("!null -> !null")
+    default BigInteger asBigInteger(@Nullable BigInteger def) {
+        return as(Types.BIG_INTEGER, def);
+    }
+
+    /**
+     * Convert this object into a BigDecimal.
+     *
+     * @see Types#BIG_DECIMAL
+     *
+     * @return a BigDecimal, null if conversion fails.
+     */
+    @Nullable
+    default BigDecimal asBigDecimal() {
+        return as(Types.BIG_DECIMAL);
+    }
+
+    /**
+     * Convert this object into a BigDecimal.
+     *
+     * @see Types#BIG_DECIMAL
+     *
+     * @param def the default string.
+     * @return    a BigDecimal, default BigDecimal if conversion fails.
+     */
+    @Nullable
+    @Contract("!null -> !null")
+    default BigDecimal asBigDecimal(@Nullable BigDecimal def) {
+        return as(Types.BIG_DECIMAL, def);
     }
 
     /**
