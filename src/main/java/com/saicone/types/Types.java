@@ -152,8 +152,30 @@ public class Types {
         if (object instanceof Class) {
             return (Class<?>) object;
         }
+
+        String className = String.valueOf(object).replace('/', '.');
+        if (className.endsWith(";")) {
+            if (className.startsWith("[")) {
+                for (int i = 0; i < className.length(); i++) {
+                    final char c = className.charAt(i);
+                    if (c == '[') {
+                        continue;
+                    } else if (c == 'L') {
+                        className = className.substring(0, i) + className.substring(i + 1);
+                    }
+                    break;
+                }
+            } else if (className.startsWith("L")) {
+                className = className.substring(1);
+            }
+
+            className = className.substring(0, className.length() - 1);
+        } else if (className.endsWith(".class")) {
+            className = className.substring(0, className.length() - 6);
+        }
+
         try {
-            return Class.forName(String.valueOf(object), false, Types.class.getClassLoader());
+            return Class.forName(className, false, Types.class.getClassLoader());
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }

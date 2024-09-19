@@ -204,7 +204,9 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.math.BigInteger`
 * `java.math.BigDecimal`
 * `java.lang.Class<?>`
-  1. `String`
+  1. Qualified name, for example `some.package.for.MyClass`
+  2. File path, for example `some/package/for/MyClass.class`
+  3. Descriptor, for example `Lsome/package/for/MyClass;`
 * `java.util.UUID`
   1. 36-length `String` (with dashes) `00000000-0000-0000-0000-000000000000`
   2. 32-length `String` (without dashes) `00000000000000000000000000000000`
