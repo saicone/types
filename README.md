@@ -51,7 +51,7 @@ How to implement Types library in your project.
 
 ```groovy
 plugins {
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '8.3.4'
 }
 
 repositories {
@@ -65,7 +65,7 @@ dependencies {
 jar.dependsOn (shadowJar)
 
 shadowJar {
-    // Relocate types (DO NOT IGNORE THIS)
+    // Relocate types
     relocate 'com.saicone.types', project.group + '.libs.types'
     // Exclude unused classes (optional)
     minimize()
@@ -79,7 +79,7 @@ shadowJar {
 
 ```kotlin
 plugins {
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.4"
 }
 
 repositories {
@@ -96,7 +96,7 @@ tasks {
     }
 
     shadowJar {
-        // Relocate types (DO NOT IGNORE THIS)
+        // Relocate types
         relocate("com.saicone.types", "${project.group}.libs.types")
         // Exclude unused classes (optional)
         minimize()
@@ -133,7 +133,7 @@ tasks {
         <version>3.3.0</version>
         <configuration>
             <relocations>
-                <!-- Relocate types (DO NOT IGNORE THIS) -->
+                <!-- Relocate types -->
                 <relocation>
                     <pattern>com.saicone.types</pattern>
                     <shadedPattern>${project.groupId}.libs.types</shadedPattern>
