@@ -216,62 +216,62 @@ public class Types {
     public static final TypeParser<Map<String, Object>> MAP = TypeParser.map(STRING, OBJECT, HashMap::new);
 
     static {
-        add(Object.class, OBJECT);
-        add("text", TEXT);
-        add(String.class, STRING);
-        add(Character.class, CHAR);
-        add(char.class, TypeParser.of(char.class, (object) -> {
+        put(Object.class, OBJECT);
+        put("text", TEXT);
+        put(String.class, STRING);
+        put(Character.class, CHAR);
+        put(char.class, TypeParser.of(char.class, (object) -> {
             final Character c = CHAR.parse(object);
             return c != null ? c : '\0';
         }));
-        add(Boolean.class, BOOLEAN);
-        add(boolean.class, TypeParser.of(boolean.class, (object) -> {
+        put(Boolean.class, BOOLEAN);
+        put(boolean.class, TypeParser.of(boolean.class, (object) -> {
             final Boolean bool = BOOLEAN.parse(object);
             return bool != null ? bool : Boolean.FALSE;
         }));
-        add(Number.class, NUMBER);
-        add(Byte.class, BYTE);
-        add(byte.class, TypeParser.of(byte.class, object -> {
+        put(Number.class, NUMBER);
+        put(Byte.class, BYTE);
+        put(byte.class, TypeParser.of(byte.class, object -> {
             final Byte num = BYTE.parse(object);
             return num != null ? num : Byte.MIN_VALUE;
         }));
-        add(Short.class, SHORT);
-        add(short.class, TypeParser.of(short.class, object -> {
+        put(Short.class, SHORT);
+        put(short.class, TypeParser.of(short.class, object -> {
             final Short num = SHORT.parse(object);
             return num != null ? num : Short.MIN_VALUE;
         }));
-        add(Integer.class, INTEGER);
-        add(int.class, TypeParser.of(int.class, object -> {
+        put(Integer.class, INTEGER);
+        put(int.class, TypeParser.of(int.class, object -> {
             final Integer num = INTEGER.parse(object);
             return num != null ? num : Integer.MIN_VALUE;
         }));
-        add(Float.class, FLOAT);
-        add(float.class, TypeParser.of(float.class, object -> {
+        put(Float.class, FLOAT);
+        put(float.class, TypeParser.of(float.class, object -> {
             final Float num = FLOAT.parse(object);
             return num != null ? num : Float.MIN_VALUE;
         }));
-        add(Long.class, LONG);
-        add(long.class, TypeParser.of(long.class, object -> {
+        put(Long.class, LONG);
+        put(long.class, TypeParser.of(long.class, object -> {
             final Long num = LONG.parse(object);
             return num != null ? num : Long.MIN_VALUE;
         }));
-        add(Double.class, DOUBLE);
-        add(double.class, TypeParser.of(double.class, object -> {
+        put(Double.class, DOUBLE);
+        put(double.class, TypeParser.of(double.class, object -> {
             final Double num = DOUBLE.parse(object);
             return num != null ? num : Double.MIN_VALUE;
         }));
-        add(BigInteger.class, BIG_INTEGER);
-        add(BigDecimal.class, BIG_DECIMAL);
-        add(Class.class, CLASS);
-        add(java.util.UUID.class, UUID);
-        add(java.net.URI.class, URI);
-        add(java.net.URL.class, URL);
-        add(File.class, FILE);
-        add(Path.class, PATH);
-        add(LocalDate.class, LOCAL_DATE);
-        add(LocalTime.class, LOCAL_TIME);
-        add(LocalDateTime.class, LOCAL_DATE_TIME);
-        add(Map.class, MAP);
+        put(BigInteger.class, BIG_INTEGER);
+        put(BigDecimal.class, BIG_DECIMAL);
+        put(Class.class, CLASS);
+        put(java.util.UUID.class, UUID);
+        put(java.net.URI.class, URI);
+        put(java.net.URL.class, URL);
+        put(File.class, FILE);
+        put(Path.class, PATH);
+        put(LocalDate.class, LOCAL_DATE);
+        put(LocalTime.class, LOCAL_TIME);
+        put(LocalDateTime.class, LOCAL_DATE_TIME);
+        put(Map.class, MAP);
     }
 
     Types() {
@@ -296,7 +296,7 @@ public class Types {
      * @param <T>    the type result of the parser.
      */
     @Nullable
-    public static <T> TypeParser<?> add(@NotNull Class<T> type, @NotNull TypeParser<T> parser) {
+    public static <T> TypeParser<?> put(@NotNull Class<T> type, @NotNull TypeParser<T> parser) {
         return PARSER_MAP.put(type, parser);
     }
 
@@ -309,7 +309,7 @@ public class Types {
      * @param <T>    the type result of the parser.
      */
     @Nullable
-    public static <T> TypeParser<?> add(@NotNull Object type, @NotNull TypeParser<T> parser) {
+    public static <T> TypeParser<?> put(@NotNull Object type, @NotNull TypeParser<T> parser) {
         return PARSER_MAP.put(type instanceof String ? ((String) type).toLowerCase() : type, parser);
     }
 

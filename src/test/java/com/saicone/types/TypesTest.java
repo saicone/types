@@ -36,7 +36,7 @@ public class TypesTest {
         assertTrue(Types.contains(int.class));
         assertTrue(Types.contains("text"));
 
-        Types.add(MyObject.class, MyObject::new);
+        Types.put(MyObject.class, MyObject::new);
         assertTrue(Types.contains(MyObject.class));
         assertEquals(new MyObject("test"), Types.of(MyObject.class).parse("test"));
 
