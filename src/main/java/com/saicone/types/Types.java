@@ -1,5 +1,6 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.ClassParser;
 import com.saicone.types.parser.FileParser;
 import com.saicone.types.parser.NumberParser;
 import com.saicone.types.parser.PathParser;
@@ -148,38 +149,7 @@ public class Types {
      * Class type parser.<br>
      * This parser can accept any string representation of Class name.
      */
-    public static final TypeParser<Class<?>> CLASS = TypeParser.single(Class.class, (object) -> {
-        if (object instanceof Class) {
-            return (Class<?>) object;
-        }
-
-        String className = String.valueOf(object).replace('/', '.');
-        if (className.endsWith(";")) {
-            if (className.startsWith("[")) {
-                for (int i = 0; i < className.length(); i++) {
-                    final char c = className.charAt(i);
-                    if (c == '[') {
-                        continue;
-                    } else if (c == 'L') {
-                        className = className.substring(0, i) + className.substring(i + 1);
-                    }
-                    break;
-                }
-            } else if (className.startsWith("L")) {
-                className = className.substring(1);
-            }
-
-            className = className.substring(0, className.length() - 1);
-        } else if (className.endsWith(".class")) {
-            className = className.substring(0, className.length() - 6);
-        }
-
-        try {
-            return Class.forName(className, false, Types.class.getClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
-    });
+    public static final TypeParser<Class<?>> CLASS = new ClassParser();
     /**
      * Unique ID type parser.<br>
      * This parser accepts any String representation of unique ID and also 4-length primitive int array.
