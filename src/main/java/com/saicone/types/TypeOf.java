@@ -1,5 +1,6 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.EnumParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +11,6 @@ import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -324,9 +324,9 @@ public abstract class TypeOf<T> implements TypeParser<T> {
     }
 
     @NotNull
-    private TypeParser<?> getEnumParser(@NotNull Class<?> raw) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        final Enum<?>[] values = (Enum<?>[]) raw.getDeclaredMethod("values").invoke(null);
-        return TypeParser.enumeration(raw, () -> values);
+    @SuppressWarnings("all")
+    private TypeParser<?> getEnumParser(@NotNull Class<?> raw) {
+        return EnumParser.of((Class) raw);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.EnumParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -140,8 +141,8 @@ public interface ValueType<T> {
      * @param <E>    the enum type result.
      */
     @Nullable
-    default <E extends Enum<?>> E asEnum(@NotNull Class<E> type) {
-        return TypeParser.enumeration(type).parse(getValue());
+    default <E extends Enum<E>> E asEnum(@NotNull Class<E> type) {
+        return EnumParser.of(type).parse(getValue());
     }
 
     /**
@@ -153,8 +154,8 @@ public interface ValueType<T> {
      * @param <E>    the enum type result.
      */
     @Nullable
-    default <E extends Enum<?>> E asEnum(@NotNull Class<E> type, @NotNull E[] values) {
-        return TypeParser.enumeration(type, () -> values).parse(getValue());
+    default <E extends Enum<E>> E asEnum(@NotNull Class<E> type, @NotNull E[] values) {
+        return EnumParser.of(type, values).parse(getValue());
     }
 
     /**

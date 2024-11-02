@@ -17,6 +17,7 @@ public class TypeOfTest {
     private static final TypeOf<List<Double>> LIST_TYPE = new TypeOf<List<Double>>(){};
     private static final TypeOf<String[]> OBJECT_ARRAY_TYPE = new TypeOf<String[]>(){};
     private static final TypeOf<int[]> PRIMITIVE_ARRAY_TYPE = new TypeOf<int[]>(){};
+    private static final TypeOf<EnumType> ENUM_TYPE = new TypeOf<EnumType>() {};
 
     @Test
     public void testObject() {
@@ -27,6 +28,14 @@ public class TypeOfTest {
         assertEquals("test", new TypeOf<String>(){}.parse("test"));
         assertEquals(1234, new TypeOf<Integer>(){}.parse("1234"));
         assertEquals(true, new TypeOf<Boolean>(){}.parse("true"));
+    }
+
+    @Test
+    public void testEnum() {
+        assertEquals(EnumType.SECOND, ENUM_TYPE.parse("SECOND"));
+
+        assertEquals(EnumType.SECOND, ENUM_TYPE.parse(1));
+        assertEquals(EnumType.FIRST, ENUM_TYPE.parse("0"));
     }
 
     @Test
@@ -61,5 +70,11 @@ public class TypeOfTest {
 
         assertArrayEquals(expected, PRIMITIVE_ARRAY_TYPE.parse(ImmutableList.of(15.2, "1234", 14.8, true)));
         assertArrayEquals(new boolean[] { false, false, false, true }, new TypeOf<boolean[]>(){}.parse(expected));
+    }
+
+    enum EnumType {
+        FIRST,
+        SECOND,
+        THIRD;
     }
 }

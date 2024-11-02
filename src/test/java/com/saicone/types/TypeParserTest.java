@@ -2,6 +2,7 @@ package com.saicone.types;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.saicone.types.parser.EnumParser;
 import com.saicone.types.parser.NumberParser;
 import org.junit.jupiter.api.Test;
 
@@ -44,11 +45,12 @@ public class TypeParserTest {
 
     @Test
     public void testEnum() {
-        TypeParser<EnumType> parser = TypeParser.enumeration(EnumType.class);
+        TypeParser<EnumType> parser = EnumParser.of(EnumType.class);
         assertEquals(EnumType.SECOND, parser.parse("SECOND"));
 
-        parser = TypeParser.enumeration(EnumType.class, EnumType::values);
+        parser = EnumParser.of(EnumType.class, EnumType.values());
         assertEquals(EnumType.SECOND, parser.parse(1));
+        assertEquals(EnumType.FIRST, parser.parse("0"));
     }
 
     @Test

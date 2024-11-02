@@ -186,54 +186,6 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser that convert any object into provided enum class type.
-     *
-     * @param type the associated type with the parser.
-     * @return     a type parser that return an enum type.
-     * @param <T>  the enum type result of the function.
-     */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    static <T extends Enum<?>> TypeParser<T> enumeration(@NotNull Class<T> type) {
-        try {
-            final T[] values = (T[]) type.getDeclaredMethod("values").invoke(null);
-            return enumeration(type, () -> values);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
-
-    /**
-     * Create a type parser that convert any object into provided enum class type
-     * with a value array supplier that return enum values.
-     *
-     * @param type          the associated type with the parser.
-     * @param valueSupplier the enum array value supplier.
-     * @return              a type parser that return an enum type.
-     * @param <T>           the enum type result of the function.
-     */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    static <T extends Enum<?>> TypeParser<T> enumeration(@NotNull Class<?> type, @NotNull Supplier<T[]> valueSupplier) {
-        return TypeParser.single(type, (object) -> {
-            if (type.isInstance(object)) {
-                return (T) object;
-            } else if (object instanceof Number) {
-                final int ordinal = ((Number) object).intValue();
-                return valueSupplier.get()[ordinal];
-            } else {
-                final String name = String.valueOf(object);
-                for (T value : valueSupplier.get()) {
-                    if (value.name().equalsIgnoreCase(name)) {
-                        return value;
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
-    /**
      * Create a type parser that convert any map into required map type
      * by parsing keys and values with provided type parsers.
      *
