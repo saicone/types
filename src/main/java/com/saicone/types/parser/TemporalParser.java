@@ -125,17 +125,17 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
 
     @Override
     default @Nullable T parse(@NotNull Object object) {
-        final Object first = IterableType.of(object).first();
-        if (first == null) {
+        final Object single = IterableType.of(object).single();
+        if (single == null) {
             return null;
         }
 
-        if (first instanceof Number) {
-            return parseTemporal((Number) first);
-        } else if (first instanceof Object[] || first.getClass().isArray()) {
-            return parseTemporal(ArrayIterator.of(first, Types.INTEGER));
+        if (single instanceof Number) {
+            return parseTemporal((Number) single);
+        } else if (single instanceof Object[] || single.getClass().isArray()) {
+            return parseTemporal(ArrayIterator.of(single, Types.INTEGER));
         } else {
-            return parseTemporal(String.valueOf(first));
+            return parseTemporal(String.valueOf(single));
         }
     }
 

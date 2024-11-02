@@ -5,13 +5,13 @@ import com.saicone.types.iterator.SingleIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * Interface to allow any object to be targeted on the enhanced for statement.
+ * Functional interface to allow any object to be targeted on the enhanced for statement.<br>
+ * This interface can iterate hover {@link Iterable}, {@link Map}, {@code Object[]}, any primitive array and single objects.
  *
  * @author Rubenicos
  *
@@ -195,7 +195,8 @@ public interface IterableType<T> extends Iterable<T> {
      * @return true if the object can be iterated.
      */
     default boolean isIterable() {
-        return getValue() != null && (getValue() instanceof Iterable || getValue().getClass().isArray());
+        final Object value = getValue();
+        return value != null && (value instanceof Iterable || value instanceof Map || value.getClass().isArray());
     }
 
     /**
@@ -234,53 +235,31 @@ public interface IterableType<T> extends Iterable<T> {
     }
 
     /**
+     * Convert the current type into the first object representation,
+     * this means that any object compatible with this instance will
+     * be iterated to get the first object.
+     *
+     * @return the first object, null if current value is empty or null.
+     */
+    @Nullable
+    default T first() {
+        for (T t : this) {
+            return t;
+        }
+        return null;
+    }
+
+
+    /**
      * Convert the current type into a single object representation,
-     * this means that any iterable or array object will be converted
-     * into single object by taking the first list or array value.
+     * this means that any iterable object will be converted into
+     * single object by taking the first iterated value.
      *
      * @return a single object.
      */
     @Nullable
     @SuppressWarnings("unchecked")
     default T single() {
-        final Object value = getValue();
-        if (value instanceof Iterable) {
-            final Iterator<T> iterator = ((Iterable<T>) value).iterator();
-            final T t;
-            if (iterator.hasNext() && (t = iterator.next()) != null) {
-                return t;
-            } else {
-                return null;
-            }
-        } else if (value instanceof Object[]) {
-            final Object obj;
-            if (((Object[]) value).length > 0 && (obj = ((Object[]) value)[0]) != null) {
-                return (T) obj;
-            } else {
-                return null;
-            }
-        } else if (value.getClass().isArray()) {
-            final Object obj;
-            if (Array.getLength(value) > 0 && (obj = Array.get(value, 0)) != null) {
-                return (T) obj;
-            } else {
-                return null;
-            }
-        } else {
-            return (T) value;
-        }
-    }
-
-    /**
-     * Convert the current type into the first object representation,
-     * this means that any iterable or array object will be converted
-     * into the first present value to parse.
-     *
-     * @return the first object.
-     */
-    @Nullable
-    @SuppressWarnings("unchecked")
-    default T first() {
         final Object value = getValue();
         if (value instanceof Iterable) {
             final Iterator<Object> iterator = ((Iterable<Object>) value).iterator();

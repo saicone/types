@@ -24,22 +24,22 @@ public class FileParser implements TypeParser<File> {
 
     @Override
     public @Nullable File parse(@NotNull Object object) {
-        final Object first = IterableType.of(object).first();
-        if (first == null) {
+        final Object single = IterableType.of(object).single();
+        if (single == null) {
             return null;
         }
 
-        if (first instanceof File) {
-            return (File) first;
-        } else if (first instanceof Path) {
-            return ((Path) first).toFile();
+        if (single instanceof File) {
+            return (File) single;
+        } else if (single instanceof Path) {
+            return ((Path) single).toFile();
         }
 
         final String[] array;
-        if (first instanceof String[]) {
-            array = (String[]) first;
+        if (single instanceof String[]) {
+            array = (String[]) single;
         } else {
-            array = String.valueOf(first).split("/");
+            array = String.valueOf(single).split("/");
         }
 
         File file = null;

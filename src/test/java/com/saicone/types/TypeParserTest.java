@@ -20,8 +20,8 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testSingle() {
-        final TypeParser<String> parser = TypeParser.single(String::valueOf);
+    public void testFirst() {
+        final TypeParser<String> parser = TypeParser.first(String::valueOf);
         assertEquals("1234", parser.parse(1234));
         assertEquals("test", parser.parse(ImmutableList.of("test", "1234")));
         assertEquals("1234", parser.parse(new int[] { 1234, 55, 4 }));

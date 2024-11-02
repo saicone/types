@@ -44,12 +44,12 @@ public class Types {
      *
      * @see String#valueOf(Object)
      */
-    public static final TypeParser<String> STRING = TypeParser.single(String.class, String::valueOf);
+    public static final TypeParser<String> STRING = TypeParser.first(String.class, String::valueOf);
     /**
      * Text type parser, instead of {@link Types#STRING} this parser calls {@link Arrays#toString(Object[])}
      * if the provided object is instance of object array.
      */
-    public static final TypeParser<String> TEXT = TypeParser.single(String.class, (object) -> {
+    public static final TypeParser<String> TEXT = TypeParser.first(String.class, (object) -> {
         if (object instanceof Object[]) {
             return Arrays.toString((Object[]) object);
         } else if (object.getClass().isArray()) {
@@ -66,7 +66,7 @@ public class Types {
      * Character type parser.<br>
      * This parser extracts the first character from non-empty String value.
      */
-    public static final TypeParser<Character> CHAR = TypeParser.single(Character.class, (object) -> {
+    public static final TypeParser<Character> CHAR = TypeParser.first(Character.class, (object) -> {
         if (object instanceof Character) {
             return (Character) object;
         }
@@ -83,7 +83,7 @@ public class Types {
      * on | off<br>
      * y | n
      */
-    public static final TypeParser<Boolean> BOOLEAN = TypeParser.single(Boolean.class, (object) -> {
+    public static final TypeParser<Boolean> BOOLEAN = TypeParser.first(Boolean.class, (object) -> {
         if (object instanceof Boolean) {
             return (Boolean) object;
         }

@@ -26,23 +26,23 @@ public class PathParser implements TypeParser<Path> {
 
     @Override
     public @Nullable Path parse(@NotNull Object object) {
-        final Object firstObj = IterableType.of(object).first();
-        if (firstObj == null) {
+        final Object single = IterableType.of(object).single();
+        if (single == null) {
             return null;
         }
 
-        if (firstObj instanceof Path) {
-            return (Path) firstObj;
-        } else if (firstObj instanceof File) {
-            return ((File) firstObj).toPath();
+        if (single instanceof Path) {
+            return (Path) single;
+        } else if (single instanceof File) {
+            return ((File) single).toPath();
         }
 
         final String first;
         String[] more;
-        if (firstObj instanceof String[]) {
-            more = (String[]) firstObj;
+        if (single instanceof String[]) {
+            more = (String[]) single;
         } else {
-            more = String.valueOf(firstObj).split("/");
+            more = String.valueOf(single).split("/");
         }
         first = more[0];
 

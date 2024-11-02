@@ -27,24 +27,24 @@ public class UrlParser implements TypeParser<URL> {
 
     @Override
     public @Nullable URL parse(@NotNull Object object) {
-        final Object single = IterableType.of(object).single();
-        if (single == null) {
+        final Object first = IterableType.of(object).first();
+        if (first == null) {
             return null;
         }
 
-        if (single instanceof URL) {
-            return (URL) single;
+        if (first instanceof URL) {
+            return (URL) first;
         }
 
         try {
-            if (single instanceof URI) {
-                return ((URI) single).toURL();
-            } else if (single instanceof File) {
-                return ((File) single).toURI().toURL();
-            } else if (single instanceof Path) {
-                return ((Path) single).toUri().toURL();
+            if (first instanceof URI) {
+                return ((URI) first).toURL();
+            } else if (first instanceof File) {
+                return ((File) first).toURI().toURL();
+            } else if (first instanceof Path) {
+                return ((Path) first).toUri().toURL();
             }
-            return new URL(String.valueOf(single));
+            return new URL(String.valueOf(first));
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }

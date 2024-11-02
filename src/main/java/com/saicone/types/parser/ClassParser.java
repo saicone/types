@@ -23,16 +23,16 @@ public class ClassParser implements TypeParser<Class<?>> {
 
     @Override
     public @Nullable Class<?> parse(@NotNull Object object) {
-        final Object single = IterableType.of(object).single();
-        if (single == null) {
+        final Object first = IterableType.of(object).first();
+        if (first == null) {
             return null;
         }
 
-        if (object instanceof Class) {
-            return (Class<?>) object;
+        if (first instanceof Class) {
+            return (Class<?>) first;
         }
 
-        String className = String.valueOf(object).replace('/', '.');
+        String className = String.valueOf(first).replace('/', '.');
         if (className.endsWith(";")) {
             if (className.startsWith("[")) {
                 for (int i = 0; i < className.length(); i++) {

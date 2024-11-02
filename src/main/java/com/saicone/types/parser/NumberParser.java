@@ -590,16 +590,16 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
 
     @Override
     default @Nullable T parse(@NotNull Object object) {
-        final Object single = IterableType.of(object).single();
-        if (single == null) {
+        final Object first = IterableType.of(object).first();
+        if (first == null) {
             return null;
         }
-        if (single instanceof Number) {
-            return parseNumber((Number) single);
-        } else if (single instanceof Boolean) {
-            return parseNumber((Boolean) single);
+        if (first instanceof Number) {
+            return parseNumber((Number) first);
+        } else if (first instanceof Boolean) {
+            return parseNumber((Boolean) first);
         } else {
-            return parse(String.valueOf(single));
+            return parse(String.valueOf(first));
         }
     }
 

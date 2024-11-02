@@ -28,17 +28,17 @@ public class UuidParser implements TypeParser<UUID> {
 
     @Override
     public @Nullable UUID parse(@NotNull Object object) {
-        final Object first = IterableType.of(object).first();
-        if (first == null) {
+        final Object single = IterableType.of(object).single();
+        if (single == null) {
             return null;
         }
 
-        if (first instanceof UUID) {
-            return (UUID) first;
-        } else if (first instanceof Object[] || first.getClass().isArray()) {
-            return parseUuid(ArrayIterator.of(first));
-        } else if (first instanceof String) {
-            return parseUuid((String) first);
+        if (single instanceof UUID) {
+            return (UUID) single;
+        } else if (single instanceof Object[] || single.getClass().isArray()) {
+            return parseUuid(ArrayIterator.of(single));
+        } else if (single instanceof String) {
+            return parseUuid((String) single);
         }
         return null;
     }

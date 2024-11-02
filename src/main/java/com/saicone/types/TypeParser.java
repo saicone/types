@@ -52,12 +52,49 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser that accepts only single objects,
-     * this means that any iterable or array object will be converted
-     * into single object by taking the first list or array value.
+     * Create a type parser that accepts a {@link IterableType#first()}.
+     *
+     * @param parser the delegate parser that process any first object.
+     * @return       a type parser that accepts the first object.
+     * @param <T>    the type result of the function.
+     */
+    @NotNull
+    static <T> TypeParser<T> first(@NotNull TypeParser<T> parser) {
+        return first(null, parser);
+    }
+
+    /**
+     * Create a type parser with associated type that accepts a {@link IterableType#first()}.
+     *
+     * @param type   the associated type with the parser.
+     * @param parser the delegate parser that process any first object.
+     * @return       a type parser that accepts the first object.
+     * @param <T>    the type result of the function.
+     */
+    @NotNull
+    static <T> TypeParser<T> first(@Nullable Type type, @NotNull TypeParser<T> parser) {
+        return new TypeParser<T>() {
+            @Override
+            public @Nullable Type getType() {
+                return type;
+            }
+
+            @Override
+            public @Nullable T parse(@NotNull Object object) {
+                final Object single = IterableType.of(object).first();
+                if (single == null) {
+                    return null;
+                }
+                return parser.parse(single);
+            }
+        };
+    }
+
+    /**
+     * Create a type parser that accepts a {@link IterableType#single()}.
      *
      * @param parser the delegate parser that process any single object.
-     * @return       a type parser that accepts only single objects.
+     * @return       a type parser that accepts a single object.
      * @param <T>    the type result of the function.
      */
     @NotNull
@@ -66,13 +103,11 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser with associated type that accepts only single objects,
-     * this means that any iterable or array object will be converted
-     * into single object by taking the first list or array value.
+     * Create a type parser with associated type that accepts a {@link IterableType#single()}.
      *
      * @param type   the associated type with the parser.
      * @param parser the delegate parser that process any single object.
-     * @return       a type parser that accepts only single objects.
+     * @return       a type parser that accepts a single object.
      * @param <T>    the type result of the function.
      */
     @NotNull
@@ -90,49 +125,6 @@ public interface TypeParser<T> {
                     return null;
                 }
                 return parser.parse(single);
-            }
-        };
-    }
-
-    /**
-     * Create a type parser that accepts the first object,
-     * this means that any iterable will be converted into
-     * the first present value to parse.
-     *
-     * @param parser the delegate parser that process the first object.
-     * @return       a type parser that accepts the first object.
-     * @param <T>    the type result of the function.
-     */
-    @NotNull
-    static <T> TypeParser<T> first(@NotNull TypeParser<T> parser) {
-        return first(null, parser);
-    }
-
-    /**
-     * Create a type parser with associated type that accepts the first object,
-     * this means that any iterable will be converted into
-     * the first present value to parse.
-     *
-     * @param type   the associated type with the parser.
-     * @param parser the delegate parser that process the first object.
-     * @return       a type parser that accepts the first object.
-     * @param <T>    the type result of the function.
-     */
-    @NotNull
-    static <T> TypeParser<T> first(@Nullable Type type, @NotNull TypeParser<T> parser) {
-        return new TypeParser<T>() {
-            @Override
-            public @Nullable Type getType() {
-                return type;
-            }
-
-            @Override
-            public @Nullable T parse(@NotNull Object object) {
-                final Object first = IterableType.of(object).first();
-                if (first == null) {
-                    return null;
-                }
-                return parser.parse(first);
             }
         };
     }

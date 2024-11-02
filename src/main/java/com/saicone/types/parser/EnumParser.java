@@ -76,29 +76,29 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
     @Override
     @SuppressWarnings("unchecked")
     default @Nullable T parse(@NotNull Object object) {
-        final Object single = IterableType.of(object).single();
-        if (single == null) {
+        final Object first = IterableType.of(object).first();
+        if (first == null) {
             return null;
         }
 
         final Type type = getType();
-        if (type instanceof Class && ((Class<?>) type).isInstance(single)) {
-            return (T) single;
-        } else if (single instanceof Number) {
+        if (type instanceof Class && ((Class<?>) type).isInstance(first)) {
+            return (T) first;
+        } else if (first instanceof Number) {
             // ordinal -> enum
-            return parse(((Number) single).intValue());
-        } else if (single instanceof Enum) {
+            return parse(((Number) first).intValue());
+        } else if (first instanceof Enum) {
             // enum -> enum
-            return parse(((Enum<?>) single).ordinal());
+            return parse(((Enum<?>) first).ordinal());
         } else {
             try {
-                final Integer ordinal = Types.INTEGER.parse(single);
+                final Integer ordinal = Types.INTEGER.parse(first);
                 if (ordinal != null) {
                     return parse(ordinal);
                 }
             } catch (NumberFormatException ignored) { }
 
-            final String name = String.valueOf(single);
+            final String name = String.valueOf(first);
             for (T value : values()) {
                 if (value.name().equalsIgnoreCase(name)) {
                     return value;
