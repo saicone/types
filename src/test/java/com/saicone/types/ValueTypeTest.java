@@ -27,7 +27,7 @@ public class ValueTypeTest {
         assertEquals('t', ValueType.of("test").asChar());
         assertEquals('a', ValueType.of('a').asChar());
         assertEquals('t', ValueType.of(true).asChar());
-        assertEquals('1', ValueType.of(1234).asChar());
+        assertEquals('Ӓ', ValueType.of(1234).asChar());
     }
 
     @Test

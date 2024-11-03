@@ -49,7 +49,7 @@ public class Types {
      * Text type parser, instead of {@link Types#STRING} this parser calls {@link Arrays#toString(Object[])}
      * if the provided object is instance of object array.
      */
-    public static final TypeParser<String> TEXT = TypeParser.first(String.class, (object) -> {
+    public static final TypeParser<String> TEXT = TypeParser.single(String.class, (object) -> {
         if (object instanceof Object[]) {
             return Arrays.toString((Object[]) object);
         } else if (object.getClass().isArray()) {
