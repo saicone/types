@@ -70,6 +70,12 @@ public class Types {
         if (object instanceof Character) {
             return (Character) object;
         }
+        if (object instanceof Number) {
+            final int num = ((Number) object).intValue();
+            if (num >= 0 && num <= 65535) {
+                return (char) num;
+            }
+        }
         final String s = String.valueOf(object);
         return s.isEmpty() ? null : s.charAt(0);
     });

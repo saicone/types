@@ -461,7 +461,7 @@ How to register your own types.
 TypeParser<MyObject> parser = (object) -> {
     // Convert into MyObject...
 };
-Types.add(MyObject.class, parser);
+Types.put(MyObject.class, parser);
 
 // Unregister
 Types.remove(MyObject.class);
