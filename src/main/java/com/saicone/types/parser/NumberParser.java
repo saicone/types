@@ -721,7 +721,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         if (unsigned) {
             return parseUnsignedNumber(s, radix);
         } else {
-            return parseNumber(s, radix);
+            return radix == 10 ? parseNumber(s) : parseNumber(s, radix);
         }
     }
 
