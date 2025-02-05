@@ -258,7 +258,7 @@ Well known Java objects and the accepted types to properly parse them.
 > * Octal `0[0-7]`, for example `075`
 > 
 > And also detect:
-> * Leading sings `+ -`
+> * Leading signs `+ -`
 > * Unsigned suffix `u`
 > * Number suffixes `b B s S i I f F l L d D`
 

@@ -598,6 +598,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
             return parseNumber((Number) first);
         } else if (first instanceof Boolean) {
             return parseNumber((Boolean) first);
+        } else if (object instanceof Enum) {
+            return parseNumber((Enum<?>) first);
         } else {
             return parse(String.valueOf(first));
         }
@@ -769,6 +771,17 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     @NotNull
     default T parseNumber(boolean bool) {
         return cast(bool ? (byte) 1 : (byte) 0);
+    }
+
+    /**
+     * Parses the given enum argument as required number type.
+     *
+     * @param e the enum to parse.
+     * @return  a converted number type.
+     */
+    @NotNull
+    default T parseNumber(@NotNull Enum<?> e) {
+        return cast(e.ordinal());
     }
 
     /**
