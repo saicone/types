@@ -1,6 +1,6 @@
 <h1 align="center">Types</h1>
 
-<h4 align="center">Java library to parse or iterate any object type.</h4>
+<h4 align="center">Java library to parse, iterate or wrap any object type.</h4>
 
 <p align="center">
     <a href="https://saic.one/discord">
@@ -20,7 +20,7 @@
     </a>
 </p>
 
-Types library convert any object type into required object type, also can iterate hover any java object.
+Types library convert any object type into required object type and iterate any java object.
 
 ```java
 String str = "1234";
@@ -39,6 +39,25 @@ Map<String, String> from = Map.of("1234", "true", "55", "false", "10", "true");
 Map<Integer, Boolean> to = new TypeOf<Map<Integer, Boolean>>(){}.parse(from);
 for (Map.Entry<Integer, Boolean> entry : IterableType.of(to)) {
     // do something
+}
+```
+
+Also, can wrap objects as other types.
+
+```java
+// Original String list
+List<String> stringList = List.of("1", "2", "3", "4");
+
+// A view of original list as Integer list
+List<Integer> integerList = new WrappedList<>(stringList, TypeWrapper.of(Types.String, Types.INTEGER));
+
+// So this
+if (integerList.contains(3)) {
+    // ...
+}
+// Is the equivalent of
+if (stringList.contains("3")) {
+    // ...
 }
 ```
 
@@ -250,6 +269,7 @@ Well known Java objects and the accepted types to properly parse them.
 
 > [!NOTE]
 > Any Number type can be parsed from:
+> * Enum, by extracting ordinal value
 > * Boolean `true = 1 | false = 0`
 > * Decimal, for example `35`
 > * Binary `0[bB][0-1]`, for example `0b11010`
@@ -449,6 +469,108 @@ for (int i : IterableType.of(value)) {
 Map<String, Integer> value = new HashMap<>();
 for (Map.Entry<String, Integer> entry : IterableType.of(value)) {
     // do something
+}
+```
+
+### Wrap
+
+Type wrapping is a lazy object conversion that work in different dimensions using two types.
+
+**Type A:** Is the base type of object, you can get it by `unwrap` the type B.
+**Type B:** Is the type of object that `wrap` type A, in other words, to show A as B.
+
+**One dimension wrapper:**
+
+A one dimension `TypeWrapper` can be created using one type parser to `wrap` or `unwrap` any representation of a type.
+
+```java
+TypeParser<Integer> parser = Types.INTEGER;
+
+// Wrapper that only wrap objects
+TypeWrapper<Integer, Integer> onlyWrap = TypeWrapper.wrap(parser);
+
+// Wrapper that only unwrap objects
+TypeWrapper<Integer, Integer> onlyUnwrap = TypeWrapper.unwrap(parser);
+
+
+// Example
+List<Integer> list = new ArrayList<>(List.of(1, 2, 3, 4));
+
+// By only wrapping values you got a list that pass values to type wrapper for outgoing operations
+// Which is useless in this case since the wrapper doesn't make a value transformation
+List<Integer> integerList = new WrappedList<>(list, onlyWrap);
+
+// This value was processed on wrapper, int this case any change was applied
+int i = integerList.get(0);
+
+// By only unwrapping values you got a list that accept any kind of object that can be converted to Integer on incoming operations
+// Which is useful to take advantage of type parsing
+List<Integer> integerList = new WrappedList<>(list, onlyUnwrap);
+
+// In this case, the following operation is valid since any String is converted to Integer
+if (integerList.contains("2")) {
+    integerList.remove("1");
+}
+```
+
+**Two dimension wrapper with cast:**
+
+A two dimension `TypeWrapper` can be created using one type parser to `wrap` type A or `unwrap` type B and expect that the other type must be obtained using a regular cast.
+
+```java
+TypeParser<Long> parserA = Types.LONG;
+TypeParser<Integer> parserB = Types.INTEGER;
+
+// Wrapper that only wrap type A to show it as B
+// Meaning that you only need to provide a type parser to convert A to B
+TypeWrapper<Long, Integer> onlyWrap = TypeWrapper.wrap(parserB);
+
+// Wrapper that only unwrap type B to return it as A
+// Meaning that you only need to provide a type parser to convert B to A
+TypeWrapper<Long, Integer> onlyUnwrap = TypeWrapper.unwrap(parserA);
+
+
+// Example
+List<Long> longList = new ArrayList<>(List.of(1L, 2L, 3L, 4L));
+
+// By only wrapping values you got a list that show values as Integer for outgoing operations
+// And try to cast incoming values as Long for outgoing operations
+List<Integer> integerList = new WrappedList<>(longList, onlyWrap);
+
+// This value was converted from Long
+int i = integerList.get(0);
+
+// By only unwrapping values you got a list that try to cast outgoing values as Integer for incoming operations
+// And accepts Long-representation values for incoming operations (for example, an Integer)
+List<Integer> integerList = new WrappedList<>(longList, onlyUnwrap);
+
+// In this case the list accept any Long representation as well
+if (integerList.contains(2L)) {
+    integerList.remove("1L");
+}
+```
+
+**Two dimension wrapper:**
+
+A two dimension `TypeWrapper` can be created using one type parser to `wrap` type A and other type parser to `unwrap` type B.
+
+```java
+TypeParser<Integer> parserA = Types.INTEGER;
+TypeParser<String> parserB = Types.STRING;
+
+// A wrapper that make Integers look like Strings by wrapping any String representation
+// And make String look like Integers by unwrapping any Integer representation
+TypeWrapper<Integer, String> wrapper = TypeWrapper.of(parserA, parserB);
+
+
+// Example
+List<Integer> integerList = new ArrayList<>(List.of(1, 2, 3, 4));
+
+// By providing the wrapper, the Integer list will act as a String list
+List<String> stringList = new WrappedList<>(integerList, wrapper);
+
+if (integerList.contains("2")) {
+    integerList.remove("1");
 }
 ```
 
