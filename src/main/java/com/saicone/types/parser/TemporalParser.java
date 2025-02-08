@@ -11,6 +11,8 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
@@ -26,7 +28,13 @@ import java.time.temporal.Temporal;
 public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
 
     /**
-     * LocalDate type parser.
+     * {@link TemporalParser} for LocalDate values.<br>
+     * This parser accept any ISO-8601 String or Number array with date values.
+     *
+     * @see LocalDate#parse(CharSequence)
+     * @see LocalDate#ofYearDay(int, int)
+     * @see LocalDate#of(int, int, int)
+     * @see LocalDate#ofEpochDay(long)
      */
     TemporalParser<LocalDate> LOCAL_DATE = new TemporalParser<LocalDate>() {
         @Override
@@ -56,7 +64,15 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
     };
 
     /**
-     * LocalTime parser type.
+     * {@link TemporalParser} for LocalTime values.<br>
+     * This parser accept any String with the format {@code hour:minute:second.nanoOfSecond}
+     * or Number array with time values.
+     *
+     * @see LocalTime#parse(CharSequence)
+     * @see LocalTime#ofSecondOfDay(long)
+     * @see LocalTime#of(int, int)
+     * @see LocalTime#of(int, int, int)
+     * @see LocalTime#of(int, int, int, int)
      */
     TemporalParser<LocalTime> LOCAL_TIME = new TemporalParser<LocalTime>() {
         @Override
@@ -90,7 +106,15 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
     };
 
     /**
-     * LocalDateTime parser type.
+     * {@link TemporalParser} for LocalDateTime values.<br>
+     * This parser accept any ISO-8601 String separated by {@code T} with time format {@code hour:minute:second.nanoOfSecond}
+     * or Number array with date time values.
+     *
+     * @see LocalDateTime#parse(CharSequence)
+     * @see LocalDateTime#ofEpochSecond(long, int, ZoneOffset)
+     * @see LocalDateTime#of(int, int, int, int, int)
+     * @see LocalDateTime#of(int, int, int, int, int, int)
+     * @see LocalDateTime#of(int, Month, int, int, int, int, int)
      */
     TemporalParser<LocalDateTime> LOCAL_DATE_TIME = new TemporalParser<LocalDateTime>() {
         @Override

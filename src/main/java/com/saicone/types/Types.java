@@ -1,5 +1,6 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.BooleanParser;
 import com.saicone.types.parser.ClassParser;
 import com.saicone.types.parser.FileParser;
 import com.saicone.types.parser.NumberParser;
@@ -19,8 +20,6 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,137 +79,117 @@ public class Types {
         return s.isEmpty() ? null : s.charAt(0);
     });
     /**
-     * Boolean type parser.<br>
-     * This parser accept any String representation of:<br>
-     * true | false<br>
-     * t | f<br>
-     * 1 | 0<br>
-     * yes | no<br>
-     * on | off<br>
-     * y | n
+     * Boolean type parser.
+     *
+     * @see BooleanParser
      */
-    public static final TypeParser<Boolean> BOOLEAN = TypeParser.first(Boolean.class, (object) -> {
-        if (object instanceof Boolean) {
-            return (Boolean) object;
-        }
-        switch (String.valueOf(object instanceof Number ? ((Number) object).intValue() : object).toLowerCase()) {
-            case "true":
-            case "t":
-            case "1":
-            case "yes":
-            case "on":
-            case "y":
-                return true;
-            case "false":
-            case "f":
-            case "0":
-            case "no":
-            case "off":
-            case "n":
-                return false;
-            default:
-                return null;
-        }
-    });
+    public static final TypeParser<Boolean> BOOLEAN = BooleanParser.INSTANCE;
     /**
-     * Number type parser.<br>
-     * This parser convert any object string representation as any type of number.
+     * Number type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<Number> NUMBER = NumberParser.NUMBER;
     /**
      * Byte type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<Byte> BYTE = NumberParser.BYTE;
     /**
      * Short type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<Short> SHORT = NumberParser.SHORT;
     /**
      * Integer type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<Integer> INTEGER = NumberParser.INTEGER;
     /**
      * Float type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<Float> FLOAT = NumberParser.FLOAT;
     /**
      * Long type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<Long> LONG = NumberParser.LONG;
     /**
      * Double type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<Double> DOUBLE = NumberParser.DOUBLE;
     /**
-     * BigInteger type parser.<br>
-     * This parser can accept any Number or String representation of BigInteger.
+     * BigInteger type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<BigInteger> BIG_INTEGER = NumberParser.BIG_INTEGER;
     /**
-     * BigDecimal type parser.<br>
-     * This parser can accept any Number or string representation of BigDecimal.
+     * BigDecimal type parser.
+     *
+     * @see NumberParser
      */
     public static final TypeParser<BigDecimal> BIG_DECIMAL = NumberParser.BIG_DECIMAL;
     /**
-     * Class type parser.<br>
-     * This parser can accept any string representation of Class name.
+     * Class type parser.
+     *
+     * @see ClassParser
      */
     public static final TypeParser<Class<?>> CLASS = ClassParser.INSTANCE;
     /**
-     * Unique ID type parser.<br>
-     * This parser accepts any String representation of unique ID and also 4-length primitive int array.
+     * Unique ID type parser.
+     *
+     * @see UuidParser
      */
     public static final TypeParser<java.util.UUID> UUID = UuidParser.INSTANCE;
     /**
      * URI type parser.
+     *
+     * @see UriParser
      */
     public static final TypeParser<java.net.URI> URI = UriParser.INSTANCE;
     /**
      * URL type parser.
+     *
+     * @see UrlParser
      */
     public static final TypeParser<java.net.URL> URL = UrlParser.INSTANCE;
     /**
-     * File type parser.<br>
-     * This parser can accept any String separated by {@code /} or String array.
+     * File type parser.
+     *
+     * @see FileParser
      */
     public static final TypeParser<File> FILE = FileParser.INSTANCE;
     /**
-     * Path type parser.<br>
-     * This parser can accept any String separated by {@code /} or String array.
+     * Path type parser.
+     *
+     * @see PathParser
      */
     public static final TypeParser<Path> PATH = PathParser.INSTANCE;
     /**
-     * LocalDate type parser.<br>
-     * This parser accept any ISO-8601 String or Number array with date values.
+     * LocalDate type parser.
      *
-     * @see LocalDate#parse(CharSequence)
-     * @see LocalDate#ofYearDay(int, int)
-     * @see LocalDate#of(int, int, int)
-     * @see LocalDate#ofEpochDay(long)
+     * @see TemporalParser#LOCAL_DATE
      */
     public static final TypeParser<LocalDate> LOCAL_DATE = TemporalParser.LOCAL_DATE;
     /**
-     * LocalTime parser type.<br>
-     * This parser accept any String with the format {@code hour:minute:second.nanoOfSecond}
-     * or Number array with time values.
+     * LocalTime parser type.
      *
-     * @see LocalTime#parse(CharSequence)
-     * @see LocalTime#ofSecondOfDay(long)
-     * @see LocalTime#of(int, int)
-     * @see LocalTime#of(int, int, int)
-     * @see LocalTime#of(int, int, int, int)
+     * @see TemporalParser#LOCAL_TIME
      */
     public static TypeParser<LocalTime> LOCAL_TIME = TemporalParser.LOCAL_TIME;
     /**
-     * LocalDateTime parser type.<br>
-     * This parser accept any ISO-8601 String separated by {@code T} with time format {@code hour:minute:second.nanoOfSecond}
-     * or Number array with date time values.
+     * LocalDateTime parser type.
      *
-     * @see LocalDateTime#parse(CharSequence)
-     * @see LocalDateTime#ofEpochSecond(long, int, ZoneOffset)
-     * @see LocalDateTime#of(int, int, int, int, int)
-     * @see LocalDateTime#of(int, int, int, int, int, int)
-     * @see LocalDateTime#of(int, Month, int, int, int, int, int)
+     * @see TemporalParser#LOCAL_DATE_TIME
      */
     public static final TypeParser<LocalDateTime> LOCAL_DATE_TIME = TemporalParser.LOCAL_DATE_TIME;
     /**
