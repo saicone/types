@@ -16,6 +16,11 @@ import java.lang.reflect.Type;
  */
 public class ClassParser implements TypeParser<Class<?>> {
 
+    /**
+     * {@link ClassParser} public instance.
+     */
+    public static final ClassParser INSTANCE = new ClassParser();
+
     @Override
     public @Nullable Type getType() {
         return Class.class;

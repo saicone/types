@@ -155,30 +155,30 @@ public class Types {
      * Class type parser.<br>
      * This parser can accept any string representation of Class name.
      */
-    public static final TypeParser<Class<?>> CLASS = new ClassParser();
+    public static final TypeParser<Class<?>> CLASS = ClassParser.INSTANCE;
     /**
      * Unique ID type parser.<br>
      * This parser accepts any String representation of unique ID and also 4-length primitive int array.
      */
-    public static final TypeParser<java.util.UUID> UUID = new UuidParser();
+    public static final TypeParser<java.util.UUID> UUID = UuidParser.INSTANCE;
     /**
      * URI type parser.
      */
-    public static final TypeParser<java.net.URI> URI = new UriParser();
+    public static final TypeParser<java.net.URI> URI = UriParser.INSTANCE;
     /**
      * URL type parser.
      */
-    public static final TypeParser<java.net.URL> URL = new UrlParser();
+    public static final TypeParser<java.net.URL> URL = UrlParser.INSTANCE;
     /**
      * File type parser.<br>
      * This parser can accept any String separated by {@code /} or String array.
      */
-    public static final TypeParser<File> FILE = new FileParser();
+    public static final TypeParser<File> FILE = FileParser.INSTANCE;
     /**
      * Path type parser.<br>
      * This parser can accept any String separated by {@code /} or String array.
      */
-    public static final TypeParser<Path> PATH = new PathParser();
+    public static final TypeParser<Path> PATH = PathParser.INSTANCE;
     /**
      * LocalDate type parser.<br>
      * This parser accept any ISO-8601 String or Number array with date values.

@@ -19,6 +19,11 @@ import java.util.Arrays;
  */
 public class PathParser implements TypeParser<Path> {
 
+    /**
+     * {@link PathParser} public instance.
+     */
+    public static final PathParser INSTANCE = new PathParser();
+
     @Override
     public @Nullable Type getType() {
         return Path.class;

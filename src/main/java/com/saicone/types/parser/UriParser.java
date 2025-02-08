@@ -20,6 +20,11 @@ import java.nio.file.Path;
  */
 public class UriParser implements TypeParser<URI> {
 
+    /**
+     * {@link UriParser} public instance.
+     */
+    public static final UriParser INSTANCE = new UriParser();
+
     @Override
     public @Nullable Type getType() {
         return URI.class;

@@ -17,6 +17,11 @@ import java.nio.file.Path;
  */
 public class FileParser implements TypeParser<File> {
 
+    /**
+     * {@link FileParser} public instance.
+     */
+    public static final FileParser INSTANCE = new FileParser();
+
     @Override
     public @Nullable Type getType() {
         return File.class;

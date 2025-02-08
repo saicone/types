@@ -21,6 +21,11 @@ import java.util.UUID;
  */
 public class UuidParser implements TypeParser<UUID> {
 
+    /**
+     * {@link UuidParser} public instance.
+     */
+    public static final UuidParser INSTANCE = new UuidParser();
+
     @Override
     public @Nullable Type getType() {
         return UUID.class;
