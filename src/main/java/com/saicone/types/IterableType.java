@@ -5,6 +5,7 @@ import com.saicone.types.iterator.SingleIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -210,13 +211,13 @@ public interface IterableType<T> extends Iterable<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    default @NotNull java.util.Iterator<T> iterator() {
+    default @NotNull Iterator<T> iterator() {
         Objects.requireNonNull(getValue(), "Cannot iterate over empty object");
         final Object value = getValue();
         if (value instanceof Iterable) {
             return ((Iterable<T>) value).iterator();
         } else if (value instanceof Map) {
-            return (java.util.Iterator<T>) ((Map<?, ?>) value).entrySet().iterator();
+            return (Iterator<T>) ((Map<?, ?>) value).entrySet().iterator();
         } else if (value instanceof Object[] || value.getClass().isArray()) {
             return new ArrayIterator<T>(value) {
                 @Override
@@ -242,9 +243,24 @@ public interface IterableType<T> extends Iterable<T> {
      * @return the first object, null if current value is empty or null.
      */
     @Nullable
+    @SuppressWarnings("unchecked")
     default T first() {
-        for (T t : this) {
-            return t;
+        final Object value = getValue();
+        if (value instanceof Iterable) {
+            final Iterator<T> iterator = ((Iterable<T>) value).iterator();
+            if (iterator.hasNext()) {
+                return iterator.next();
+            }
+        } else if (value instanceof Object[]) {
+            if (((Object[]) value).length > 0) {
+                return (T) ((Object[]) value)[0];
+            }
+        } else if (value.getClass().isArray()) {
+            if (Array.getLength(value) > 0) {
+                return (T) Array.get(value, 0);
+            }
+        } else {
+            return (T) value;
         }
         return null;
     }
