@@ -122,6 +122,12 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
             return wrap(getDelegated().lower(unwrap(b)));
         }
 
+        /**
+         * Same as {@link NavigableSet#lower(Object)} with any Object compatibility.
+         *
+         * @param o the value to match
+         * @return  the greatest element less than {@code e}, or {@code null} if there is no such element
+         */
         @Nullable
         public B lowerAny(Object o) {
             return wrap(getDelegated().lower(unwrap(o)));
@@ -132,6 +138,12 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
             return wrap(getDelegated().floor(unwrap(b)));
         }
 
+        /**
+         * Same as {@link NavigableSet#floor(Object)} with any Object compatibility.
+         *
+         * @param o the value to match
+         * @return  the greatest element less than or equal to {@code e}, or {@code null} if there is no such element
+         */
         @Nullable
         public B floorAny(Object o) {
             return wrap(getDelegated().floor(unwrap(o)));
@@ -142,6 +154,12 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
             return wrap(getDelegated().ceiling(unwrap(b)));
         }
 
+        /**
+         * Same as {@link NavigableSet#ceiling(Object)} with any Object compatibility.
+         *
+         * @param o the value to match
+         * @return  the least element greater than or equal to {@code e}, or {@code null} if there is no such element
+         */
         @Nullable
         public B ceilingAny(Object o) {
             return wrap(getDelegated().ceiling(unwrap(o)));
@@ -152,6 +170,12 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
             return wrap(getDelegated().higher(unwrap(b)));
         }
 
+        /**
+         * Same as {@link NavigableSet#higher(Object)} with any Object compatibility.
+         *
+         * @param o the value to match
+         * @return  the least element greater than {@code e}, or {@code null} if there is no such element
+         */
         @Nullable
         public B higherAny(Object o) {
             return wrap(getDelegated().higher(unwrap(o)));

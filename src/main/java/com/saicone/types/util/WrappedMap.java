@@ -68,6 +68,13 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
         return wrapRight(getDelegated().put(unwrapLeft(key), unwrapRight(value)));
     }
 
+    /**
+     * Same as {@link Map#put(Object, Object)} with any Object compatibility.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return      the previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}.
+     */
     @Nullable
     public ValueB putAny(Object key, Object value) {
         return wrapRight(getDelegated().put(unwrapLeft(key), unwrapRight(value)));
@@ -83,6 +90,11 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
         putAnyAll(m);
     }
 
+    /**
+     * Same as {@link Map#putAll(Map)} with any Object compatibility.
+     *
+     * @param m mappings to be stored in this map
+     */
     @SuppressWarnings("unchecked")
     public void putAnyAll(@NotNull Map<?, ?> m) {
         if (m instanceof WrappedMap && isSimilar((WrappedPair<?, ?, ?, ?>) m)) {
@@ -192,6 +204,12 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
             return wrapRight(getDelegated().setValue(unwrapRight(value)));
         }
 
+        /**
+         * Same as {@link Map.Entry#setValue(Object)} with any Object compatibility.
+         *
+         * @param value new value to be stored in this entry
+         * @return      old value corresponding to the entry
+         */
         public ValueB setAnyValue(Object value) {
             return wrapRight(getDelegated().setValue(unwrapRight(value)));
         }

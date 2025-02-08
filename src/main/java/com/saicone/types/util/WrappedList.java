@@ -37,6 +37,13 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
         return addAnyAll(index, c);
     }
 
+    /**
+     * Same as {@link List#addAll(int, Collection)} with any Object compatibility.
+     *
+     * @param index index at which to insert the first element from the specified collection
+     * @param c     collection containing elements to be added to this list
+     * @return      {@code true} if this list changed as a result of the call
+     */
     @SuppressWarnings("unchecked")
     public boolean addAnyAll(int index, @NotNull Collection<?> c) {
         if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
@@ -61,6 +68,13 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
         return wrap(getDelegated().set(index, unwrap(element)));
     }
 
+    /**
+     * Same as {@link List#set(int, Object)} with any Object compatibility.
+     *
+     * @param index   index of the element to replace
+     * @param element element to be stored at the specified position
+     * @return        the element previously at the specified position
+     */
     public B setAny(int index, Object element) {
         return wrap(getDelegated().set(index, unwrap(element)));
     }
@@ -70,6 +84,12 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
         getDelegated().add(index, unwrap(element));
     }
 
+    /**
+     * Same as {@link List#add(int, Object)} with any Object compatibility.
+     *
+     * @param index   index at which the specified element is to be inserted
+     * @param element element to be inserted
+     */
     public void addAny(int index, Object element) {
         getDelegated().add(index, unwrap(element));
     }
@@ -152,6 +172,11 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
             getDelegated().set(unwrap(b));
         }
 
+        /**
+         * Same as {@link ListIterator#set(Object)} with any Object compatibility.
+         *
+         * @param o the element with which to replace the last element returned by {@code next} or {@code previous}
+         */
         public void setAny(Object o) {
             getDelegated().set(unwrap(o));
         }
@@ -161,6 +186,11 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
             getDelegated().add(unwrap(b));
         }
 
+        /**
+         * Same as {@link ListIterator#add(Object)} with any Object compatibility.
+         *
+         * @param o the element to insert
+         */
         public void addAny(Object o) {
             getDelegated().add(unwrap(o));
         }

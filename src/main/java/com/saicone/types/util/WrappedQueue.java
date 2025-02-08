@@ -37,6 +37,12 @@ public class WrappedQueue<A, B> extends WrappedCollection<A, B> implements Queue
         return getDelegated().offer(unwrap(b));
     }
 
+    /**
+     * Same as {@link Queue#offer(Object)} with any Object compatibility.
+     *
+     * @param o the element to add
+     * @return  {@code true} if the element was added to this queue, else {@code false}
+     */
     public boolean offerAny(Object o) {
         return getDelegated().offer(unwrap(o));
     }

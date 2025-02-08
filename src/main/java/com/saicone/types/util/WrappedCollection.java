@@ -79,6 +79,12 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
         return getDelegated().add(unwrap(b));
     }
 
+    /**
+     * Same as {@link Collection#add(Object)} with any Object compatibility.
+     *
+     * @param o element whose presence in this collection is to be ensured.
+     * @return  {@code true} if this collection changed as a result of the call
+     */
     public boolean addAny(Object o) {
         return getDelegated().add(unwrap(o));
     }
@@ -106,6 +112,12 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
         return addAnyAll(c);
     }
 
+    /**
+     * Same as {@link Collection#addAll(Collection)} with any Object compatibility.
+     *
+     * @param c collection containing elements to be added to this collection
+     * @return  {@code true} if this collection changed as a result of the call
+     */
     @SuppressWarnings("unchecked")
     public boolean addAnyAll(@NotNull Collection<?> c) {
         if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {

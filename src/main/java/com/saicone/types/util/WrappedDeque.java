@@ -41,10 +41,20 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
         getDelegated().addLast(unwrap(b));
     }
 
+    /**
+     * Same as {@link Deque#addFirst(Object)} with any Object compatibility.
+     *
+     * @param o the element to add
+     */
     public void addAnyFirst(Object o) {
         getDelegated().addFirst(unwrap(o));
     }
 
+    /**
+     * Same as {@link Deque#addLast(Object)} with any Object compatibility.
+     *
+     * @param o the element to add
+     */
     public void addAnyLast(Object o) {
         getDelegated().addLast(unwrap(o));
     }
@@ -59,10 +69,22 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
         return getDelegated().offerLast(unwrap(b));
     }
 
+    /**
+     * Same as {@link Deque#offerFirst(Object)} with any Object compatibility.
+     *
+     * @param o the element to add
+     * @return  {@code true} if the element was added to this deque, else {@code false}
+     */
     public boolean offerAnyFirst(Object o) {
         return getDelegated().offerFirst(unwrap(o));
     }
 
+    /**
+     * Same as {@link Deque#offerLast(Object)} with any Object compatibility.
+     *
+     * @param o the element to add
+     * @return  {@code true} if the element was added to this deque, else {@code false}
+     */
     public boolean offerAnyLast(Object o) {
         return getDelegated().offerLast(unwrap(o));
     }
@@ -122,6 +144,11 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
         getDelegated().push(unwrap(b));
     }
 
+    /**
+     * Same as {@link Deque#push(Object)} with any Object compatibility.
+     *
+     * @param o the element to push
+     */
     public void pushAny(Object o) {
         getDelegated().push(unwrap(o));
     }
