@@ -28,6 +28,16 @@ public class WrappedObject<A, B> {
     }
 
     /**
+     * Check if the provided wrapped object is similar to current wrapped object.
+     *
+     * @param wrapped the wrapped object to check.
+     * @return        true if both wrappers are similar.
+     */
+    public boolean isSimilar(@NotNull WrappedObject<?, ?> wrapped) {
+        return wrapped.getWrapper() == getWrapper();
+    }
+
+    /**
      * Get the delegated object that is wrapped in this instance.
      *
      * @return a delegated object.

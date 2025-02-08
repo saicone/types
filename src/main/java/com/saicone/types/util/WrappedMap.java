@@ -68,6 +68,11 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
         return wrapRight(getDelegated().put(unwrapLeft(key), unwrapRight(value)));
     }
 
+    @Nullable
+    public ValueB putAny(Object key, Object value) {
+        return wrapRight(getDelegated().put(unwrapLeft(key), unwrapRight(value)));
+    }
+
     @Override
     public ValueB remove(Object key) {
         return wrapRight(getDelegated().remove(unwrapLeft(key)));
@@ -75,7 +80,16 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
 
     @Override
     public void putAll(@NotNull Map<? extends KeyB, ? extends ValueB> m) {
-        for (Map.Entry<? extends KeyB, ? extends ValueB> entry : m.entrySet()) {
+        putAnyAll(m);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void putAnyAll(@NotNull Map<?, ?> m) {
+        if (m instanceof WrappedMap && isSimilar((WrappedPair<?, ?, ?, ?>) m)) {
+            getDelegated().putAll((Map<? extends KeyA, ? extends ValueA>) ((WrappedMap<?, ?, ?, ?>) m).getDelegated());
+            return;
+        }
+        for (Map.Entry<?, ?> entry : m.entrySet()) {
             getDelegated().put(unwrapLeft(entry.getKey()), unwrapRight(entry.getValue()));
         }
     }
@@ -175,6 +189,10 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
 
         @Override
         public ValueB setValue(ValueB value) {
+            return wrapRight(getDelegated().setValue(unwrapRight(value)));
+        }
+
+        public ValueB setAnyValue(Object value) {
             return wrapRight(getDelegated().setValue(unwrapRight(value)));
         }
     }

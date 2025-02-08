@@ -122,9 +122,19 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
             return wrap(getDelegated().lower(unwrap(b)));
         }
 
+        @Nullable
+        public B lowerAny(Object o) {
+            return wrap(getDelegated().lower(unwrap(o)));
+        }
+
         @Override
         public @Nullable B floor(B b) {
             return wrap(getDelegated().floor(unwrap(b)));
+        }
+
+        @Nullable
+        public B floorAny(Object o) {
+            return wrap(getDelegated().floor(unwrap(o)));
         }
 
         @Override
@@ -132,9 +142,19 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
             return wrap(getDelegated().ceiling(unwrap(b)));
         }
 
+        @Nullable
+        public B ceilingAny(Object o) {
+            return wrap(getDelegated().ceiling(unwrap(o)));
+        }
+
         @Override
         public @Nullable B higher(B b) {
             return wrap(getDelegated().higher(unwrap(b)));
+        }
+
+        @Nullable
+        public B higherAny(Object o) {
+            return wrap(getDelegated().higher(unwrap(o)));
         }
 
         @Override

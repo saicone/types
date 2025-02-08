@@ -41,6 +41,14 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
         getDelegated().addLast(unwrap(b));
     }
 
+    public void addAnyFirst(Object o) {
+        getDelegated().addFirst(unwrap(o));
+    }
+
+    public void addAnyLast(Object o) {
+        getDelegated().addLast(unwrap(o));
+    }
+
     @Override
     public boolean offerFirst(B b) {
         return getDelegated().offerFirst(unwrap(b));
@@ -49,6 +57,14 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
     @Override
     public boolean offerLast(B b) {
         return getDelegated().offerLast(unwrap(b));
+    }
+
+    public boolean offerAnyFirst(Object o) {
+        return getDelegated().offerFirst(unwrap(o));
+    }
+
+    public boolean offerAnyLast(Object o) {
+        return getDelegated().offerLast(unwrap(o));
     }
 
     @Override
@@ -104,6 +120,10 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
     @Override
     public void push(B b) {
         getDelegated().push(unwrap(b));
+    }
+
+    public void pushAny(Object o) {
+        getDelegated().push(unwrap(o));
     }
 
     @Override

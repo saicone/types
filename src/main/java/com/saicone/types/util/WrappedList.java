@@ -34,9 +34,17 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
 
     @Override
     public boolean addAll(int index, @NotNull Collection<? extends B> c) {
+        return addAnyAll(index, c);
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean addAnyAll(int index, @NotNull Collection<?> c) {
+        if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
+            return getDelegated().addAll(index, (Collection<? extends A>) ((WrappedCollection<?, ?>) c).getDelegated());
+        }
         boolean result = false;
-        for (B b : c) {
-            add(index, b);
+        for (Object o : c) {
+            addAny(index, o);
             index++;
             result = true;
         }
@@ -53,8 +61,16 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
         return wrap(getDelegated().set(index, unwrap(element)));
     }
 
+    public B setAny(int index, Object element) {
+        return wrap(getDelegated().set(index, unwrap(element)));
+    }
+
     @Override
     public void add(int index, B element) {
+        getDelegated().add(index, unwrap(element));
+    }
+
+    public void addAny(int index, Object element) {
         getDelegated().add(index, unwrap(element));
     }
 
@@ -136,9 +152,17 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
             getDelegated().set(unwrap(b));
         }
 
+        public void setAny(Object o) {
+            getDelegated().set(unwrap(o));
+        }
+
         @Override
         public void add(B b) {
             getDelegated().add(unwrap(b));
+        }
+
+        public void addAny(Object o) {
+            getDelegated().add(unwrap(o));
         }
     }
 }

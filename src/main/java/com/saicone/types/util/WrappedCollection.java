@@ -79,6 +79,10 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
         return getDelegated().add(unwrap(b));
     }
 
+    public boolean addAny(Object o) {
+        return getDelegated().add(unwrap(o));
+    }
+
     @Override
     public boolean remove(Object o) {
         return getDelegated().remove(unwrap(o));
@@ -86,6 +90,9 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
 
     @Override
     public boolean containsAll(@NotNull Collection<?> c) {
+        if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
+            return getDelegated().containsAll(((WrappedCollection<?, ?>) c).getDelegated());
+        }
         for (Object o : c) {
             if (!getDelegated().contains(unwrap(o))) {
                 return false;
@@ -96,9 +103,17 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
 
     @Override
     public boolean addAll(@NotNull Collection<? extends B> c) {
+        return addAnyAll(c);
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean addAnyAll(@NotNull Collection<?> c) {
+        if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
+            return getDelegated().addAll((Collection<? extends A>) ((WrappedCollection<?, ?>) c).getDelegated());
+        }
         boolean result = false;
-        for (B b : c) {
-            if (add(b)) {
+        for (Object o : c) {
+            if (addAny(o)) {
                 result = true;
             }
         }
@@ -107,6 +122,9 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
 
     @Override
     public boolean removeAll(@NotNull Collection<?> c) {
+        if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
+            return getDelegated().removeAll(((WrappedCollection<?, ?>) c).getDelegated());
+        }
         boolean result = false;
         for (Object o : c) {
             if (remove(o)) {
@@ -118,6 +136,9 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
 
     @Override
     public boolean retainAll(@NotNull Collection<?> c) {
+        if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
+            return getDelegated().retainAll(((WrappedCollection<?, ?>) c).getDelegated());
+        }
         return this.removeIf(object -> !c.contains(object));
     }
 

@@ -37,6 +37,10 @@ public class WrappedQueue<A, B> extends WrappedCollection<A, B> implements Queue
         return getDelegated().offer(unwrap(b));
     }
 
+    public boolean offerAny(Object o) {
+        return getDelegated().offer(unwrap(o));
+    }
+
     @Override
     public B remove() {
         return wrap(getDelegated().remove());
