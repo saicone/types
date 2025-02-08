@@ -78,7 +78,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone:types:1.2'
+    implementation 'com.saicone:types:1.3.0'
 }
 
 jar.dependsOn (shadowJar)
@@ -106,7 +106,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone:types:1.2")
+    implementation("com.saicone:types:1.3.0")
 }
 
 tasks {
@@ -140,7 +140,7 @@ tasks {
     <dependency>
         <groupId>com.saicone</groupId>
         <artifactId>types</artifactId>
-        <version>1.2</version>
+        <version>1.3.0</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
