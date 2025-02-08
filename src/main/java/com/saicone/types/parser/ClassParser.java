@@ -56,6 +56,8 @@ public class ClassParser implements TypeParser<Class<?>> {
             className = className.substring(0, className.length() - 1);
         } else if (className.endsWith(".class")) {
             className = className.substring(0, className.length() - 6);
+        } else if (className.endsWith(".java")) {
+            className = className.substring(0, className.length() - 5);
         }
 
         try {
