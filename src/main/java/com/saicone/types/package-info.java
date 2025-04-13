@@ -10,7 +10,7 @@
  * maps, arrays or single objects.
  *
  * <p>There are high-level interactions using {@link com.saicone.types.ValueType} that provides easy-to-use methods to
- * convert a delegated value, while {@link com.saicone.types.TypeWrapper} is a more complex conversion which is focused
+ * convert a delegated value, while TypeWrapper is a more complex conversion which is focused
  * on lazy values without convert a whole data structure.
  *
  * @author Rubenicos

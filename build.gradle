@@ -1,50 +1,76 @@
-plugins {
-    id 'java'
-    id 'java-library'
-    id 'maven-publish'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compileOnly 'org.jetbrains:annotations:26.0.2'
+
+        testImplementation(platform('org.junit:junit-bom:5.12.1'))
+        testImplementation('org.junit.jupiter:junit-jupiter')
+        testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+        testImplementation('com.google.guava:guava:33.0.0-jre')
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+
+    compileJava {
+        options.encoding = 'UTF-8'
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    javadoc {
+        options {
+            links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+            links 'https://javadoc.io/doc/org.jetbrains/annotations/latest/'
+        }
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
+            }
+        }
+    }
 }
 
-repositories {
-    mavenCentral()
+subprojects {
+    dependencies {
+        api rootProject
+    }
 }
 
-dependencies {
-    compileOnly 'org.jetbrains:annotations:26.0.2'
+def javadocProjects= [
+        ':',
+        ':types-annotated',
+        ':types-wrapper'
+]
 
-    testImplementation(platform('org.junit:junit-bom:5.10.1'))
-    testImplementation('org.junit.jupiter:junit-jupiter')
-    testImplementation('com.google.guava:guava:33.0.0-jre')
-}
-
-test {
-    useJUnitPlatform()
-}
-
-compileJava {
-    options.encoding = 'UTF-8'
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-    withSourcesJar()
-    withJavadocJar()
-}
-
-javadoc {
+tasks.register('allJavadoc', Javadoc) {
+    source javadocProjects.collect { project(it).sourceSets.main.allJava }
+    classpath = files(javadocProjects.collect { project(it).sourceSets.main.compileClasspath })
     options {
         links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
         links 'https://javadoc.io/doc/org.jetbrains/annotations/latest/'
     }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId project.group
-            artifactId project.name
-            version project.version
-            from components.java
-        }
-    }
+    destinationDir = file(project.layout.buildDirectory.dir('docs/all-javadoc'))
 }

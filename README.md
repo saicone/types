@@ -65,12 +65,18 @@ if (stringList.contains("3")) {
 
 How to implement Types library in your project.
 
+This library contains the following artifacts:
+
+* `types` - The main project.
+* `types-annotated` - Annotated type parsing API.
+* `types-wrapper` - Type wrapping API.
+
 <details>
   <summary>build.gradle</summary>
 
 ```groovy
 plugins {
-    id 'com.gradleup.shadow' version '8.3.4'
+    id 'com.gradleup.shadow' version '8.3.5'
 }
 
 repositories {
@@ -78,7 +84,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone:types:1.3.0'
+    implementation 'com.saicone.types:types:1.3.0'
 }
 
 jar.dependsOn (shadowJar)
@@ -98,7 +104,7 @@ shadowJar {
 
 ```kotlin
 plugins {
-    id("com.gradleup.shadow") version "8.3.4"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 repositories {
@@ -106,7 +112,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone:types:1.3.0")
+    implementation("com.saicone.types:types:1.3.0")
 }
 
 tasks {
@@ -138,7 +144,7 @@ tasks {
 
 <dependencies>
     <dependency>
-        <groupId>com.saicone</groupId>
+        <groupId>com.saicone.types</groupId>
         <artifactId>types</artifactId>
         <version>1.3.0</version>
         <scope>compile</scope>
