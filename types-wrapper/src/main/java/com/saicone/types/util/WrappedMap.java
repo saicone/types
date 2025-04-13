@@ -19,7 +19,7 @@ import java.util.Set;
  * @param <ValueA> the base type of value object.
  * @param <ValueB> the type of object to represent value A.
  */
-public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, KeyB, ValueA, ValueB> implements Map<KeyB, ValueB> {
+public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedObject2<KeyA, KeyB, ValueA, ValueB> implements Map<KeyB, ValueB> {
 
     /**
      * Constructs a map of key and value A with its types represented as key and value B.
@@ -50,22 +50,22 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
 
     @Override
     public boolean containsKey(Object key) {
-        return getDelegated().containsKey(unwrapLeft(key));
+        return getDelegated().containsKey(unwrapOne(key));
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return getDelegated().containsValue(unwrapRight(value));
+        return getDelegated().containsValue(unwrapTwo(value));
     }
 
     @Override
     public ValueB get(Object key) {
-        return wrapRight(getDelegated().get(key));
+        return wrapTwo(getDelegated().get(key));
     }
 
     @Override
     public @Nullable ValueB put(KeyB key, ValueB value) {
-        return wrapRight(getDelegated().put(unwrapLeft(key), unwrapRight(value)));
+        return wrapTwo(getDelegated().put(unwrapOne(key), unwrapTwo(value)));
     }
 
     /**
@@ -77,12 +77,12 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
      */
     @Nullable
     public ValueB putAny(Object key, Object value) {
-        return wrapRight(getDelegated().put(unwrapLeft(key), unwrapRight(value)));
+        return wrapTwo(getDelegated().put(unwrapOne(key), unwrapTwo(value)));
     }
 
     @Override
     public ValueB remove(Object key) {
-        return wrapRight(getDelegated().remove(unwrapLeft(key)));
+        return wrapTwo(getDelegated().remove(unwrapOne(key)));
     }
 
     @Override
@@ -97,12 +97,12 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
      */
     @SuppressWarnings("unchecked")
     public void putAnyAll(@NotNull Map<?, ?> m) {
-        if (m instanceof WrappedMap && isSimilar((WrappedPair<?, ?, ?, ?>) m)) {
+        if (m instanceof WrappedMap && isSimilar((WrappedObject2<?, ?, ?, ?>) m)) {
             getDelegated().putAll((Map<? extends KeyA, ? extends ValueA>) ((WrappedMap<?, ?, ?, ?>) m).getDelegated());
             return;
         }
         for (Map.Entry<?, ?> entry : m.entrySet()) {
-            getDelegated().put(unwrapLeft(entry.getKey()), unwrapRight(entry.getValue()));
+            getDelegated().put(unwrapOne(entry.getKey()), unwrapTwo(entry.getValue()));
         }
     }
 
@@ -113,17 +113,17 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
 
     @Override
     public @NotNull Set<KeyB> keySet() {
-        return new WrappedSet<>(getDelegated().keySet(), getLeftWrapper());
+        return new WrappedSet<>(getDelegated().keySet(), getWrapperOne());
     }
 
     @Override
     public @NotNull Collection<ValueB> values() {
-        return new WrappedCollection<>(getDelegated().values(), getRightWrapper());
+        return new WrappedCollection<>(getDelegated().values(), getWrapperTwo());
     }
 
     @Override
     public @NotNull Set<Map.Entry<KeyB, ValueB>> entrySet() {
-        return new WrappedSet<>(getDelegated().entrySet(), Entry.wrapper(getLeftWrapper(), getRightWrapper()));
+        return new WrappedSet<>(getDelegated().entrySet(), Entry.wrapper(getWrapperOne(), getWrapperTwo()));
     }
 
     /**
@@ -136,7 +136,7 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
      * @param <ValueA> the base type of value object.
      * @param <ValueB> the type of object to represent value A.
      */
-    public static class Entry<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, KeyB, ValueA, ValueB> implements Map.Entry<KeyB, ValueB> {
+    public static class Entry<KeyA, KeyB, ValueA, ValueB> extends WrappedObject2<KeyA, KeyB, ValueA, ValueB> implements Map.Entry<KeyB, ValueB> {
 
         /**
          * Create a type wrapper that parse entries with key and value A type using {@link TypeWrapper#unwrap(Object)} and parse key and value B type using {@link TypeWrapper#wrap(Object)}.
@@ -162,7 +162,7 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
                 @SuppressWarnings("unchecked")
                 public Map.Entry<KeyA, ValueA> unwrap(Object entryB) {
                     if (entryB instanceof Entry) {
-                        if (((Entry<?, ?, ?, ?>) entryB).getLeftWrapper() == keyWrapper && ((Entry<?, ?, ?, ?>) entryB).getRightWrapper() == valueWrapper) {
+                        if (((Entry<?, ?, ?, ?>) entryB).getWrapperOne() == keyWrapper && ((Entry<?, ?, ?, ?>) entryB).getWrapperTwo() == valueWrapper) {
                             return (Map.Entry<KeyA, ValueA>) ((Entry<?, ?, ?, ?>) entryB).getDelegated();
                         }
                     }
@@ -191,17 +191,17 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
 
         @Override
         public KeyB getKey() {
-            return wrapLeft(getDelegated().getKey());
+            return wrapOne(getDelegated().getKey());
         }
 
         @Override
         public ValueB getValue() {
-            return wrapRight(getDelegated().getValue());
+            return wrapTwo(getDelegated().getValue());
         }
 
         @Override
         public ValueB setValue(ValueB value) {
-            return wrapRight(getDelegated().setValue(unwrapRight(value)));
+            return wrapTwo(getDelegated().setValue(unwrapTwo(value)));
         }
 
         /**
@@ -211,7 +211,7 @@ public class WrappedMap<KeyA, KeyB, ValueA, ValueB> extends WrappedPair<KeyA, Ke
          * @return      old value corresponding to the entry
          */
         public ValueB setAnyValue(Object value) {
-            return wrapRight(getDelegated().setValue(unwrapRight(value)));
+            return wrapTwo(getDelegated().setValue(unwrapTwo(value)));
         }
     }
 }
