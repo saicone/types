@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -293,6 +294,26 @@ public interface IterableType<T> extends Iterable<T> {
             };
         } else {
             throw new IllegalStateException("The object type " + value.getClass().getName() + " is not compatible with list iteration");
+        }
+    }
+
+    /**
+     * Get the size of the current object.
+     *
+     * @return a number that represent the current amount of values the object has.
+     */
+    default int size() {
+        Objects.requireNonNull(getValue(), "Cannot get the size of a null object");
+        final Object value = getValue();
+        if (value instanceof Collection) {
+            return ((Collection<?>) value).size();
+        } else if (value instanceof Map) {
+            return ((Map<?, ?>) value).size();
+        } else if (value instanceof Object[] || value.getClass().isArray()) {
+            return Array.getLength(value);
+        } else {
+            // Single value
+            return 1;
         }
     }
 
