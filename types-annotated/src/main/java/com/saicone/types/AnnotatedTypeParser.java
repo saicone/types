@@ -45,8 +45,8 @@ public interface AnnotatedTypeParser<T> extends TypeParser<T> {
         if (object == null) {
             return def;
         }
-        if (object instanceof ValueType) {
-            return parse(type, ((ValueType<?>) object).getValue());
+        if (object instanceof AnyObject) {
+            return parse(type, ((AnyObject<?>) object).getValue());
         }
         final T obj = parse(object);
         return obj != null ? obj : def;

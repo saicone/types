@@ -24,7 +24,7 @@ import java.util.UUID;
  * @param <T> the value type itself.
  */
 @FunctionalInterface
-public interface ValueType<T> {
+public interface AnyObject<T> {
 
     /**
      * Create a wrapped value type from given object type.
@@ -34,7 +34,7 @@ public interface ValueType<T> {
      * @param <T>   the value type itself.
      */
     @NotNull
-    static <T> ValueType<T> of(T value) {
+    static <T> AnyObject<T> of(T value) {
         return () -> value;
     }
 
