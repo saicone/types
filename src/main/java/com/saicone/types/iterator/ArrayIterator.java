@@ -1,6 +1,6 @@
 package com.saicone.types.iterator;
 
-import com.saicone.types.TypeIterator;
+import com.saicone.types.AnyIterator;
 import com.saicone.types.TypeParser;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
  *
  * @param <T> the array type.
  */
-public abstract class ArrayIterator<T> extends TypeIterator<T> implements ListIterator<T> {
+public abstract class ArrayIterator<T> extends AnyIterator<T> implements ListIterator<T> {
 
     private final boolean objectArray;
 

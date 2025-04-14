@@ -25,19 +25,19 @@ Types library convert any object type into required object type and iterate any 
 ```java
 String str = "1234";
 int number = Types.INTEGER.parse(str);
-for (int i : IterableType.<Integer>ofAny(number)) {
+for (int i : AnyIterable.<Integer>ofAny(number)) {
     // do something
 }
 
 double[] array = new double[] { 10.3, 8.4, 5.0 };
-List<Float> list = ValueType.of(array).asList(Types.FLOAT);
-for (double d : IterableType.of(array)) {
+List<Float> list = AnyObject.of(array).asList(Types.FLOAT);
+for (double d : AnyIterable.of(array)) {
     // do something
 }
 
 Map<String, String> from = Map.of("1234", "true", "55", "false", "10", "true");
 Map<Integer, Boolean> to = new TypeOf<Map<Integer, Boolean>>(){}.parse(from);
-for (Map.Entry<Integer, Boolean> entry : IterableType.of(to)) {
+for (Map.Entry<Integer, Boolean> entry : AnyIterable.of(to)) {
     // do something
 }
 ```
@@ -237,6 +237,9 @@ Well known Java objects and the accepted types to properly parse them.
   2. 32-length `String` (without dashes) `00000000000000000000000000000000`
   3. 4-length array (converted to int) `[000000000, 000000000, 000000000, 000000000]`
   4. 2-length array (converted to long) `[mostSigBits, leastSigBits]`
+* `java.util.regex.Pattern`
+  1. `String`
+  2. `String` with a type annotated with `PatternFlags`
 * `java.net.URI`
   1. `String`
   2. `URL`
@@ -329,7 +332,7 @@ By default, Types library can convert 6 data types using 4 different methods.
 
 * TypeParser - Make your own implementation of type conversion.
 * Types - Same as TypeParser, but every parser is cached.
-* ValueType - Encapsulated object with methods to convert with Types or create one-time use TypeParser.
+* AnyObject - Encapsulated object with methods to convert with Types or create one-time use TypeParser.
 * TypeOf - Same as Types, but computes automatically the required type object parser (including generic objects).
 
 **Single objects**:
@@ -344,8 +347,8 @@ double number = parser.parse(str);
 // Using Types (Same as TypeParser, but extract first element of any iterable or array object)
 int number = Types.INTEGER.parse(str);
 
-// Using ValueType
-float number = ValueType.of(str).asFloat();
+// Using AnyObject
+float number = AnyObject.of(str).asFloat();
 
 // Using TypeOf
 TypeOf<Long> type = new TypeOf<Long>(){};
@@ -364,8 +367,8 @@ List<Integer> list = parser.parse(number);
 // Using Types
 List<Double> list = Types.DOUBLE.list(number);
 
-// Using ValueType
-List<Float> list = ValueType.of(number).asList(Types.FLOAT);
+// Using AnyObject
+List<Float> list = AnyObject.of(number).asList(Types.FLOAT);
 
 // Using TypeOf
 TypeOf<List<Long>> type = new TypeOf<List<Long>>(){};
@@ -384,8 +387,8 @@ String[] array = parser.array(str);
 // Using Types
 Integer[] array = Types.INTEGER.array(str);
 
-// Using ValueType
-String[] array = ValueType.of(str).asList(Types.STRING);
+// Using AnyObject
+String[] array = AnyObject.of(str).asList(Types.STRING);
 
 // Using TypeOf
 TypeOf<Integer[]> type = new TypeOf<Integer[]>(){};
@@ -404,8 +407,8 @@ int[] array = parser.array(str);
 // Using Types
 float[] array = Types.of(float.class).array(str);
 
-// Using ValueType
-double[] array = ValueType.of(str).asArray(Types.of(double.class));
+// Using AnyObject
+double[] array = AnyObject.of(str).asArray(Types.of(double.class));
 
 // Using TypeOf
 TypeOf<long[]> type = new TypeOf<long[]>(){};
@@ -421,8 +424,8 @@ String str = "VALUE_NAME";
 TypeParser<MyEnum> parser = TypeParser.enumeration(MyEnum.class);
 MyEnum value = parser.parse(str);
 
-// Using ValueType
-MyEnum value = ValueType.of(str).asEnum(MyEnum.class);
+// Using AnyObject
+MyEnum value = AnyObject.of(str).asEnum(MyEnum.class);
 
 // Using TypeOf
 TypeOf<MyEnum> type = new TypeOf<MyEnum>(){};
@@ -441,8 +444,8 @@ map.put("12", "true")
 TypeParser<Map<Integer, Boolean>> parser = TypeParser.map(Types.INTEGER, Types.BOOLEAN, HashMap::new);
 Map<Integer, Boolean> value = parser.parse(map);
 
-// Using ValueType
-Map<Integer, Boolean> value = ValueType.of(map).asMap(Types.INTEGER, Types.BOOLEAN, new HashMap<>());
+// Using AnyObject
+Map<Integer, Boolean> value = AnyObject.of(map).asMap(Types.INTEGER, Types.BOOLEAN, new HashMap<>());
 
 // Using TypeOf
 TypeOf<Map<Integer, Boolean>> type = new TypeOf<Map<Integer, Boolean>>(){};
@@ -459,7 +462,7 @@ How to iterate any object value.
 ```java
 // Single object
 String value = "text";
-for (String str : IterableType.<String>ofAny(value)) {
+for (String str : AnyIterable.<String>ofAny(value)) {
     // do something
 }
 
@@ -467,13 +470,13 @@ for (String str : IterableType.<String>ofAny(value)) {
 Integer[] value = new Integer[] { 1, 2, 3, 4 };
 int[] value = new int[] { 1, 2, 3, 4 };
 List<Integer> value = new ArrayList<>();
-for (int i : IterableType.of(value)) {
+for (int i : AnyIterable.of(value)) {
     // do something
 }
 
 // Map
 Map<String, Integer> value = new HashMap<>();
-for (Map.Entry<String, Integer> entry : IterableType.of(value)) {
+for (Map.Entry<String, Integer> entry : AnyIterable.of(value)) {
     // do something
 }
 ```

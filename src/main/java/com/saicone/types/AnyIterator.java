@@ -11,7 +11,7 @@ import java.util.Iterator;
  *
  * @param <T> the object type.
  */
-public abstract class TypeIterator<T> implements Iterator<T> {
+public abstract class AnyIterator<T> implements Iterator<T> {
 
     /**
      * The iterated object.
@@ -23,7 +23,7 @@ public abstract class TypeIterator<T> implements Iterator<T> {
      *
      * @param value the value to iterate.
      */
-    public TypeIterator(@NotNull Object value) {
+    public AnyIterator(@NotNull Object value) {
         this.value = value;
     }
 

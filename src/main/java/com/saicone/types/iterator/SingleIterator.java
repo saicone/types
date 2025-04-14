@@ -1,6 +1,6 @@
 package com.saicone.types.iterator;
 
-import com.saicone.types.TypeIterator;
+import com.saicone.types.AnyIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
  *
  * @param <T> the object type.
  */
-public abstract class SingleIterator<T> extends TypeIterator<T> {
+public abstract class SingleIterator<T> extends AnyIterator<T> {
 
     private boolean consumed = false;
 
