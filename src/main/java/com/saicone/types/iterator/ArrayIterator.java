@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.util.ConcurrentModificationException;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -16,7 +17,7 @@ import java.util.NoSuchElementException;
  *
  * @param <T> the array type.
  */
-public abstract class ArrayIterator<T> extends TypeIterator<T> {
+public abstract class ArrayIterator<T> extends TypeIterator<T> implements ListIterator<T> {
 
     private final boolean objectArray;
 
@@ -73,8 +74,19 @@ public abstract class ArrayIterator<T> extends TypeIterator<T> {
      * @param value the array to iterate.
      */
     public ArrayIterator(@NotNull Object value) {
+        this(value, 0);
+    }
+
+    /**
+     * Constructs an array iterator with provided array object and starting index.
+     *
+     * @param value        the array to iterate.
+     * @param currentIndex the index to start the iteration.
+     */
+    public ArrayIterator(@NotNull Object value, int currentIndex) {
         super(value);
         this.objectArray = value instanceof Object[];
+        this.currentIndex = currentIndex;
     }
 
     /**
@@ -117,17 +129,40 @@ public abstract class ArrayIterator<T> extends TypeIterator<T> {
 
     @Override
     public boolean hasNext() {
-        return currentIndex != size();
+        return currentIndex < size();
     }
 
     @Override
     public T next() {
-        int i = currentIndex;
-        if (i >= size()) {
+        if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        currentIndex = i + 1;
-        return get(lastIndex = i);
+        lastIndex = currentIndex;
+        return get(currentIndex++);
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return currentIndex > 0;
+    }
+
+    @Override
+    public T previous() {
+        if (!hasPrevious()) {
+            throw new NoSuchElementException();
+        }
+        lastIndex = --currentIndex;
+        return get(currentIndex);
+    }
+
+    @Override
+    public int nextIndex() {
+        return currentIndex;
+    }
+
+    @Override
+    public int previousIndex() {
+        return currentIndex - 1;
     }
 
     @Override
@@ -144,7 +179,7 @@ public abstract class ArrayIterator<T> extends TypeIterator<T> {
     /**
      * Remove value form array at specified index.
      *
-     * @param index the index.
+     * @param index the index to remove.
      */
     public void remove(int index) {
         final int size = size();
@@ -152,15 +187,66 @@ public abstract class ArrayIterator<T> extends TypeIterator<T> {
             throw new ConcurrentModificationException();
         }
         Object newArray = Array.newInstance(getValue().getClass().getComponentType(), size - 1);
-        boolean decrement = false;
         for (int i = 0; i < size; i++) {
-            if (i != index) {
-                Array.set(newArray, decrement ? i - 1 : i, get(i));
-            } else {
-                decrement = true;
+            if (i < index) {
+                Array.set(newArray, i, get(i));
+            } else if (i > index) {
+                Array.set(newArray, i - 1, get(i));
             }
         }
         this.value = newArray;
+        setValue(newArray);
+    }
+
+    @Override
+    public void set(T t) {
+        if (lastIndex < 0) {
+            throw new IllegalStateException();
+        }
+        set(lastIndex, t);
+    }
+
+    /**
+     * Set value to array at specified index.
+     *
+     * @param index the index to set.
+     * @param t     the value to set.
+     */
+    public void set(int index, T t) {
+        if (objectArray) {
+            ((Object[]) getValue())[index] = t;
+        } else {
+            Array.set(getValue(), index, t);
+        }
+    }
+
+    @Override
+    public void add(T t) {
+        add(currentIndex, t);
+        currentIndex++;
+        lastIndex = -1;
+    }
+
+    /**
+     * Add value to array at specified index.
+     *
+     * @param index the index to add.
+     * @param t     the value to add.
+     */
+    public void add(int index, T t) {
+        final int size = size();
+        Object newArray = Array.newInstance(getValue().getClass().getComponentType(), size + 1);
+
+        for (int i = 0; i < size; i++) {
+            if (i < index) {
+                Array.set(newArray, i, get(i));
+            } else if (i == index) {
+                Array.set(newArray, i, t);
+            } else {
+                Array.set(newArray, i + 1, get(i));
+            }
+        }
+
         setValue(newArray);
     }
 }

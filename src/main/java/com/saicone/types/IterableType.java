@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -191,7 +193,7 @@ public interface IterableType<T> extends Iterable<T> {
 
     /**
      * Check if the current object can be iterated using for statement.<br>
-     * This condition can be applied to any {@link Iterable} type or array.
+     * This condition can be applied to any {@link Iterable} type, map or array.
      *
      * @return true if the object can be iterated.
      */
@@ -201,12 +203,32 @@ public interface IterableType<T> extends Iterable<T> {
     }
 
     /**
+     * Check if the current object can return a {@link ListIterator} on {@link #listIterator()}.<br>
+     * This condition can be applied to any {@link List} type or array.
+     *
+     * @return true if the object can return a {@link ListIterator}.
+     */
+    default boolean isListIterable() {
+        final Object value = getValue();
+        return value != null && (value instanceof List || value.getClass().isArray());
+    }
+
+    /**
      * Same has {@link #isIterable()} but with inverted result.
      *
      * @return true if the object can't be iterated.
      */
     default boolean isNotIterable() {
         return !isIterable();
+    }
+
+    /**
+     * Same has {@link #isListIterable()} but with inverted result.
+     *
+     * @return true if the object can't return a {@link ListIterator}.
+     */
+    default boolean isNotListIterable() {
+        return !isListIterable();
     }
 
     @Override
@@ -232,6 +254,45 @@ public interface IterableType<T> extends Iterable<T> {
                     IterableType.this.setValue(value);
                 }
             };
+        }
+    }
+
+    /**
+     * Return a list iterator over the elements of the current value<br>
+     * This method can return a properly made list iterator if the current value is a list or an array.
+     *
+     * @return      a newly generated list iterator.
+     * @throws IllegalStateException if the current value is no compatible with list iterator.
+     */
+    @NotNull
+    default ListIterator<T> listIterator() {
+        return listIterator(0);
+    }
+
+    /**
+     * Return a list iterator over the elements of the current value, starting at the specified position in the value.<br>
+     * This method can return a properly made list iterator if the current value is a list or an array.
+     *
+     * @param index the index of the first element to be returned from the list iterator.
+     * @return      a newly generated list iterator.
+     * @throws IllegalStateException if the current value is no compatible with list iterator.
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    default ListIterator<T> listIterator(int index) throws IllegalStateException {
+        Objects.requireNonNull(getValue(), "Cannot iterate over empty object");
+        final Object value = getValue();
+        if (value instanceof List) {
+            return ((List<T>) value).listIterator(index);
+        } else if (value instanceof Object[] || value.getClass().isArray()) {
+            return new ArrayIterator<T>(value, index) {
+                @Override
+                public void setValue(Object value) {
+                    IterableType.this.setValue(value);
+                }
+            };
+        } else {
+            throw new IllegalStateException("The object type " + value.getClass().getName() + " is not compatible with list iteration");
         }
     }
 
