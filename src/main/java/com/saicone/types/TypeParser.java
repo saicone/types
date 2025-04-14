@@ -279,7 +279,7 @@ public interface TypeParser<T> {
             return def;
         }
         if (object instanceof ValueType) {
-            return parse(((ValueType<?>) object).getValue(), def);
+            return parse(((ValueType<?>) object).getValue());
         }
         final T obj = parse(object);
         return obj != null ? obj : def;
