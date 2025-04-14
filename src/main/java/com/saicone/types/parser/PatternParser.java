@@ -15,6 +15,26 @@ import java.util.regex.Pattern;
  */
 public class PatternParser implements TypeParser<Pattern> {
 
+    /**
+     * {@link PatternParser} public instance.
+     */
+    public static final PatternParser INSTANCE = new PatternParser();
+
+    /**
+     * {@link PatternParser} public instance.
+     *
+     * @return a pattern parser instance.
+     */
+    @NotNull
+    public static PatternParser instance() {
+        try {
+            final Class<? extends PatternParser> annotated = Class.forName("com.saicone.types.parser.PatternAnnotatedParser").asSubclass(PatternParser.class);
+            return (PatternParser) annotated.getDeclaredField("INSTANCE").get(null);
+        } catch (Throwable t) {
+            return INSTANCE;
+        }
+    }
+
     private final int flags;
 
     /**
@@ -54,6 +74,10 @@ public class PatternParser implements TypeParser<Pattern> {
             return (Pattern) first;
         }
 
-        return Pattern.compile(String.valueOf(first), 0);
+        if (getFlags() == 0) {
+            return Pattern.compile(String.valueOf(first));
+        } else {
+            return Pattern.compile(String.valueOf(first), getFlags());
+        }
     }
 }

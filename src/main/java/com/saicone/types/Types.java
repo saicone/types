@@ -5,6 +5,7 @@ import com.saicone.types.parser.ClassParser;
 import com.saicone.types.parser.FileParser;
 import com.saicone.types.parser.NumberParser;
 import com.saicone.types.parser.PathParser;
+import com.saicone.types.parser.PatternParser;
 import com.saicone.types.parser.TemporalParser;
 import com.saicone.types.parser.UriParser;
 import com.saicone.types.parser.UrlParser;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 /**
  * Utility class to collect common and registrable type parsers.
@@ -151,6 +153,12 @@ public class Types {
      */
     public static final TypeParser<java.util.UUID> UUID = UuidParser.INSTANCE;
     /**
+     * Pattern type parser.
+     *
+     * @see UuidParser
+     */
+    public static final TypeParser<Pattern> PATTERN = PatternParser.instance();
+    /**
      * URI type parser.
      *
      * @see UriParser
@@ -249,6 +257,7 @@ public class Types {
         put(BigDecimal.class, BIG_DECIMAL);
         put(Class.class, CLASS);
         put(java.util.UUID.class, UUID);
+        put(Pattern.class, PATTERN);
         put(java.net.URI.class, URI);
         put(java.net.URL.class, URL);
         put(File.class, FILE);
