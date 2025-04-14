@@ -1,6 +1,6 @@
 package com.saicone.types.parser;
 
-import com.saicone.types.IterableType;
+import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +30,7 @@ public class BooleanParser implements TypeParser<Boolean> {
 
     @Override
     public @Nullable Boolean parse(@NotNull Object object) {
-        final Object first = IterableType.of(object).first();
+        final Object first = AnyIterable.of(object).first();
         if (first == null) {
             return null;
         }

@@ -1,6 +1,6 @@
 package com.saicone.types.parser;
 
-import com.saicone.types.IterableType;
+import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
 import com.saicone.types.Types;
 import com.saicone.types.iterator.ArrayIterator;
@@ -33,7 +33,7 @@ public class UuidParser implements TypeParser<UUID> {
 
     @Override
     public @Nullable UUID parse(@NotNull Object object) {
-        final Object single = IterableType.of(object).single();
+        final Object single = AnyIterable.of(object).single();
         if (single == null) {
             return null;
         }

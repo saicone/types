@@ -1,6 +1,6 @@
 package com.saicone.types.parser;
 
-import com.saicone.types.IterableType;
+import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
 import com.saicone.types.Types;
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +76,7 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
     @Override
     @SuppressWarnings("unchecked")
     default @Nullable T parse(@NotNull Object object) {
-        final Object first = IterableType.of(object).first();
+        final Object first = AnyIterable.of(object).first();
         if (first == null) {
             return null;
         }

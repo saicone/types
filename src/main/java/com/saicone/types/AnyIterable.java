@@ -22,7 +22,7 @@ import java.util.Objects;
  * @param <T> the iterable object type.
  */
 @FunctionalInterface
-public interface IterableType<T> extends Iterable<T> {
+public interface AnyIterable<T> extends Iterable<T> {
 
     /**
      * Create a read-only iterable type object.
@@ -31,9 +31,9 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Object> of(@NotNull Object value) {
-        if (value instanceof IterableType) {
-            return of(((IterableType<?>) value).getValue());
+    static AnyIterable<Object> of(@NotNull Object value) {
+        if (value instanceof AnyIterable) {
+            return of(((AnyIterable<?>) value).getValue());
         }
         return ofAny(value);
     }
@@ -45,7 +45,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Character> of(char[] value) {
+    static AnyIterable<Character> of(char[] value) {
         return ofAny(value);
     }
 
@@ -56,7 +56,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Boolean> of(boolean[] value) {
+    static AnyIterable<Boolean> of(boolean[] value) {
         return ofAny(value);
     }
 
@@ -67,7 +67,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Byte> of(byte[] value) {
+    static AnyIterable<Byte> of(byte[] value) {
         return ofAny(value);
     }
 
@@ -78,7 +78,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Short> of(short[] value) {
+    static AnyIterable<Short> of(short[] value) {
         return ofAny(value);
     }
 
@@ -89,7 +89,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Integer> of(int[] value) {
+    static AnyIterable<Integer> of(int[] value) {
         return ofAny(value);
     }
 
@@ -100,7 +100,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Float> of(float[] value) {
+    static AnyIterable<Float> of(float[] value) {
         return ofAny(value);
     }
 
@@ -111,7 +111,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Long> of(long[] value) {
+    static AnyIterable<Long> of(long[] value) {
         return ofAny(value);
     }
 
@@ -122,7 +122,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @return      a new iterable type.
      */
     @NotNull
-    static IterableType<Double> of(double[] value) {
+    static AnyIterable<Double> of(double[] value) {
         return ofAny(value);
     }
 
@@ -134,7 +134,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @param <T>   the iterable array type.
      */
     @NotNull
-    static <T> IterableType<T> of(@NotNull T[] value) {
+    static <T> AnyIterable<T> of(@NotNull T[] value) {
         return ofAny(value);
     }
 
@@ -146,7 +146,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @param <E>   the iterable object type.
      */
     @NotNull
-    static <E> IterableType<E> of(@NotNull Iterable<E> value) {
+    static <E> AnyIterable<E> of(@NotNull Iterable<E> value) {
         return ofAny(value);
     }
 
@@ -159,7 +159,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @param <V>   the type of mapped values.
      */
     @NotNull
-    static <K, V> IterableType<Map.Entry<K, V>> of(@NotNull Map<K, V> value) {
+    static <K, V> AnyIterable<Map.Entry<K, V>> of(@NotNull Map<K, V> value) {
         return ofAny(value);
     }
 
@@ -171,7 +171,7 @@ public interface IterableType<T> extends Iterable<T> {
      * @param <T>   the iterable object type.
      */
     @NotNull
-    static <T> IterableType<T> ofAny(@NotNull Object value) {
+    static <T> AnyIterable<T> ofAny(@NotNull Object value) {
         return () -> value;
     }
 
@@ -245,14 +245,14 @@ public interface IterableType<T> extends Iterable<T> {
             return new ArrayIterator<T>(value) {
                 @Override
                 public void setValue(Object value) {
-                    IterableType.this.setValue(value);
+                    AnyIterable.this.setValue(value);
                 }
             };
         } else {
             return new SingleIterator<T>(value) {
                 @Override
                 public void setValue(Object value) {
-                    IterableType.this.setValue(value);
+                    AnyIterable.this.setValue(value);
                 }
             };
         }
@@ -289,7 +289,7 @@ public interface IterableType<T> extends Iterable<T> {
             return new ArrayIterator<T>(value, index) {
                 @Override
                 public void setValue(Object value) {
-                    IterableType.this.setValue(value);
+                    AnyIterable.this.setValue(value);
                 }
             };
         } else {

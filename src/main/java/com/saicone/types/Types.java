@@ -55,7 +55,7 @@ public class Types {
             return Arrays.toString((Object[]) object);
         } else if (object.getClass().isArray()) {
             final StringJoiner joiner = new StringJoiner(", ", "[", "]");
-            for (Object o : IterableType.of(object)) {
+            for (Object o : AnyIterable.of(object)) {
                 joiner.add(String.valueOf(o));
             }
             return joiner.toString();

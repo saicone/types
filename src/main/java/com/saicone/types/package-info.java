@@ -6,7 +6,7 @@
  * storage and registration, while {@link com.saicone.types.TypeOf} is a lazy conversion provider that uses registered
  * type parsers.
  *
- * <p>For iteration, the {@link com.saicone.types.IterableType} can be used by encapsulating values like iterables,
+ * <p>For iteration, the {@link com.saicone.types.AnyIterable} can be used by encapsulating values like iterables,
  * maps, arrays or single objects.
  *
  * <p>There are high-level interactions using {@link com.saicone.types.AnyObject} that provides easy-to-use methods to

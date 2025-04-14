@@ -1,7 +1,7 @@
 package com.saicone.types.parser;
 
 import com.saicone.types.AnnotatedTypeParser;
-import com.saicone.types.IterableType;
+import com.saicone.types.AnyIterable;
 import com.saicone.types.annotation.PatternFlags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +29,7 @@ public class PatternAnnotatedParser extends PatternParser implements AnnotatedTy
             return parse(object);
         }
 
-        final Object first = IterableType.of(object).first();
+        final Object first = AnyIterable.of(object).first();
         if (first instanceof Pattern) {
             return (Pattern) first;
         }

@@ -52,7 +52,7 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser that accepts a {@link IterableType#first()}.
+     * Create a type parser that accepts a {@link AnyIterable#first()}.
      *
      * @param parser the delegate parser that process any first object.
      * @return       a type parser that accepts the first object.
@@ -64,7 +64,7 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser with associated type that accepts a {@link IterableType#first()}.
+     * Create a type parser with associated type that accepts a {@link AnyIterable#first()}.
      *
      * @param type   the associated type with the parser.
      * @param parser the delegate parser that process any first object.
@@ -81,7 +81,7 @@ public interface TypeParser<T> {
 
             @Override
             public @Nullable T parse(@NotNull Object object) {
-                final Object single = IterableType.of(object).first();
+                final Object single = AnyIterable.of(object).first();
                 if (single == null) {
                     return null;
                 }
@@ -91,7 +91,7 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser that accepts a {@link IterableType#single()}.
+     * Create a type parser that accepts a {@link AnyIterable#single()}.
      *
      * @param parser the delegate parser that process any single object.
      * @return       a type parser that accepts a single object.
@@ -103,7 +103,7 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser with associated type that accepts a {@link IterableType#single()}.
+     * Create a type parser with associated type that accepts a {@link AnyIterable#single()}.
      *
      * @param type   the associated type with the parser.
      * @param parser the delegate parser that process any single object.
@@ -120,7 +120,7 @@ public interface TypeParser<T> {
 
             @Override
             public @Nullable T parse(@NotNull Object object) {
-                final Object single = IterableType.of(object).single();
+                final Object single = AnyIterable.of(object).single();
                 if (single == null) {
                     return null;
                 }
@@ -166,7 +166,7 @@ public interface TypeParser<T> {
             @Override
             public @Nullable C parse(@NotNull Object object) {
                 final C collection = collectionSupplier.get();
-                for (Object obj : IterableType.of(object)) {
+                for (Object obj : AnyIterable.of(object)) {
                     final E element = elementParser.parseOrDefault(obj, null);
                     if (element != null) {
                         collection.add(element);
@@ -374,7 +374,7 @@ public interface TypeParser<T> {
         Object finalArray = array;
         final int size = Array.getLength(finalArray);
         int index = 0;
-        for (Object obj : IterableType.of(object)) {
+        for (Object obj : AnyIterable.of(object)) {
             final Object o = parseOrDefault(obj, def);
             if (o != null) {
                 if (index >= size) {
@@ -572,7 +572,7 @@ public interface TypeParser<T> {
                 break;
             }
         }
-        for (Object obj : IterableType.of(object)) {
+        for (Object obj : AnyIterable.of(object)) {
             final T result = parseOrDefault(obj, def);
             if (result != null) {
                 collection.add(result);

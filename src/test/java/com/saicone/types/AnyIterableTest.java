@@ -8,14 +8,14 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IterableTypeTest {
+public class AnyIterableTest {
 
     @Test
     public void testSingle() {
         final String expected = "test";
         // Read-only
         int count = 0;
-        for (String s : IterableType.<String>ofAny(expected)) {
+        for (String s : AnyIterable.<String>ofAny(expected)) {
             assertEquals("test", s);
             count++;
         }
@@ -40,7 +40,7 @@ public class IterableTypeTest {
         final String[] expected = new String[] {"0", "1", "2", "3"};
         // Read-only
         int count = 0;
-        for (String s : IterableType.<String>ofAny(expected)) {
+        for (String s : AnyIterable.<String>ofAny(expected)) {
             assertEquals(String.valueOf(count), s);
             count++;
         }
@@ -67,7 +67,7 @@ public class IterableTypeTest {
         final int[] expected = new int[] {0, 1, 2, 3};
         // Read-only
         int count = 0;
-        for (int i : IterableType.<Integer>ofAny(expected)) {
+        for (int i : AnyIterable.<Integer>ofAny(expected)) {
             assertEquals(count, i);
             count++;
         }
@@ -94,7 +94,7 @@ public class IterableTypeTest {
         final List<String> expected = ImmutableList.of("0", "1", "2", "3");
         final List<String> actual = new ArrayList<>(ImmutableList.of("0", "1", "2", "3", "4", "5"));
         int count = 0;
-        final Iterator<String> iterator = IterableType.of(actual).iterator();
+        final Iterator<String> iterator = AnyIterable.of(actual).iterator();
         while (iterator.hasNext()) {
             final String s = iterator.next();
             assertEquals(String.valueOf(count), s);
@@ -122,7 +122,7 @@ public class IterableTypeTest {
                 "4", 4,
                 "5", 5));
         int count = 0;
-        final Iterator<Map.Entry<String, Integer>> iterator = IterableType.of(actual).iterator();
+        final Iterator<Map.Entry<String, Integer>> iterator = AnyIterable.of(actual).iterator();
         while (iterator.hasNext()) {
             final Map.Entry<String, Integer> entry = iterator.next();
             assertEquals(String.valueOf(count), entry.getKey());
@@ -136,7 +136,7 @@ public class IterableTypeTest {
         assertEquals(expected, actual);
     }
 
-    static class ReplaceableValue<T> implements IterableType<T> {
+    static class ReplaceableValue<T> implements AnyIterable<T> {
 
         private Object value;
 

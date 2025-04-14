@@ -1,6 +1,6 @@
 package com.saicone.types.parser;
 
-import com.saicone.types.IterableType;
+import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +29,7 @@ public class FileParser implements TypeParser<File> {
 
     @Override
     public @Nullable File parse(@NotNull Object object) {
-        final Object single = IterableType.of(object).single();
+        final Object single = AnyIterable.of(object).single();
         if (single == null) {
             return null;
         }
