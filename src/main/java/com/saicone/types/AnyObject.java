@@ -1,5 +1,6 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.ArrayParser;
 import com.saicone.types.parser.EnumParser;
 import com.saicone.types.parser.MapParser;
 import org.jetbrains.annotations.Contract;
@@ -144,6 +145,19 @@ public interface AnyObject<T> {
     }
 
     /**
+     * Convert this object into array type with component type.
+     *
+     * @param component the component type of array.
+     * @return          a type array.
+     * @param <A>       the array type.
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    default <A> A asArray(@NotNull Class<?> component) {
+        return (A) ArrayParser.of(component).parse(getValue());
+    }
+
+    /**
      * Convert this object into array type with parser.
      *
      * @param parser the parser to apply this object into.
@@ -231,7 +245,23 @@ public interface AnyObject<T> {
      *
      * @param keyParser   the parser that accept keys.
      * @param valueParser the parser that accept values.
-     * @param map         the required map type.
+     * @return            a map type.
+     * @param <K>         the type of keys maintained by map.
+     * @param <V>         the type of mapped values.
+     * @param <M>         the map type result of the function.
+     */
+    @NotNull
+    @SuppressWarnings("all")
+    default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser) {
+        return (M) MapParser.of(keyParser, valueParser).parse(getValue());
+    }
+
+    /**
+     * Convert this object into map type.
+     *
+     * @param keyParser   the parser that accept keys.
+     * @param valueParser the parser that accept values.
+     * @param map         the map to fill.
      * @return            a map type.
      * @param <K>         the type of keys maintained by map.
      * @param <V>         the type of mapped values.

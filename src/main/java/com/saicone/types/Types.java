@@ -1,12 +1,16 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.ArrayParser;
+import com.saicone.types.parser.BitSetParser;
 import com.saicone.types.parser.BooleanParser;
 import com.saicone.types.parser.ClassParser;
 import com.saicone.types.parser.FileParser;
+import com.saicone.types.parser.ListParser;
 import com.saicone.types.parser.MapParser;
 import com.saicone.types.parser.NumberParser;
 import com.saicone.types.parser.PathParser;
 import com.saicone.types.parser.PatternParser;
+import com.saicone.types.parser.SetParser;
 import com.saicone.types.parser.TemporalParser;
 import com.saicone.types.parser.UriParser;
 import com.saicone.types.parser.UrlParser;
@@ -23,8 +27,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -202,12 +209,36 @@ public class Types {
      */
     public static final TypeParser<LocalDateTime> LOCAL_DATE_TIME = TemporalParser.LOCAL_DATE_TIME;
     /**
+     * BitSet type parser.
+     *
+     * @see BitSetParser
+     */
+    public static final TypeParser<BitSet> BIT_SET = BitSetParser.INSTANCE;
+    /**
+     * Array of objects type parser.
+     *
+     * @see ArrayParser
+     */
+    public static final TypeParser<Object[]> ARRAY = ArrayParser.of(OBJECT);
+    /**
+     * List of objects type parser.
+     *
+     * @see ListParser
+     */
+    public static final TypeParser<List<Object>> LIST = ListParser.of(OBJECT);
+    /**
+     * Set of objects type parser.
+     *
+     * @see SetParser
+     */
+    public static final TypeParser<Set<Object>> SET = SetParser.of(OBJECT);
+    /**
      * Map of objects type parser.<br>
      * This is the most typical Map format to save data.
      *
      * @see MapParser#of(TypeParser, TypeParser)
      */
-    public static final TypeParser<Map<String, Object>> MAP = MapParser.of(STRING, OBJECT);
+    public static final TypeParser<Map<Object, Object>> MAP = MapParser.of(OBJECT, OBJECT);
 
     static {
         put(Object.class, OBJECT);
@@ -266,6 +297,10 @@ public class Types {
         put(LocalDate.class, LOCAL_DATE);
         put(LocalTime.class, LOCAL_TIME);
         put(LocalDateTime.class, LOCAL_DATE_TIME);
+        put(BitSet.class, BIT_SET);
+        put(Object[].class, ARRAY);
+        put(List.class, LIST);
+        put(Set.class, SET);
         put(Map.class, MAP);
     }
 

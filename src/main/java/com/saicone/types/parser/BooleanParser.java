@@ -23,6 +23,31 @@ public class BooleanParser implements TypeParser<Boolean> {
      */
     public static final BooleanParser INSTANCE = new BooleanParser();
 
+    /**
+     * Check if the provided string is a valid boolean representation.<br>
+     * This method doesn't check for number representations.
+     *
+     * @param s the string to check.
+     * @return  true if the provided string is a valid boolean, false otherwise.
+     */
+    public static boolean isValid(@NotNull String s) {
+        switch (s.toLowerCase()) {
+            case "true":
+            case "t":
+            case "yes":
+            case "on":
+            case "y":
+            case "false":
+            case "f":
+            case "no":
+            case "off":
+            case "n":
+                return true;
+            default:
+                return false;
+        }
+    }
+
     @Override
     public @Nullable Type getType() {
         return Boolean.class;
