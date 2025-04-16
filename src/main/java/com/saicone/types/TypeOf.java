@@ -1,6 +1,7 @@
 package com.saicone.types;
 
 import com.saicone.types.parser.EnumParser;
+import com.saicone.types.parser.MapParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +9,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedArrayType;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -181,6 +181,11 @@ public abstract class TypeOf<T> implements TypeParser<T> {
         return nullable;
     }
 
+    @Override
+    public boolean isInstance(@Nullable Object object) {
+        return getRawType().isInstance(object);
+    }
+
     /**
      * Get current annotated type object.
      *
@@ -287,26 +292,48 @@ public abstract class TypeOf<T> implements TypeParser<T> {
     @NotNull
     @SuppressWarnings("all")
     private TypeParser<?> getMapParser(@NotNull Class<? extends Map<?, ?>> raw) throws NoSuchMethodException {
-        final Constructor<? extends Map<?, ?>> constructor = raw.getDeclaredConstructor();
+        Constructor<? extends Map<?, ?>> c;
+        try {
+            c = raw.getDeclaredConstructor(int.class);
+        } catch (NoSuchMethodException e) {
+            c = raw.getDeclaredConstructor();
+        }
+
+        final Constructor<? extends Map<?, ?>> constructor = c;
         final TypeParser keyParser = getParameters().isEmpty() ? Types.OBJECT : getParameters().get(0).getParser();
         final TypeParser valueParser = getParameters().size() < 2 ? Types.OBJECT : getParameters().get(1).getParser();
-        return TypeParser.<Object, Object, Map<Object, Object>>map(keyParser, valueParser, () -> {
+        return new MapParser<>(capacity -> {
             try {
-                return (Map<Object, Object>) constructor.newInstance();
+                if (constructor.getParameterCount() > 0) {
+                    return (Map<Object, Object>) constructor.newInstance(capacity);
+                } else {
+                    return (Map<Object, Object>) constructor.newInstance();
+                }
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
-        });
+        }, keyParser, valueParser);
     }
 
     @NotNull
     @SuppressWarnings("all")
     private TypeParser<?> getCollectionParser(@NotNull Class<? extends Collection<?>> raw) throws NoSuchMethodException {
-        final Constructor<? extends Collection<?>> constructor = raw.getDeclaredConstructor();
+        Constructor<? extends Collection<?>> c;
+        try {
+            c = raw.getDeclaredConstructor(int.class);
+        } catch (NoSuchMethodException e) {
+            c = raw.getDeclaredConstructor();
+        }
+
         final TypeParser elementParser = getParameters().isEmpty() ? Types.OBJECT : getParameters().get(0).getParser();
-        return TypeParser.<Object, Collection<Object>>collection(elementParser, () -> {
+        final Constructor<? extends Collection<?>> constructor = c;
+        return elementParser.collection(raw, capacity -> {
             try {
-                return (Collection<Object>) constructor.newInstance();
+                if (constructor.getParameterCount() > 0) {
+                    return (Collection<Object>) constructor.newInstance(capacity);
+                } else {
+                    return (Collection<Object>) constructor.newInstance();
+                }
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
@@ -317,10 +344,7 @@ public abstract class TypeOf<T> implements TypeParser<T> {
     @SuppressWarnings("all")
     private TypeParser<?> getArrayParser(@NotNull Class<?> raw) {
         final Class<?> component = raw.getComponentType();
-        final TypeParser<?> parser = Types.of(component);
-        return (object) -> {
-            return parser.parseArray(Array.newInstance(component, 0), object);
-        };
+        return Types.of(component).array();
     }
 
     @NotNull

@@ -28,6 +28,7 @@ public @interface PatternFlags {
      *
      * @return the pattern flags.
      */
-    int @MagicConstant(flagsFromClass = Pattern.class) [] value();
+    @MagicConstant(flagsFromClass = Pattern.class)
+    int[] value();
 
 }

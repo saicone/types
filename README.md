@@ -35,7 +35,11 @@ for (double d : AnyIterable.of(array)) {
     // do something
 }
 
-Map<String, String> from = Map.of("1234", "true", "55", "false", "10", "true");
+List<String> from = List.of(
+        "1234", "true",
+        "55", "false",
+        "10", "true"
+);
 Map<Integer, Boolean> to = new TypeOf<Map<Integer, Boolean>>(){}.parse(from);
 for (Map.Entry<Integer, Boolean> entry : AnyIterable.of(to)) {
     // do something
@@ -301,6 +305,7 @@ Typical Java objects with parameters.
 * `java.lang.Enum<?>`
   1. Name `String` (case-insensitive)
   2. Ordinal `Number`
+  3. Other `Enum` by extracting ordinal value.
 * `java.util.Collection<E>` - Can be any Java object that implements `Collection`
 * `java.util.Map<K, V>` - Can be any Java object that implements `Map`
 
@@ -361,11 +366,11 @@ long number = type.parse(str);
 int number = 1234;
 
 // Using TypeParser
-TypeParser<List<Integer>> parser = TypeParser.collection(Types.INTEGER, ArrayList::new);
+TypeParser<List<Integer>> parser = ListParser.of(Types.INTEGER);
 List<Integer> list = parser.parse(number);
 
 // Using Types
-List<Double> list = Types.DOUBLE.list(number);
+List<Double> list = Types.DOUBLE.list().parse(number);
 
 // Using AnyObject
 List<Float> list = AnyObject.of(number).asList(Types.FLOAT);
@@ -381,14 +386,14 @@ List<Long> list = type.parse(number);
 String str = "1234";
 
 // Using TypeParser
-TypeParser<String> parser = TypeParser.of(String.class, String::valueOf);
-String[] array = parser.array(str);
+TypeParser<String[]> parser = ArrayParser.of(String.class);
+String[] array = parser.parse(str);
 
 // Using Types
-Integer[] array = Types.INTEGER.array(str);
+Integer[] array = Types.INTEGER.array().parse(str);
 
 // Using AnyObject
-String[] array = AnyObject.of(str).asList(Types.STRING);
+String[] array = AnyObject.of(str).asArray(Types.STRING);
 
 // Using TypeOf
 TypeOf<Integer[]> type = new TypeOf<Integer[]>(){};
@@ -401,11 +406,11 @@ Integer[] array = type.parse(str);
 String str = "1234";
 
 // Using TypeParser
-TypeParser<Integer> parser = TypeParser.of(int.class, object -> Integer.parseInt(String.valueOf(object)));
-int[] array = parser.array(str);
+TypeParser<int[]> parser = ArrayParser.of(int.class);
+int[] array = parser.parse(str);
 
 // Using Types
-float[] array = Types.of(float.class).array(str);
+float[] array = Types.of(float.class).array().parse(str);
 
 // Using AnyObject
 double[] array = AnyObject.of(str).asArray(Types.of(double.class));
@@ -421,7 +426,7 @@ long[] array = type.parse(str);
 String str = "VALUE_NAME";
 
 // Using TypeParser
-TypeParser<MyEnum> parser = TypeParser.enumeration(MyEnum.class);
+TypeParser<MyEnum> parser = EnumParser.of(MyEnum.class);
 MyEnum value = parser.parse(str);
 
 // Using AnyObject
@@ -441,7 +446,7 @@ map.put("55", "false");
 map.put("12", "true")
 
 // Using TypeParser
-TypeParser<Map<Integer, Boolean>> parser = TypeParser.map(Types.INTEGER, Types.BOOLEAN, HashMap::new);
+TypeParser<Map<Integer, Boolean>> parser = MapParser.of(Types.INTEGER, Types.BOOLEAN);
 Map<Integer, Boolean> value = parser.parse(map);
 
 // Using AnyObject

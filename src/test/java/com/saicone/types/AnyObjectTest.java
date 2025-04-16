@@ -3,6 +3,7 @@ package com.saicone.types;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.saicone.types.parser.ArrayParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

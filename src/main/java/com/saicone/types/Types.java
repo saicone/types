@@ -3,6 +3,7 @@ package com.saicone.types;
 import com.saicone.types.parser.BooleanParser;
 import com.saicone.types.parser.ClassParser;
 import com.saicone.types.parser.FileParser;
+import com.saicone.types.parser.MapParser;
 import com.saicone.types.parser.NumberParser;
 import com.saicone.types.parser.PathParser;
 import com.saicone.types.parser.PatternParser;
@@ -204,9 +205,9 @@ public class Types {
      * Map of objects type parser.<br>
      * This is the most typical Map format to save data.
      *
-     * @see TypeParser#map(TypeParser, TypeParser, Supplier) Custom map type parser.
+     * @see MapParser#of(TypeParser, TypeParser)
      */
-    public static final TypeParser<Map<String, Object>> MAP = TypeParser.map(STRING, OBJECT, HashMap::new);
+    public static final TypeParser<Map<String, Object>> MAP = MapParser.of(STRING, OBJECT);
 
     static {
         put(Object.class, OBJECT);

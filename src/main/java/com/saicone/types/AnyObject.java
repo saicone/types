@@ -1,20 +1,21 @@
 package com.saicone.types;
 
 import com.saicone.types.parser.EnumParser;
+import com.saicone.types.parser.MapParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * Represents a value that can be converted into different types of objects.
@@ -118,22 +119,6 @@ public interface AnyObject<T> {
     }
 
     /**
-     * Convert this object into given collection type with type parser.
-     *
-     * @see TypeParser#collection(Collection, Object)
-     *
-     * @param parser     the parser to apply this object into.
-     * @param collection the collection to add parsed values.
-     * @return           a type collection.
-     * @param <E>        the type by parser.
-     * @param <C>        the collection type.
-     */
-    @NotNull
-    default <E, C extends Collection<E>> C asCollection(@NotNull TypeParser<E> parser, @NotNull C collection) {
-        return parser.collection(collection, getValue());
-    }
-
-    /**
      * Convert this object into enum type.
      *
      * @param type   the required enum type.
@@ -159,6 +144,89 @@ public interface AnyObject<T> {
     }
 
     /**
+     * Convert this object into array type with parser.
+     *
+     * @param parser the parser to apply this object into.
+     * @return       a type array.
+     * @param <A>    the array type.
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    default <A> A asArray(@NotNull TypeParser<?> parser) {
+        return (A) parser.array().parse(getValue());
+    }
+
+    /**
+     * Convert this object into given array type with parser.
+     *
+     * @param parser the parser to apply this object into.
+     * @param array  the array to add parsed values.
+     * @return       a type array.
+     * @param <A>    the array type.
+     */
+    @NotNull
+    default <A> A asArray(@NotNull TypeParser<?> parser, @NotNull A array) {
+        return parser.array(capacity -> array).parse(getValue());
+    }
+
+    /**
+     * Convert this object into given array type with parser.
+     *
+     * @param parser the parser to apply this object into.
+     * @param array  the array to add parsed values.
+     * @return       a type array.
+     * @param <E>    the type by parser.
+     */
+    @NotNull
+    default <E> E[] asArray(@NotNull TypeParser<E> parser, @NotNull E[] array) {
+        return parser.array(capacity -> array).parse(getValue());
+    }
+
+    /**
+     * Convert this object into given collection type with type parser.
+     *
+     * @see TypeParser#collection(Type, Function)
+     *
+     * @param parser     the parser to apply this object into.
+     * @param collection the collection to add parsed values.
+     * @return           a type collection.
+     * @param <E>        the type by parser.
+     * @param <C>        the collection type.
+     */
+    @NotNull
+    default <E, C extends Collection<E>> C asCollection(@NotNull TypeParser<E> parser, @NotNull C collection) {
+        return parser.collection(collection.getClass(), capacity -> collection).parse(getValue());
+    }
+
+    /**
+     * Convert this object into an ArrayList with the given type parser.
+     *
+     * @see TypeParser#list()
+     *
+     * @param parser the parser to apply this object into.
+     * @return       a type list containing the parsed values.
+     * @param <E>    the type by parser.
+     */
+    @NotNull
+    default <E> List<E> asList(@NotNull TypeParser<E> parser) {
+        return parser.list().parse(getValue());
+    }
+
+    /**
+     * Convert this object into a HashSet with the given type parser.
+     *
+     * @see TypeParser#set()
+     *
+     * @param parser the parser to apply this object into.
+     * @return       a type set containing the parsed values.
+     * @param <E>    the type by parser.
+     */
+    @NotNull
+    default <E> Set<E> asSet(@NotNull TypeParser<E> parser) {
+        return parser.set().parse(getValue());
+    }
+
+    /**
      * Convert this object into map type.
      *
      * @param keyParser   the parser that accept keys.
@@ -172,74 +240,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("all")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull M map) {
-        return TypeParser.map(keyParser, valueParser, () -> map).parse(getValue());
-    }
-
-    /**
-     * Convert this object into an ArrayList with the given type parser.
-     *
-     * @see TypeParser#list(Object)
-     *
-     * @param parser the parser to apply this object into.
-     * @return       a type list containing the parsed values.
-     * @param <E>    the type by parser.
-     */
-    @NotNull
-    default <E> List<E> asList(@NotNull TypeParser<E> parser) {
-        return asCollection(parser, new ArrayList<>());
-    }
-
-    /**
-     * Convert this object into a HashSet with the given type parser.
-     *
-     * @see TypeParser#set(Object)
-     *
-     * @param parser the parser to apply this object into.
-     * @return       a type set containing the parsed values.
-     * @param <E>    the type by parser.
-     */
-    @NotNull
-    default <E> Set<E> asSet(@NotNull TypeParser<E> parser) {
-        return asCollection(parser, new HashSet<>());
-    }
-
-    /**
-     * Convert this object into array type with parser.
-     *
-     * @param parser the parser to apply this object into.
-     * @return       a type array.
-     * @param <A>    the array type.
-     */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    default <A> A asArray(@NotNull TypeParser<?> parser) {
-        return (A) parser.array(getValue());
-    }
-
-    /**
-     * Convert this object into given array type with parser.
-     *
-     * @param parser the parser to apply this object into.
-     * @param array  the array to add parsed values.
-     * @return       a type array.
-     * @param <A>    the array type.
-     */
-    @NotNull
-    default <A> A asArray(@NotNull TypeParser<?> parser, @NotNull A array) {
-        return parser.parseArray(array, getValue());
-    }
-
-    /**
-     * Convert this object into given array type with parser.
-     *
-     * @param parser the parser to apply this object into.
-     * @param array  the array to add parsed values.
-     * @return       a type array.
-     * @param <E>    the type by parser.
-     */
-    @NotNull
-    default <E> E[] asArray(@NotNull TypeParser<E> parser, @NotNull E[] array) {
-        return parser.parseArray(array, getValue());
+        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parse(getValue());
     }
 
     /**

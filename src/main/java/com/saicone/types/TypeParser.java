@@ -1,16 +1,16 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.ArrayParser;
+import com.saicone.types.parser.CollectionParser;
+import com.saicone.types.parser.ListParser;
+import com.saicone.types.parser.SetParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -130,109 +130,6 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Create a type parser that convert any object into required
-     * collection type by parsing values with provided type parser.
-     *
-     * @param elementParser      the parser that accept objects.
-     * @param collectionSupplier the collection supplier that creates required collection type.
-     * @return                   a type parser that return a collection type.
-     * @param <E>                the type of elements in the collection.
-     * @param <C>                the collection type result of the function.
-     */
-    @NotNull
-    static <E, C extends Collection<E>> TypeParser<C> collection(@NotNull TypeParser<E> elementParser, @NotNull Supplier<C> collectionSupplier) {
-        return collection(null, elementParser, collectionSupplier);
-    }
-
-    /**
-     * Create a type parser with associated type that convert any object into required
-     * collection type by parsing values with provided type parser.
-     *
-     * @param type               the associated type with the parser.
-     * @param elementParser      the parser that accept objects.
-     * @param collectionSupplier the collection supplier that creates required collection type.
-     * @return                   a type parser that return a collection type.
-     * @param <E>                the type of elements in the collection.
-     * @param <C>                the collection type result of the function.
-     */
-    @NotNull
-    static <E, C extends Collection<E>> TypeParser<C> collection(@Nullable Type type, @NotNull TypeParser<E> elementParser, @NotNull Supplier<C> collectionSupplier) {
-        return new TypeParser<C>() {
-            @Override
-            public @Nullable Type getType() {
-                return type;
-            }
-
-            @Override
-            public @Nullable C parse(@NotNull Object object) {
-                final C collection = collectionSupplier.get();
-                for (Object obj : AnyIterable.of(object)) {
-                    final E element = elementParser.parseOrDefault(obj, null);
-                    if (element != null) {
-                        collection.add(element);
-                    }
-                }
-                return collection;
-            }
-        };
-    }
-
-    /**
-     * Create a type parser that convert any map into required map type
-     * by parsing keys and values with provided type parsers.
-     *
-     * @param keyParser   the parser that accept keys.
-     * @param valueParser the parser that accept values.
-     * @param mapSupplier the map supplier that creates required map type.
-     * @return            a type parser that return a map type.
-     * @param <K>         the type of keys maintained by map.
-     * @param <V>         the type of mapped values.
-     * @param <M>         the map type result of the function.
-     */
-    @NotNull
-    static <K, V, M extends Map<K, V>> TypeParser<@NotNull M> map(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull Supplier<M> mapSupplier) {
-        return map(null, keyParser, valueParser, mapSupplier);
-    }
-
-    /**
-     * Create a type parser with associated type that convert any map into required map type
-     * by parsing keys and values with provided type parsers.
-     *
-     * @param type        the associated type with the parser.
-     * @param keyParser   the parser that accept keys.
-     * @param valueParser the parser that accept values.
-     * @param mapSupplier the map supplier that creates required map type.
-     * @return            a type parser that return a map type.
-     * @param <K>         the type of keys maintained by map.
-     * @param <V>         the type of mapped values.
-     * @param <M>         the map type result of the function.
-     */
-    @NotNull
-    static <K, V, M extends Map<K, V>> TypeParser<@NotNull M> map(@Nullable Type type, @NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull Supplier<M> mapSupplier) {
-        return new TypeParser<M>() {
-            @Override
-            public @Nullable Type getType() {
-                return type;
-            }
-
-            @Override
-            public @Nullable M parse(@NotNull Object object) {
-                final M map = mapSupplier.get();
-                if (object instanceof Map) {
-                    for (Map.Entry<?, ?> entry : ((Map<?, ?>) object).entrySet()) {
-                        final K key = keyParser.parseOrDefault(entry.getKey(), null);
-                        if (key == null) continue;
-                        final V value = valueParser.parseOrDefault(entry.getValue(), null);
-                        if (value == null) continue;
-                        map.put(key, value);
-                    }
-                }
-                return map;
-            }
-        };
-    }
-
-    /**
      * Get the associated type object with this parser.
      *
      * @return a type object if present, null otherwise.
@@ -340,53 +237,6 @@ public interface TypeParser<T> {
             return (T) object;
         }
         return parseOrDefault(object, def);
-    }
-
-    /**
-     * Parse the given object into provided array type value.
-     *
-     * @param array  the array to add values.
-     * @param object the object to parse.
-     * @return       a type array.
-     * @param <A>    the array type.
-     */
-    @NotNull
-    default <A> A parseArray(@NotNull A array, @Nullable Object object) {
-        return parseArray(array, object, null);
-    }
-
-    /**
-     * Parse the given object into provided array type value.
-     *
-     * @param array  the array to add values.
-     * @param object the object to parse.
-     * @param def    the type object to fill failed parsed values.
-     * @return       a type array.
-     * @param <A>    the array type.
-     */
-    @NotNull
-    @SuppressWarnings("all")
-    default <A> A parseArray(@NotNull A array, @Nullable Object object, @Nullable T def) {
-        if (object == null) {
-            return array;
-        }
-        final Class<?> component = array.getClass().getComponentType();
-        Object finalArray = array;
-        final int size = Array.getLength(finalArray);
-        int index = 0;
-        for (Object obj : AnyIterable.of(object)) {
-            final Object o = parseOrDefault(obj, def);
-            if (o != null) {
-                if (index >= size) {
-                    Object arrayCopy = Array.newInstance(component, index + 1);
-                    System.arraycopy(finalArray, 0, arrayCopy, 0, index);
-                    finalArray = arrayCopy;
-                }
-                Array.set(finalArray, index, o);
-                index++;
-            }
-        }
-        return (A) finalArray;
     }
 
     /**
@@ -524,136 +374,124 @@ public interface TypeParser<T> {
     }
 
     /**
-     * Parse the given object into collection parameter.<br>
-     * This method iterates into any type of object to add parsed values into collection.
+     * Get a view of this type parser as an array parser of its type.
      *
-     * @param collection the collection to add parsed values.
-     * @param object     the object to parse.
-     * @return           a type collection.
-     * @param <C>        the collection type to return.
+     * @return an array parser of this type.
+     * @param <A> the type result of array.
      */
     @NotNull
-    default <C extends Collection<T>> C collection(@NotNull C collection, @Nullable Object object) {
-        return collection(collection, object, null);
+    default <A> ArrayParser<A, T> array() {
+        return ArrayParser.of(this);
     }
 
     /**
-     * Parse the given object into collection parameter.<br>
-     * This method iterate into any type of object to add parsed values into collection.
+     * Get a view of this type parser as an array parser of its type.
      *
-     * @param collection the collection to add parsed values.
-     * @param object     the object to parse.
-     * @param def        the type object to fill failed parsed values.
-     * @return           a type collection.
-     * @param <C>        the collection type to return.
+     * @param supplier the function to create an allocated size array.
+     * @return         an array parser of this type.
+     * @param <A> the type result of array.
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <C extends Collection<T>> C collection(@NotNull C collection, @Nullable Object object, @Nullable T def) {
-        if (object == null) {
-            return collection;
+    default <A> ArrayParser<A, T> array(@NotNull Function<Integer, A> supplier) {
+        if (getType() == null) {
+            throw new IllegalStateException("The current parser doesn't contains type");
         }
+        return new ArrayParser<>(supplier, (Class<T>) getType(), this);
+    }
 
-        // Check if the current value is the same type of collection
-        if (collection.getClass().isInstance(object)) {
-            if (((Collection<?>) object).isEmpty()) {
-                return collection;
+    /**
+     * Get a view of this type parser as a collection parser of its type.
+     *
+     * @param type     the collection type.
+     * @param supplier the supplier to create a collection.
+     * @return         a collection parser of this type.
+     * @param <C> the type result of collection.
+     */
+    @NotNull
+    default <C extends Collection<T>> CollectionParser<C, T> collection(@NotNull Type type, @NotNull Supplier<C> supplier) {
+        return collection(type, initialCapacity -> supplier.get());
+    }
+
+    /**
+     * Get a view of this type parser as a collection parser of its type.
+     *
+     * @param type     the collection type.
+     * @param supplier the function to create an allocated size collection.
+     * @return         a collection parser of this type.
+     * @param <C> the type result of collection.
+     */
+    @NotNull
+    default <C extends Collection<T>> CollectionParser<C, T> collection(@NotNull Type type, @NotNull Function<Integer, C> supplier) {
+        return new CollectionParser<C, T>(supplier, this) {
+            @Override
+            public @NotNull Type getType() {
+                return type;
             }
-            // Test first non-null value type
-            for (Object obj : ((Collection<?>) object)) {
-                if (obj == null) {
-                    continue;
-                }
-                if (obj.equals(parseOrDefault(obj, def))) {
-                    try {
-                        return (C) object;
-                    } catch (ClassCastException ignored) { }
-                }
-                break;
-            }
-        }
-        for (Object obj : AnyIterable.of(object)) {
-            final T result = parseOrDefault(obj, def);
-            if (result != null) {
-                collection.add(result);
-            }
-        }
-        return collection;
+        };
     }
 
     /**
-     * Parse the given object into list of type value.
+     * Get a view of this type parser as a list parser of its type.
      *
-     * @param object the object to parse.
-     * @return       a type list.
+     * @return a list parser of this type.
      */
     @NotNull
-    default List<T> list(@Nullable Object object) {
-        return list(object, null);
+    default ListParser<T> list() {
+        return ListParser.of(this);
     }
 
     /**
-     * Parse the given object into list of type value.
+     * Get a view of this type parser as a list parser of its type.
      *
-     * @param object the object to parse.
-     * @param def    the type object to fill failed parsed values.
-     * @return       a type list.
+     * @param supplier the supplier to create a list.
+     * @return         a list parser of this type.
      */
     @NotNull
-    default List<T> list(@Nullable Object object, @Nullable T def) {
-        return collection(new ArrayList<>(), object, def);
+    default ListParser<T> list(@NotNull Supplier<List<T>> supplier) {
+        return new ListParser<>(supplier, this);
     }
 
     /**
-     * Parse the given object into set of type value.
+     * Get a view of this type parser as a list parser of its type.
      *
-     * @param object the object to parse.
-     * @return       a type set.
+     * @param supplier the function to create an allocated size list.
+     * @return         a list parser of this type.
      */
     @NotNull
-    default Set<T> set(@Nullable Object object) {
-        return set(object, null);
+    default ListParser<T> list(@NotNull Function<Integer, List<T>> supplier) {
+        return new ListParser<>(supplier, this);
     }
 
     /**
-     * Parse the given object into set of type value.
+     * Get a view of this type parser as a set parser of its type.
      *
-     * @param object the object to parse.
-     * @param def    the type object to fill failed parsed values.
-     * @return       a type set.
+     * @return a set parser of this type.
      */
     @NotNull
-    default Set<T> set(@Nullable Object object, @Nullable T def) {
-        return collection(new HashSet<>(), object, def);
+    default SetParser<T> set() {
+        return SetParser.of(this);
     }
 
     /**
-     * Parse the given object into array type value.
+     * Get a view of this type parser as a set parser of its type.
      *
-     * @param object the object to parse.
-     * @return       a type array.
-     * @param <A>    the array type.
+     * @param supplier the supplier to create a set.
+     * @return         a set parser of this type.
      */
     @NotNull
-    default <A> A array(@Nullable Object object) {
-        return array(object, null);
+    default SetParser<T> set(@NotNull Supplier<Set<T>> supplier) {
+        return new SetParser<>(supplier, this);
     }
 
     /**
-     * Parse the given object into array type value.
+     * Get a view of this type parser as a set parser of its type.
      *
-     * @param object the object to parse.
-     * @param def    the type object to fill failed parsed values.
-     * @return       a type array.
-     * @param <A>    the array type.
+     * @param supplier the function to create an allocated size set.
+     * @return         a set parser of this type.
      */
     @NotNull
-    @SuppressWarnings("unchecked")
-    default <A> A array(@Nullable Object object, @Nullable T def) {
-        final Type type = getType();
-        if (type instanceof Class) {
-            return (A) parseArray(Array.newInstance((Class<?>) type, 0), object, def);
-        }
-        throw new RuntimeException("The current type parser doesn't support array creation");
+    default SetParser<T> set(@NotNull Function<Integer, Set<T>> supplier) {
+        return new SetParser<>(supplier, this);
     }
 }
