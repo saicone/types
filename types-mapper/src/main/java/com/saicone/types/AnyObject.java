@@ -3,6 +3,7 @@ package com.saicone.types;
 import com.saicone.types.parser.ArrayParser;
 import com.saicone.types.parser.EnumParser;
 import com.saicone.types.parser.MapParser;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,12 @@ import java.util.function.Function;
 @FunctionalInterface
 public interface AnyObject<T> {
 
+    @NotNull
+    @SuppressWarnings("unchecked")
+    static <T> AnyObject<T> empty() {
+        return (AnyObject<T>) Registry.EMPTY;
+    }
+
     /**
      * Create a wrapped value type from given object type.
      *
@@ -36,8 +43,22 @@ public interface AnyObject<T> {
      * @param <T>   the value type itself.
      */
     @NotNull
+    @SuppressWarnings("unchecked")
     static <T> AnyObject<T> of(T value) {
+        if (value == null) {
+            return empty();
+        } else if (value instanceof Set) {
+            return (AnyObject<T>) AnySet.of((Set<Object>) value);
+        } else if (value instanceof List) {
+            return (AnyObject<T>) AnyList.of((List<Object>) value);
+        } else if (value instanceof Map) {
+            return (AnyObject<T>) AnyMap.of((Map<Object, Object>) value);
+        }
         return () -> value;
+    }
+
+    default boolean isEmpty() {
+        return false;
     }
 
     /**
@@ -45,7 +66,7 @@ public interface AnyObject<T> {
      *
      * @return the value type itself.
      */
-    T getValue();
+    T value();
 
     /**
      * Convert this object into given class type.
@@ -74,7 +95,7 @@ public interface AnyObject<T> {
     @Nullable
     @Contract("_, !null -> !null")
     default <E> E as(@NotNull Class<E> type, @Nullable E def) {
-        return Types.parse(type, getValue(), def);
+        return Types.parse(type, value(), def);
     }
 
     /**
@@ -104,7 +125,7 @@ public interface AnyObject<T> {
     @Nullable
     @Contract("_, !null -> !null")
     default <E> E as(@NotNull TypeParser<E> parser, @Nullable E def) {
-        return parser.parse(getValue(), def);
+        return parser.parse(value(), def);
     }
 
     /**
@@ -116,7 +137,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> Optional<E> asOptional(@NotNull TypeParser<E> parser) {
-        return parser.optional(getValue());
+        return parser.optional(value());
     }
 
     /**
@@ -128,7 +149,7 @@ public interface AnyObject<T> {
      */
     @Nullable
     default <E extends Enum<E>> E asEnum(@NotNull Class<E> type) {
-        return EnumParser.of(type).parse(getValue());
+        return EnumParser.of(type).parse(value());
     }
 
     /**
@@ -141,7 +162,7 @@ public interface AnyObject<T> {
      */
     @Nullable
     default <E extends Enum<E>> E asEnum(@NotNull Class<E> type, @NotNull E[] values) {
-        return EnumParser.of(type, values).parse(getValue());
+        return EnumParser.of(type, values).parse(value());
     }
 
     /**
@@ -154,7 +175,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("unchecked")
     default <A> A asArray(@NotNull Class<?> component) {
-        return (A) ArrayParser.of(component).parse(getValue());
+        return (A) ArrayParser.of(component).parse(value());
     }
 
     /**
@@ -167,7 +188,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("unchecked")
     default <A> A asArray(@NotNull TypeParser<?> parser) {
-        return (A) parser.array().parse(getValue());
+        return (A) parser.array().parse(value());
     }
 
     /**
@@ -180,7 +201,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <A> A asArray(@NotNull TypeParser<?> parser, @NotNull A array) {
-        return parser.array(capacity -> array).parse(getValue());
+        return parser.array(capacity -> array).parse(value());
     }
 
     /**
@@ -193,7 +214,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> E[] asArray(@NotNull TypeParser<E> parser, @NotNull E[] array) {
-        return parser.array(capacity -> array).parse(getValue());
+        return parser.array(capacity -> array).parse(value());
     }
 
     /**
@@ -209,7 +230,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E, C extends Collection<E>> C asCollection(@NotNull TypeParser<E> parser, @NotNull C collection) {
-        return parser.collection(collection.getClass(), capacity -> collection).parse(getValue());
+        return parser.collection(collection.getClass(), capacity -> collection).parse(value());
     }
 
     /**
@@ -223,7 +244,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> List<E> asList(@NotNull TypeParser<E> parser) {
-        return parser.list().parse(getValue());
+        return parser.list().parse(value());
     }
 
     /**
@@ -237,7 +258,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> Set<E> asSet(@NotNull TypeParser<E> parser) {
-        return parser.set().parse(getValue());
+        return parser.set().parse(value());
     }
 
     /**
@@ -253,7 +274,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("all")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser) {
-        return (M) MapParser.of(keyParser, valueParser).parse(getValue());
+        return (M) MapParser.of(keyParser, valueParser).parse(value());
     }
 
     /**
@@ -270,7 +291,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("all")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull M map) {
-        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parse(getValue());
+        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parse(value());
     }
 
     /**
@@ -609,5 +630,24 @@ public interface AnyObject<T> {
     @Contract("!null -> !null")
     default UUID asUniqueId(@Nullable UUID def) {
         return as(Types.UUID, def);
+    }
+
+    @ApiStatus.Internal
+    final class Registry {
+
+        private static final AnyObject<?> EMPTY = new AnyObject<Object>() {
+            @Override
+            public boolean isEmpty() {
+                return true;
+            }
+
+            @Override
+            public Object value() {
+                return null;
+            }
+        };
+
+        Registry() {
+        }
     }
 }

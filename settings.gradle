@@ -2,5 +2,6 @@ rootProject.name = 'types'
 
 include(
         ':types-annotated',
+        ':types-mapper',
         ':types-wrapper'
 )

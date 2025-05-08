@@ -175,9 +175,6 @@ public interface TypeParser<T> {
         if (object == null) {
             return def;
         }
-        if (object instanceof AnyObject) {
-            return parse(((AnyObject<?>) object).getValue());
-        }
         final T obj = parse(object);
         return obj != null ? obj : def;
     }
