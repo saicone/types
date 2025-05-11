@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +13,27 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public class AnyList<E> extends AnyCollection<E> {
+
+    private static final TypeParser<AnyList<Object>> PARSER = new TypeParser<AnyList<Object>>() {
+        @Override
+        public @NotNull Type getType() {
+            return AnyList.class;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public @Nullable AnyList<Object> parse(@NotNull Object object) {
+            if (object instanceof List) {
+                return of((List<Object>) object);
+            }
+            return null;
+        }
+    };
+
+    @NotNull
+    public static TypeParser<AnyList<Object>> parser() {
+        return PARSER;
+    }
 
     @NotNull
     public static AnyList<Object> of(@NotNull List<Object> list) {

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,27 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry<K, V>> {
+
+    private static final TypeParser<AnyMap<Object, Object>> PARSER = new TypeParser<AnyMap<Object, Object>>() {
+        @Override
+        public @NotNull Type getType() {
+            return AnyMap.class;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public @Nullable AnyMap<Object, Object> parse(@NotNull Object object) {
+            if (object instanceof Map) {
+                return of((Map<Object, Object>) object);
+            }
+            return null;
+        }
+    };
+
+    @NotNull
+    public static TypeParser<AnyMap<Object, Object>> parser() {
+        return PARSER;
+    }
 
     @NotNull
     public static AnyMap<Object, Object> of(@NotNull Map<Object, Object> map) {

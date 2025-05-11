@@ -73,6 +73,7 @@ This library contains the following artifacts:
 
 * `types` - The main project.
 * `types-annotated` - Annotated type parsing API.
+* `types-mapper` - Type mapping API.
 * `types-wrapper` - Type wrapping API.
 
 <details>

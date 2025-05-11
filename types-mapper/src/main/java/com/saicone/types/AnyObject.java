@@ -30,6 +30,11 @@ import java.util.function.Function;
 public interface AnyObject<T> {
 
     @NotNull
+    static TypeParser<AnyObject<Object>> parser() {
+        return Registry.PARSER;
+    }
+
+    @NotNull
     @SuppressWarnings("unchecked")
     static <T> AnyObject<T> empty() {
         return (AnyObject<T>) Registry.EMPTY;
@@ -634,6 +639,18 @@ public interface AnyObject<T> {
 
     @ApiStatus.Internal
     final class Registry {
+
+        private static final TypeParser<AnyObject<Object>> PARSER = new TypeParser<AnyObject<Object>>() {
+            @Override
+            public @NotNull Type getType() {
+                return AnyObject.class;
+            }
+
+            @Override
+            public @NotNull AnyObject<Object> parse(@NotNull Object object) {
+                return AnyObject.of(object);
+            }
+        };
 
         private static final AnyObject<?> EMPTY = new AnyObject<Object>() {
             @Override
