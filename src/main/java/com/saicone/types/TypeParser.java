@@ -26,7 +26,7 @@ import java.util.function.Supplier;
  * @param <T> the type result of the function.
  */
 @FunctionalInterface
-public interface TypeParser<T> {
+public interface TypeParser<T> extends Function<Object, T> {
 
     /**
      * Create a type parser with associated type.
@@ -151,6 +151,12 @@ public interface TypeParser<T> {
             return ((Class<?>) type).isInstance(object);
         }
         throw new RuntimeException("The current type parser doesn't support instance check");
+    }
+
+    @Override
+    @Contract("null -> null")
+    default @Nullable T apply(@Nullable Object object) {
+        return object == null ? null : parse(object);
     }
 
     /**
