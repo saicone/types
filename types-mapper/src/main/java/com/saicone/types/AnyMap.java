@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -327,6 +328,43 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
         }
         if (value != null) {
             this.value.put(key, value);
+        }
+        return this;
+    }
+
+    @NotNull
+    public AnyMap<K, V> editKeys(@NotNull UnaryOperator<K> mapper) {
+        final boolean linked = this.value instanceof LinkedHashMap;
+        final Map<K, V> modified = new HashMap<>();
+        final Iterator<Map.Entry<K, V>> iterator = this.value.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final Map.Entry<K, V> entry = iterator.next();
+            final K key = entry.getKey();
+            final K result = mapper.apply(key);
+            if (key != result) {
+                iterator.remove();
+                if (result != null) {
+                    modified.put(result, entry.getValue());
+                }
+            } else if (linked && !modified.isEmpty()) {
+                iterator.remove();
+                modified.put(entry.getKey(), entry.getValue());
+            }
+        }
+        if (!modified.isEmpty()) {
+            this.value.putAll(modified);
+        }
+        return this;
+    }
+
+    @NotNull
+    public AnyMap<K, V> editValues(@NotNull UnaryOperator<V> mapper) {
+        for (Map.Entry<K, V> entry : this.value.entrySet()) {
+            final V value = entry.getValue();
+            final V result = mapper.apply(value);
+            if (value != result) {
+                entry.setValue(result);
+            }
         }
         return this;
     }
