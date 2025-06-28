@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -376,7 +375,10 @@ public class Types {
     @NotNull
     @SuppressWarnings("unchecked")
     public static <T> TypeParser<T> of(@NotNull Object type) {
-        final TypeParser<?> parser = PARSER_MAP.get(type);
+        TypeParser<?> parser = PARSER_MAP.get(type);
+        if (parser == null) {
+            parser = PARSER_MAP.get(type.getClass());
+        }
         if (parser == null) {
             return (object) -> (T) object;
         }
