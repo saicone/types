@@ -91,29 +91,11 @@ public class ArrayParser<T, C> extends AllocParser<T> {
     public ArrayParser(@NotNull Function<Integer, T> supplier, @NotNull Class<C> componentType, @NotNull TypeParser<C> componentParser) {
         super(supplier);
         try {
-            this.type = getArrayType(componentType);
+            this.type = ClassParser.getArrayType(componentType);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Cannot create array type", e);
         }
         this.componentParser = componentParser;
-    }
-
-    private static Type getArrayType(@NotNull Class<?> componentType) throws ClassNotFoundException {
-        // This can be simplified by using Class#descriptorString().replace('/', '.') from Java +12
-        if (componentType.isArray()) {
-            return Class.forName("[" + componentType.getName());
-        } else if (componentType.isPrimitive()) {
-            // This can be simplified by using Wrapper#forPrimitiveType() from sun API
-            if (componentType == long.class) {
-                return Class.forName("[J");
-            } else if (componentType == boolean.class) {
-                return Class.forName("[Z");
-            } else {
-                return Class.forName("[" + Character.toUpperCase(componentType.getSimpleName().charAt(0)));
-            }
-        } else {
-            return Class.forName("[L" + componentType.getName() + ";");
-        }
     }
 
     @Override
