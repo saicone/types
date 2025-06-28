@@ -334,12 +334,44 @@ public interface AnyIterable<T> extends Iterable<T> {
                 return iterator.next();
             }
         } else if (value instanceof Object[]) {
-            if (((Object[]) value).length > 0) {
-                return (T) ((Object[]) value)[0];
+            final Object[] array = (Object[]) value;
+            if (array.length > 0) {
+                return (T) array[0];
             }
         } else if (value.getClass().isArray()) {
             if (Array.getLength(value) > 0) {
                 return (T) Array.get(value, 0);
+            }
+        } else {
+            return (T) value;
+        }
+        return null;
+    }
+
+    /**
+     * Get from current type the last available object, this method
+     * is only compatible with list and array values.
+     *
+     * @return the last object, null if current value is empty or incompatible.
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    default T last() {
+        final Object value = getValue();
+        if (value instanceof List) {
+            final List<T> list = (List<T>) value;
+            if (!list.isEmpty()) {
+                return list.get(list.size() - 1);
+            }
+        } else if (value instanceof Object[]) {
+            final Object[] array = (Object[]) value;
+            if (array.length > 0) {
+                return (T) array[array.length - 1];
+            }
+        } else if (value.getClass().isArray()) {
+            final int length = Array.getLength(value);
+            if (length > 0) {
+                return (T) Array.get(value, length - 1);
             }
         } else {
             return (T) value;
