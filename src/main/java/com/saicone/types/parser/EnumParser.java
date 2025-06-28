@@ -8,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a function that try to parse any type of object to enum type.<br>
@@ -31,14 +33,19 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
     @NotNull
     @SuppressWarnings("unchecked")
     static <T extends Enum<T>> EnumParser<T> of(@NotNull Class<T> type) {
-        try {
-            final Method method = type.getDeclaredMethod("values");
-            method.setAccessible(true);
-            final T[] values = (T[]) method.invoke(null);
-            return of(type, values);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
+        EnumParser<?> parser = Static.CACHE.get(type);
+        if (parser == null) {
+            try {
+                final Method method = type.getDeclaredMethod("values");
+                method.setAccessible(true);
+                final T[] values = (T[]) method.invoke(null);
+                parser = of(type, values);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+            Static.CACHE.put(type, parser);
         }
+        return (EnumParser<T>) parser;
     }
 
     /**
@@ -121,5 +128,10 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
             return values[ordinal];
         }
         return null;
+    }
+
+    final class Static {
+
+        private static final Map<Class<?>, EnumParser<?>> CACHE = new HashMap<>();
     }
 }
