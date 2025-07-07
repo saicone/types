@@ -46,22 +46,22 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
 
         @Override
         public @NotNull Number parseNumber(@NotNull String s) throws NumberFormatException {
-            return parseNumber(s, (parser, str) -> parser.parseNumber(s));
+            return parseNumber(s, NumberParser::parseNumber);
         }
 
         @Override
         public @NotNull Number parseNumber(@NotNull String s, int radix) throws NumberFormatException {
-            return parseNumber(s, (parser, str) -> parser.parseNumber(s, radix));
+            return parseNumber(s, (parser, str) -> parser.parseNumber(str, radix));
         }
 
         @Override
         public @NotNull Number parseUnsignedNumber(@NotNull String s) throws NumberFormatException {
-            return parseNumber(s, (parser, str) -> parser.parseUnsignedNumber(s));
+            return parseNumber(s, NumberParser::parseUnsignedNumber);
         }
 
         @Override
         public @NotNull Number parseUnsignedNumber(@NotNull String s, int radix) throws NumberFormatException {
-            return parseNumber(s, (parser, str) -> parser.parseUnsignedNumber(s, radix));
+            return parseNumber(s, (parser, str) -> parser.parseUnsignedNumber(str, radix));
         }
 
         @NotNull
