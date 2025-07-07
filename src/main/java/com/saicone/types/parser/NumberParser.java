@@ -371,6 +371,10 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
 
         @Override
         public @NotNull Double cast(@NotNull Number number) {
+            if (number instanceof Float) {
+                // Avoid IEEE 754
+                return Double.parseDouble(number.toString());
+            }
             return number.doubleValue();
         }
 
@@ -446,6 +450,11 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
                 return (BigDecimal) number;
             } else if (number instanceof BigInteger) {
                 return new BigDecimal((BigInteger) number);
+            } else if (number instanceof Float) {
+                // Avoid IEEE 754
+                return new BigDecimal(number.toString());
+            } else if (number instanceof Double) {
+                return BigDecimal.valueOf((Double) number);
             } else {
                 return BigDecimal.valueOf(number.longValue());
             }
