@@ -31,7 +31,7 @@ public class BooleanParser implements TypeParser<Boolean> {
      * @return  true if the provided string is a valid boolean, false otherwise.
      */
     public static boolean isValid(@NotNull String s) {
-        switch (s.toLowerCase()) {
+        switch (s.trim().toLowerCase()) {
             case "true":
             case "t":
             case "yes":
@@ -124,7 +124,7 @@ public class BooleanParser implements TypeParser<Boolean> {
      */
     @Nullable
     public Boolean parseBoolean(@NotNull String s) {
-        switch (s.toLowerCase()) {
+        switch (s.trim().toLowerCase()) {
             case "true":
             case "t":
             case "1":
