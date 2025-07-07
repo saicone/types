@@ -150,7 +150,7 @@ public class ClassParser implements TypeParser<Class<?>> {
      */
     @NotNull
     public static String getReadableName(@NotNull String name) {
-        String className = name.replace('/', '.');
+        String className = name.replace('/', '.').replace('\\', '.');
         if (className.endsWith(";")) {
             className = className.substring(0, className.length() - 1);
             if (className.startsWith("L")) { // Internal class name
@@ -160,6 +160,11 @@ public class ClassParser implements TypeParser<Class<?>> {
             className = className.substring(0, className.length() - 6);
         } else if (className.endsWith(".java")) {
             className = className.substring(0, className.length() - 5);
+        }
+        if (className.startsWith(".")) {
+            className = className.substring(1);
+        } else if (className.length() > 3 && className.charAt(1) == ':' && className.charAt(2) == '.') {
+            className = className.substring(3);
         }
         if (className.startsWith("[")) { // Array type declaration
             for (int i = 0; i < className.length(); i++) {

@@ -236,7 +236,7 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.lang.Double`
 * `java.lang.Class<?>`
   1. Qualified name, for example `some.package.for.MyClass`
-  2. File path, for example `some/package/for/MyClass.class`
+  2. File path, for example `some/package/for/MyClass.class` or `C:\some\package\for\MyClass.java`
   3. Descriptor, for example `Lsome/package/for/MyClass;`
   4. Readable name, for example `int[][]`
 * `java.math.BigInteger`
