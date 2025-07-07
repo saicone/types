@@ -32,6 +32,13 @@ public class UrlParser implements TypeParser<URL> {
 
     @Override
     public @Nullable URL parse(@NotNull Object object) {
+        try {
+            if (object instanceof Path) {
+                return ((Path) object).toUri().toURL();
+            }
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
         final Object first = AnyIterable.of(object).first();
         if (first == null) {
             return null;

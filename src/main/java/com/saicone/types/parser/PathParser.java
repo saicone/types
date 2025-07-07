@@ -31,6 +31,9 @@ public class PathParser implements TypeParser<Path> {
 
     @Override
     public @Nullable Path parse(@NotNull Object object) {
+        if (object instanceof Path) {
+            return (Path) object;
+        }
         final Object single = AnyIterable.of(object).single();
         if (single == null) {
             return null;

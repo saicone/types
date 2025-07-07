@@ -29,6 +29,9 @@ public class FileParser implements TypeParser<File> {
 
     @Override
     public @Nullable File parse(@NotNull Object object) {
+        if (object instanceof Path) {
+            return ((Path) object).toFile();
+        }
         final Object single = AnyIterable.of(object).single();
         if (single == null) {
             return null;

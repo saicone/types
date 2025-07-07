@@ -32,6 +32,9 @@ public class UriParser implements TypeParser<URI> {
 
     @Override
     public @Nullable URI parse(@NotNull Object object) {
+        if (object instanceof Path) {
+            return ((Path) object).toUri();
+        }
         final Object first = AnyIterable.of(object).first();
         if (first == null) {
             return null;
