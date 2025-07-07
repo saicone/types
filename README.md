@@ -71,9 +71,9 @@ How to implement Types library in your project.
 
 This library contains the following artifacts:
 
-* `types` - The main project.
+* `types` - The main project, a type parsing and iteration API.
 * `types-annotated` - Annotated type parsing API.
-* `types-mapper` - Type mapping API.
+* `types-mapper` - Type mapping and transformation API.
 * `types-wrapper` - Type wrapping API.
 
 <details>
@@ -224,6 +224,9 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.lang.String`
 * `java.lang.Character`
 * `java.lang.Boolean`
+  1. `true` / `false` or `yes` / `no` string
+  2. Integer `0` or `1`
+  3. Decimal `0` or between `0` and `1`
 * `java.lang.Number`
 * `java.lang.Byte`
 * `java.lang.Short`
@@ -231,13 +234,13 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.lang.Float`
 * `java.lang.Long`
 * `java.lang.Double`
-* `java.math.BigInteger`
-* `java.math.BigDecimal`
 * `java.lang.Class<?>`
   1. Qualified name, for example `some.package.for.MyClass`
   2. File path, for example `some/package/for/MyClass.class`
   3. Descriptor, for example `Lsome/package/for/MyClass;`
   4. Readable name, for example `int[][]`
+* `java.math.BigInteger`
+* `java.math.BigDecimal`
 * `java.util.UUID`
   1. 36-length `String` (with dashes) `00000000-0000-0000-0000-000000000000`
   2. 32-length `String` (without dashes) `00000000000000000000000000000000`
@@ -246,6 +249,7 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.util.regex.Pattern`
   1. `String`
   2. `String` with a type annotated with `PatternFlags`
+* `java.util.BitSet`
 * `java.net.URI`
   1. `String`
   2. `URL`
@@ -310,6 +314,8 @@ Typical Java objects with parameters.
   3. Other `Enum` by extracting ordinal value.
 * `java.util.Collection<E>` - Can be any Java object that implements `Collection`
 * `java.util.Map<K, V>` - Can be any Java object that implements `Map`
+  1. `Map`
+  2. `Iterable` object which its elements will be converted into keys and values.
 
 (The type parameters `E`, `K` and `V` can be any supported type)
 
