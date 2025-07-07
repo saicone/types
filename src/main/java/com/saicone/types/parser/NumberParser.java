@@ -635,7 +635,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
 
         final boolean unsigned;
         final boolean negative;
-        if (last == 'u') {
+        if (last == 'u' || last == 'U') {
             if (--end == 0) {
                 throw new NumberFormatException("For input string: \"" + s + "\"");
             }
@@ -689,22 +689,25 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
                         radix = 2;
                         start += 2;
                         break;
-                    default:
+                    case 'o':
+                    case 'O':
                         // octal
+                        radix = 8;
+                        start += 2;
+                        break;
+                    default:
+                        // detect octal
                         boolean octal = true;
                         for (int i = start + 1; i < end; i++) {
                             final char c = s.charAt(i);
-                            if (!Character.isDigit(c)) {
-                                throw new NumberFormatException("Error at index " + i + " in: " + s);
-                            }
-                            if (c == '8' || c == '9') {
+                            if (c == '8' || c == '9' || !Character.isDigit(c)) {
                                 octal = false;
                                 break;
                             }
                         }
                         if (octal) {
                             radix = 8;
-                            start += 2;
+                            start += 1;
                         }
                         break;
                 }
@@ -729,7 +732,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
 
     /**
      * Parses the given number argument as required number type.<br>
-     * This method check any out if range number.
+     * This method check any out of range number.
      *
      * @param number the number to parse.
      * @return       a converted number type.

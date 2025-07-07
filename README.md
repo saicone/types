@@ -294,11 +294,11 @@ Well known Java objects and the accepted types to properly parse them.
 > * Binary `0[bB][0-1]`, for example `0b11010`
 > * Hex `0[xX][0-9A-Fa-f]`, for example `0x46`
 > * Hex color `#[0-9A-Fa-f]`, for example `#46`
-> * Octal `0[0-7]`, for example `075`
+> * Octal `0[oO]?[0-7]`, for example `075` or `0o75`
 > 
 > And also detect:
 > * Leading signs `+ -`
-> * Unsigned suffix `u`
+> * Unsigned suffix `u` or `U`
 > * Number suffixes `b B s S i I f F l L d D`
 
 ### Generic
