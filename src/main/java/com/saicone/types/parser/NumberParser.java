@@ -137,6 +137,27 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         }
 
         @Override
+        public boolean isInRange(@NotNull Number number) {
+            if (number instanceof BigDecimal) {
+                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof BigInteger) {
+                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof Double) {
+               return (Double) number >= getMinValue() && (Double) number <= getMaxValue();
+            } else if (number instanceof Float) {
+                return (Float) number >= getMinValue() && (Float) number <= getMaxValue();
+            } else if (number instanceof Long) {
+                return (Long) number >= getMinValue() && (Long) number <= getMaxValue();
+            } else if (number instanceof Integer) {
+                return (Integer) number >= getMinValue() && (Integer) number <= getMaxValue();
+            } else if (number instanceof Short) {
+                return (Short) number >= getMinValue() && (Short) number <= getMaxValue();
+            } else {
+                return true;
+            }
+        }
+
+        @Override
         public @NotNull Byte cast(@NotNull Number number) {
             return number.byteValue();
         }
@@ -177,6 +198,25 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         }
 
         @Override
+        public boolean isInRange(@NotNull Number number) {
+            if (number instanceof BigDecimal) {
+                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof BigInteger) {
+                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof Double) {
+                return (Double) number >= getMinValue() && (Double) number <= getMaxValue();
+            } else if (number instanceof Float) {
+                return (Float) number >= getMinValue() && (Float) number <= getMaxValue();
+            } else if (number instanceof Long) {
+                return (Long) number >= getMinValue() && (Long) number <= getMaxValue();
+            } else if (number instanceof Integer) {
+                return (Integer) number >= getMinValue() && (Integer) number <= getMaxValue();
+            } else {
+                return true;
+            }
+        }
+
+        @Override
         public @NotNull Short cast(@NotNull Number number) {
             return number.shortValue();
         }
@@ -214,6 +254,23 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         @Override
         public @NotNull Integer getMaxValue() {
             return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isInRange(@NotNull Number number) {
+            if (number instanceof BigDecimal) {
+                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof BigInteger) {
+                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof Double) {
+                return (Double) number >= getMinValue() && (Double) number <= getMaxValue();
+            } else if (number instanceof Float) {
+                return (Float) number >= getMinValue() && (Float) number <= getMaxValue();
+            } else if (number instanceof Long) {
+                return (Long) number >= getMinValue() && (Long) number <= getMaxValue();
+            } else {
+                return true;
+            }
         }
 
         @Override
@@ -272,6 +329,21 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         }
 
         @Override
+        public boolean isInRange(@NotNull Number number) {
+            if (number instanceof BigDecimal) {
+                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof BigInteger) {
+                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue().longValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue().longValue())) <= 0;
+            } else if (number instanceof Double) {
+                return (Double) number >= getMinValue() && (Double) number <= getMaxValue();
+            } else if (number instanceof Long) {
+                return (Long) number >= getMinValue() && (Long) number <= getMaxValue();
+            } else {
+                return true;
+            }
+        }
+
+        @Override
         public @NotNull Float cast(@NotNull Number number) {
             return number.floatValue();
         }
@@ -312,6 +384,19 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         @Override
         public @NotNull Long getMaxValue() {
             return Long.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isInRange(@NotNull Number number) {
+            if (number instanceof BigDecimal) {
+                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof BigInteger) {
+                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof Double) {
+                return (Double) number >= getMinValue() && (Double) number <= getMaxValue();
+            } else {
+                return true;
+            }
         }
 
         @Override
@@ -367,6 +452,17 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         @Override
         public boolean isDecimalHolder() {
             return true;
+        }
+
+        @Override
+        public boolean isInRange(@NotNull Number number) {
+            if (number instanceof BigDecimal) {
+                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof BigInteger) {
+                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue().longValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue().longValue())) <= 0;
+            } else {
+                return true;
+            }
         }
 
         @Override
@@ -586,6 +682,16 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     }
 
     /**
+     * Check if the provided number is in range to be pársed as current type.
+     *
+     * @param number the number to check.
+     * @return       true if the number meet the min and max requirement.
+     */
+    default boolean isInRange(@NotNull Number number) {
+        return true;
+    }
+
+    /**
      * Cast any number to required number type.
      *
      * @param number a number object.
@@ -748,28 +854,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
      */
     @NotNull
     default T parseNumber(@NotNull Number number) {
-        if (!isBigHolder() && getMinValue().getClass() != number.getClass()) {
-            if (number instanceof BigInteger) {
-                if (((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue().longValue())) < 0 || ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue().longValue())) > 0) {
-                    throw new IllegalArgumentException("The number " + number + " cannot be cast to " + getType() + " (out of range: [" + getMinValue()  + ", " + getMaxValue() + "])");
-                }
-            } else if (number instanceof BigDecimal) {
-                if (((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue().doubleValue())) < 0 || ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue().doubleValue())) > 0) {
-                    throw new IllegalArgumentException("The number " + number + " cannot be cast to " + getType() + " (out of range: [" + getMinValue()  + ", " + getMaxValue() + "])");
-                }
-            } else if (!(getMinValue() instanceof Double)) {
-                final double min = getMinValue().doubleValue();
-                final double max = getMaxValue().doubleValue();
-                final double d = number.doubleValue();
-                if (d < min || d > max) {
-                    throw new IllegalArgumentException("The number " + number + " cannot be cast to " + getType() + " (out of range: [" + getMinValue()  + ", " + getMaxValue() + "])");
-                }
-                if (!isDecimalHolder() && (number instanceof Float || number instanceof Double) && (d == min || d == max)) {
-                    if (d - Math.floor(d) > Float.MIN_NORMAL) {
-                        throw new IllegalArgumentException("The number " + number + " cannot be cast to " + getType() + " (the decimal part make it out of range: [" + getMinValue()  + ", " + getMaxValue() + "])");
-                    }
-                }
-            }
+        if (!isBigHolder() && getMinValue().getClass() != number.getClass() && !isInRange(number)) {
+            throw new IllegalArgumentException("The number " + number + " cannot be cast to " + getType() + " (out of range: [" + getMinValue()  + ", " + getMaxValue() + "])");
         }
         return cast(number);
     }

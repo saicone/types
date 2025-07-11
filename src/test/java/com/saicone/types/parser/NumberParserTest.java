@@ -92,11 +92,13 @@ public class NumberParserTest {
         assertEquals((double) 0.05d, NumberParser.DOUBLE.parse((double) 0.05d));
         assertEquals((double) 0.05d, NumberParser.DOUBLE.parse(BigDecimal.valueOf(0.05d)));
 
-        assertEquals(BigDecimal.valueOf(50d), NumberParser.BIG_DECIMAL.parse((byte) 50));
-        assertEquals(BigDecimal.valueOf(50d), NumberParser.BIG_DECIMAL.parse((short) 50));
-        assertEquals(BigDecimal.valueOf(50d), NumberParser.BIG_DECIMAL.parse((int) 50));
-        assertEquals(BigDecimal.valueOf(50d), NumberParser.BIG_DECIMAL.parse((long) 50L));
-        assertEquals(new BigDecimal("50"), NumberParser.BIG_DECIMAL.parse(BigInteger.valueOf(50L))); // BigDecimal with scale of 0
+        // BigDecimal with scale of 0
+        assertEquals(new BigDecimal("50"), NumberParser.BIG_DECIMAL.parse((byte) 50));
+        assertEquals(new BigDecimal("50"), NumberParser.BIG_DECIMAL.parse((short) 50));
+        assertEquals(new BigDecimal("50"), NumberParser.BIG_DECIMAL.parse((int) 50));
+        assertEquals(new BigDecimal("50"), NumberParser.BIG_DECIMAL.parse((long) 50L));
+        assertEquals(new BigDecimal("50"), NumberParser.BIG_DECIMAL.parse(BigInteger.valueOf(50L)));
+        // BigDecimal with scale of 2
         assertEquals(BigDecimal.valueOf(0.05d), NumberParser.BIG_DECIMAL.parse((float) 0.05f));
         assertEquals(BigDecimal.valueOf(0.05d), NumberParser.BIG_DECIMAL.parse((double) 0.05d));
         assertEquals(BigDecimal.valueOf(0.05d), NumberParser.BIG_DECIMAL.parse(BigDecimal.valueOf(0.05d)));
