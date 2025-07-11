@@ -36,7 +36,7 @@ public class BitSetParser extends AllocParser<BitSet> {
     public @NotNull BitSet parse(@Nullable Object object) {
         if (object == null) {
             return create();
-        } else if (isInstance(object)) {
+        } else if (object instanceof BitSet) {
             return (BitSet) object;
         }
         final AnyIterable<Object> iterable = AnyIterable.of(object);

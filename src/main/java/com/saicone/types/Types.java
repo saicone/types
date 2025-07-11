@@ -136,6 +136,12 @@ public class Types {
      */
     public static final TypeParser<Double> DOUBLE = NumberParser.DOUBLE;
     /**
+     * Class type parser.
+     *
+     * @see ClassParser
+     */
+    public static final TypeParser<Class<?>> CLASS = ClassParser.INSTANCE;
+    /**
      * BigInteger type parser.
      *
      * @see NumberParser
@@ -148,12 +154,6 @@ public class Types {
      */
     public static final TypeParser<BigDecimal> BIG_DECIMAL = NumberParser.BIG_DECIMAL;
     /**
-     * Class type parser.
-     *
-     * @see ClassParser
-     */
-    public static final TypeParser<Class<?>> CLASS = ClassParser.INSTANCE;
-    /**
      * Unique ID type parser.
      *
      * @see UuidParser
@@ -165,6 +165,12 @@ public class Types {
      * @see UuidParser
      */
     public static final TypeParser<Pattern> PATTERN = PatternParser.instance();
+    /**
+     * BitSet type parser.
+     *
+     * @see BitSetParser
+     */
+    public static final TypeParser<BitSet> BIT_SET = BitSetParser.INSTANCE;
     /**
      * URI type parser.
      *
@@ -207,12 +213,6 @@ public class Types {
      * @see TemporalParser#LOCAL_DATE_TIME
      */
     public static final TypeParser<LocalDateTime> LOCAL_DATE_TIME = TemporalParser.LOCAL_DATE_TIME;
-    /**
-     * BitSet type parser.
-     *
-     * @see BitSetParser
-     */
-    public static final TypeParser<BitSet> BIT_SET = BitSetParser.INSTANCE;
     /**
      * Array of objects type parser.
      *
