@@ -50,7 +50,7 @@ public class TypesTest {
         assertEquals(26, Types.INTEGER.parse("0b11010"));
         assertEquals(70, Types.INTEGER.parse("0x46"));
         assertEquals(70, Types.INTEGER.parse("#46"));
-        assertEquals(5, Types.INTEGER.parse("075"));
+        assertEquals(61, Types.INTEGER.parse("075"));
         assertEquals(3f, Types.FLOAT.parse('3'));
         assertEquals(5.7f, Types.FLOAT.parse("5.7f"));
         assertEquals(1L, Types.LONG.parse(true));

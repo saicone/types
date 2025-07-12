@@ -45,6 +45,11 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         }
 
         @Override
+        public @NotNull Number parseNumber(@NotNull Number number) {
+            return number;
+        }
+
+        @Override
         public @NotNull Number parseNumber(@NotNull String s) throws NumberFormatException {
             return parseNumber(s, NumberParser::parseNumber);
         }
@@ -490,6 +495,16 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         }
 
         @Override
+        public @NotNull BigInteger getMinValue() {
+            return BigInteger.ZERO;
+        }
+
+        @Override
+        public @NotNull BigInteger getMaxValue() {
+            return BigInteger.ZERO;
+        }
+
+        @Override
         public boolean isBigHolder() {
             return true;
         }
@@ -528,6 +543,16 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         @Override
         public @NotNull Type getType() {
             return BigDecimal.class;
+        }
+
+        @Override
+        public @NotNull BigDecimal getMinValue() {
+            return BigDecimal.ZERO;
+        }
+
+        @Override
+        public @NotNull BigDecimal getMaxValue() {
+            return BigDecimal.ZERO;
         }
 
         @Override
@@ -853,8 +878,12 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
      * @return       a converted number type.
      */
     @NotNull
+    @SuppressWarnings("unchecked")
     default T parseNumber(@NotNull Number number) {
-        if (!isBigHolder() && getMinValue().getClass() != number.getClass() && !isInRange(number)) {
+        if (getMinValue().getClass() == number.getClass()) {
+            return (T) number;
+        }
+        if (!isBigHolder() && !isInRange(number)) {
             throw new IllegalArgumentException("The number " + number + " cannot be cast to " + getType() + " (out of range: [" + getMinValue()  + ", " + getMaxValue() + "])");
         }
         return cast(number);
