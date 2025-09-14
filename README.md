@@ -1,6 +1,6 @@
 <h1 align="center">Types</h1>
 
-<h4 align="center">Java library to parse, iterate or wrap any object type.</h4>
+<h4 align="center">The full java types flexibility library.</h4>
 
 <p align="center">
     <a href="https://saic.one/discord">
@@ -20,33 +20,66 @@
     </a>
 </p>
 
-Types library convert any object type into required object type and iterate any java object.
+Types library can convert any object type into a required one, iterate any object, do structure transformations and wrap parametrized types.
+
+Convert!
 
 ```java
+// from
 String str = "1234";
+String str = "0b11010";
+String str = "0x46";
+// to
 int number = Types.INTEGER.parse(str);
-for (int i : AnyIterable.<Integer>ofAny(number)) {
-    // do something
-}
 
+// from
 double[] array = new double[] { 10.3, 8.4, 5.0 };
+// to
 List<Float> list = AnyObject.of(array).asList(Types.FLOAT);
-for (double d : AnyIterable.of(array)) {
-    // do something
-}
 
-List<String> from = List.of(
+// from
+List<String> strList = List.of(
         "1234", "true",
         "55", "false",
         "10", "true"
 );
-Map<Integer, Boolean> to = new TypeOf<Map<Integer, Boolean>>(){}.parse(from);
+// to
+Map<Integer, Boolean> intBooleanMap = new TypeOf<Map<Integer, Boolean>>(){}.parse(from);
+```
+
+Iterate!
+
+```java
+// single object
+int number = 1234;
+for (int element : AnyIterable.<Integer>ofAny(number)) {
+    // do something
+}
+
+// array
+double[] array = new double[] { 10.3, 8.4, 5.0 };
+for (double element : AnyIterable.of(array)) {
+    // do something
+}
+
+// list
+List<Float> list = List.of(10.3, 8.4, 5.0);
+for (Float element : AnyIterable.of(list)) {
+    // do something
+}
+
+// map
+Map<Integer, Boolean> to = Map.of(
+        1234, true,
+        55, false,
+        10, true
+);
 for (Map.Entry<Integer, Boolean> entry : AnyIterable.of(to)) {
     // do something
 }
 ```
 
-Also, can wrap objects as other types.
+Wrap!
 
 ```java
 // Original String list
@@ -73,7 +106,7 @@ This library contains the following artifacts:
 
 * `types` - The main project, a type parsing and iteration API.
 * `types-annotated` - Annotated type parsing API.
-* `types-mapper` - Type mapping and transformation API.
+* `types-mapper` - (experimental) Type mapping and transformation API.
 * `types-wrapper` - Type wrapping API.
 
 <details>
@@ -81,7 +114,7 @@ This library contains the following artifacts:
 
 ```groovy
 plugins {
-    id 'com.gradleup.shadow' version '8.3.5'
+    id 'com.gradleup.shadow' version '8.3.9'
 }
 
 repositories {
@@ -89,7 +122,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone.types:types:1.3.0'
+    implementation 'com.saicone.types:types:1.4.0'
 }
 
 jar.dependsOn (shadowJar)
@@ -109,7 +142,7 @@ shadowJar {
 
 ```kotlin
 plugins {
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "8.3.9"
 }
 
 repositories {
@@ -117,7 +150,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone.types:types:1.3.0")
+    implementation("com.saicone.types:types:1.4.0")
 }
 
 tasks {
@@ -151,7 +184,7 @@ tasks {
     <dependency>
         <groupId>com.saicone.types</groupId>
         <artifactId>types</artifactId>
-        <version>1.3.0</version>
+        <version>1.4.0</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
