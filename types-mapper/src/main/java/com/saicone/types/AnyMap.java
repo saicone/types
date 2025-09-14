@@ -371,8 +371,52 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
 
     @NotNull
     @Contract("_, _ -> this")
+    @SuppressWarnings("unchecked")
+    public <E> AnyMap<K, V> editElements(@NotNull K key, @NotNull UnaryOperator<E> mapper) {
+        return edit(key, value -> {
+            if (value instanceof List) {
+                final List<E> list = (List<E>) value;
+                list.replaceAll(mapper);
+            }
+            return value;
+        });
+    }
+
+    @NotNull
+    @Contract("_, _, _ -> this")
+    @SuppressWarnings("unchecked")
+    public <E> AnyMap<K, V> editElements(@NotNull K key, @NotNull TypeParser<E> elementParser, @NotNull Consumer<E> mapper) {
+        return edit(key, value -> {
+            if (value instanceof Iterable) {
+                for (E e : (Iterable<E>) value) {
+                    if (e != null) {
+                        mapper.accept(elementParser.apply(e));
+                    }
+                }
+            }
+            return value;
+        });
+    }
+
+    @NotNull
+    @Contract("_, _ -> this")
     public AnyMap<K, V> editAny(@NotNull K key, @NotNull Function<AnyObject<V>, V> mapper) {
         return edit(key, value -> mapper.apply(AnyObject.of(value)));
+    }
+
+    @NotNull
+    @Contract("_, _, _ -> this")
+    @SuppressWarnings("unchecked")
+    public <E> AnyMap<K, V> editAnyElements(@NotNull K key, @NotNull TypeParser<E> elementParser, @NotNull Function<AnyObject<E>, E> mapper) {
+        return edit(key, value -> {
+            if (value instanceof List) {
+                final AnyList<E> list = new AnyList<>((List<E>) value, elementParser);
+                for (int i = 0; i < list.size(); i++) {
+                    list.editAny(i, mapper);
+                }
+            }
+            return value;
+        });
     }
 
     @NotNull
