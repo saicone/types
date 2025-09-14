@@ -123,31 +123,31 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
         return Objects.equals(get(key), value);
     }
 
-    public boolean contains(@NotNull AnyObject<?> key, @Nullable V value) {
-        return contains(key.as(keyParser), value);
-    }
-
-    public boolean contains(@NotNull K key, @NotNull AnyObject<?> value) {
-        return contains(key, value.isEmpty() ? null : value.as(valueParser));
-    }
-
-    public boolean contains(@NotNull AnyObject<?> key, @NotNull AnyObject<?> value) {
-        return contains(key.as(keyParser), value);
-    }
-
     public boolean containsKey(@NotNull K key) {
         return value.containsKey(key);
-    }
-
-    public boolean containsKey(@NotNull AnyObject<?> key) {
-        return containsKey(key.as(keyParser));
     }
 
     public boolean containsValue(@NotNull V value) {
         return this.value.containsValue(value);
     }
 
-    public boolean containsValue(@NotNull AnyObject<?> value) {
+    public boolean containsAny(@NotNull AnyObject<?> key, @Nullable V value) {
+        return contains(key.as(keyParser), value);
+    }
+
+    public boolean containsAny(@NotNull K key, @NotNull AnyObject<?> value) {
+        return contains(key, value.isEmpty() ? null : value.as(valueParser));
+    }
+
+    public boolean containsAny(@NotNull AnyObject<?> key, @NotNull AnyObject<?> value) {
+        return containsAny(key.as(keyParser), value);
+    }
+
+    public boolean containsAnyKey(@NotNull AnyObject<?> key) {
+        return containsKey(key.as(keyParser));
+    }
+
+    public boolean containsAnyValue(@NotNull AnyObject<?> value) {
         return containsValue(value.as(valueParser));
     }
 
@@ -157,7 +157,7 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
     }
 
     @NotNull
-    public AnyObject<V> get(@NotNull AnyObject<?> key) {
+    public AnyObject<V> getAny(@NotNull AnyObject<?> key) {
         return get(key.as(keyParser));
     }
 
@@ -170,17 +170,17 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
     }
 
     @NotNull
-    public AnyObject<V> set(@NotNull AnyObject<?> key, @Nullable V value) {
+    public AnyObject<V> setAny(@NotNull AnyObject<?> key, @Nullable V value) {
         return set(key.as(keyParser), value);
     }
 
     @NotNull
-    public AnyObject<V> set(@NotNull K key, @NotNull AnyObject<?> value) {
+    public AnyObject<V> setAny(@NotNull K key, @NotNull AnyObject<?> value) {
         return set(key, value.as(valueParser));
     }
 
     @NotNull
-    public AnyObject<V> set(@NotNull AnyObject<?> key, @NotNull AnyObject<?> value) {
+    public AnyObject<V> setAny(@NotNull AnyObject<?> key, @NotNull AnyObject<?> value) {
         return set(key.as(keyParser), value.as(valueParser));
     }
 
@@ -193,26 +193,9 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
         return false;
     }
 
-    public boolean remove(@NotNull AnyObject<?> key, @NotNull V value) {
-        return remove(key.as(keyParser), value);
-    }
-
-    public boolean remove(@NotNull K key, @NotNull AnyObject<?> value) {
-        return remove(key, value.as(valueParser));
-    }
-
-    public boolean remove(@NotNull AnyObject<?> key, @NotNull AnyObject<?> value) {
-        return remove(key.as(keyParser), value.as(valueParser));
-    }
-
     @NotNull
     public AnyObject<V> removeKey(@NotNull K key) {
         return AnyObject.of(value.remove(key));
-    }
-
-    @NotNull
-    public AnyObject<V> removeKey(@NotNull AnyObject<?> key) {
-        return removeKey(key.as(keyParser));
     }
 
     @NotNull
@@ -228,8 +211,25 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
         return keys;
     }
 
+    public boolean removeAny(@NotNull AnyObject<?> key, @NotNull V value) {
+        return remove(key.as(keyParser), value);
+    }
+
+    public boolean removeAny(@NotNull K key, @NotNull AnyObject<?> value) {
+        return remove(key, value.as(valueParser));
+    }
+
+    public boolean removeAny(@NotNull AnyObject<?> key, @NotNull AnyObject<?> value) {
+        return remove(key.as(keyParser), value.as(valueParser));
+    }
+
     @NotNull
-    public Set<K> removeValue(@NotNull AnyObject<?> value) {
+    public AnyObject<V> removeAnyKey(@NotNull AnyObject<?> key) {
+        return removeKey(key.as(keyParser));
+    }
+
+    @NotNull
+    public Set<K> removeAnyValue(@NotNull AnyObject<?> value) {
         return removeValue(value.as(valueParser));
     }
 

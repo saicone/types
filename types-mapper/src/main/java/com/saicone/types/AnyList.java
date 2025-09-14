@@ -78,7 +78,7 @@ public class AnyList<E> extends AnyCollection<E> {
     }
 
     @NotNull
-    public AnyObject<E> set(int index, @NotNull AnyObject<?> element) {
+    public AnyObject<E> setAny(int index, @NotNull AnyObject<?> element) {
         return set(index, element.isEmpty() ? null : element.as(elementParser()));
     }
 
@@ -86,7 +86,7 @@ public class AnyList<E> extends AnyCollection<E> {
         value().add(index, element);
     }
 
-    public void add(int index, @NotNull AnyObject<?> element) {
+    public void addAny(int index, @NotNull AnyObject<?> element) {
         add(index, element.isEmpty() ? null : element.as(elementParser()));
     }
 
