@@ -76,7 +76,7 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
     }
 
     @Override
-    public Map<K, V> value() {
+    public Map<K, V> getValue() {
         return value;
     }
 

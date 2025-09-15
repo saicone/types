@@ -51,15 +51,15 @@ public class AnyList<E> extends AnyCollection<E> {
     // Any Collection
 
     @Override
-    public List<E> value() {
-        return (List<E>) super.value();
+    public List<E> getValue() {
+        return (List<E>) super.getValue();
     }
 
     // Any List
 
     @NotNull
     public AnyObject<E> get(int index) {
-        return AnyObject.of(value().get(index));
+        return AnyObject.of(getValue().get(index));
     }
 
     @NotNull
@@ -74,7 +74,7 @@ public class AnyList<E> extends AnyCollection<E> {
 
     @NotNull
     public AnyObject<E> set(int index, @Nullable E element) {
-        return AnyObject.of(value().set(index, element));
+        return AnyObject.of(getValue().set(index, element));
     }
 
     @NotNull
@@ -83,7 +83,7 @@ public class AnyList<E> extends AnyCollection<E> {
     }
 
     public void add(int index, @Nullable E element) {
-        value().add(index, element);
+        getValue().add(index, element);
     }
 
     public void addAny(int index, @NotNull AnyObject<?> element) {
@@ -92,16 +92,16 @@ public class AnyList<E> extends AnyCollection<E> {
 
     @NotNull
     public AnyObject<E> removeAt(int index) {
-        return AnyObject.of(value().remove(index));
+        return AnyObject.of(getValue().remove(index));
     }
 
     public int indexOf(@NotNull E element) {
-        return value().indexOf(element);
+        return getValue().indexOf(element);
     }
 
     public int indexOf(int start, @NotNull E element) {
-        for (int index = start; index < value().size(); index++) {
-            if (Objects.equals(value().get(index), element)) {
+        for (int index = start; index < getValue().size(); index++) {
+            if (Objects.equals(getValue().get(index), element)) {
                 return index;
             }
         }
@@ -109,13 +109,13 @@ public class AnyList<E> extends AnyCollection<E> {
     }
 
     public int lastIndexOf(@NotNull E element) {
-        return value().lastIndexOf(element);
+        return getValue().lastIndexOf(element);
     }
 
     public int lastIndexOf(int before, @NotNull E element) {
-        final int last = Math.min(before + 1, value().size());
+        final int last = Math.min(before + 1, getValue().size());
         for (int index = 0; index < last; index++) {
-            if (Objects.equals(value().get(index), element)) {
+            if (Objects.equals(getValue().get(index), element)) {
                 return index;
             }
         }
@@ -125,16 +125,16 @@ public class AnyList<E> extends AnyCollection<E> {
     @NotNull
     @Contract("_, _ -> this")
     public AnyList<E> move(int fromIndex, int toIndex) {
-        final E element = value().remove(fromIndex);
-        value().set(toIndex > fromIndex ? toIndex - 1 : toIndex, element);
+        final E element = getValue().remove(fromIndex);
+        getValue().set(toIndex > fromIndex ? toIndex - 1 : toIndex, element);
         return this;
     }
 
     @NotNull
     @Contract("_, _, _ -> this")
     public AnyList<E> move(int fromIndex, int toIndex, @NotNull UnaryOperator<E> mapper) {
-        final E element = mapper.apply(value().remove(fromIndex));
-        value().set(toIndex > fromIndex ? toIndex - 1 : toIndex, element);
+        final E element = mapper.apply(getValue().remove(fromIndex));
+        getValue().set(toIndex > fromIndex ? toIndex - 1 : toIndex, element);
         return this;
     }
 
@@ -154,8 +154,8 @@ public class AnyList<E> extends AnyCollection<E> {
     @NotNull
     @Contract("_, _ -> this")
     public AnyList<E> edit(int index, @NotNull UnaryOperator<E> mapper) {
-        final E element = mapper.apply(value().get(index));
-        value().set(index, element);
+        final E element = mapper.apply(getValue().get(index));
+        getValue().set(index, element);
         return this;
     }
 

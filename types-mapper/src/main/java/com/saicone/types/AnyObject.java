@@ -71,7 +71,7 @@ public interface AnyObject<T> {
      *
      * @return the value type itself.
      */
-    T value();
+    T getValue();
 
     /**
      * Convert this object into given class type.
@@ -100,7 +100,7 @@ public interface AnyObject<T> {
     @Nullable
     @Contract("_, !null -> !null")
     default <E> E as(@NotNull Class<E> type, @Nullable E def) {
-        return Types.parse(type, value(), def);
+        return Types.parse(type, getValue(), def);
     }
 
     /**
@@ -130,7 +130,7 @@ public interface AnyObject<T> {
     @Nullable
     @Contract("_, !null -> !null")
     default <E> E as(@NotNull TypeParser<E> parser, @Nullable E def) {
-        return parser.parse(value(), def);
+        return parser.parse(getValue(), def);
     }
 
     /**
@@ -142,7 +142,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> Optional<E> asOptional(@NotNull TypeParser<E> parser) {
-        return parser.optional(value());
+        return parser.optional(getValue());
     }
 
     /**
@@ -154,7 +154,7 @@ public interface AnyObject<T> {
      */
     @Nullable
     default <E extends Enum<E>> E asEnum(@NotNull Class<E> type) {
-        return EnumParser.of(type).parse(value());
+        return EnumParser.of(type).parse(getValue());
     }
 
     /**
@@ -167,7 +167,7 @@ public interface AnyObject<T> {
      */
     @Nullable
     default <E extends Enum<E>> E asEnum(@NotNull Class<E> type, @NotNull E[] values) {
-        return EnumParser.of(type, values).parse(value());
+        return EnumParser.of(type, values).parse(getValue());
     }
 
     /**
@@ -180,7 +180,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("unchecked")
     default <A> A asArray(@NotNull Class<?> component) {
-        return (A) ArrayParser.of(component).parse(value());
+        return (A) ArrayParser.of(component).parse(getValue());
     }
 
     /**
@@ -193,7 +193,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("unchecked")
     default <A> A asArray(@NotNull TypeParser<?> parser) {
-        return (A) parser.array().parse(value());
+        return (A) parser.array().parse(getValue());
     }
 
     /**
@@ -206,7 +206,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <A> A asArray(@NotNull TypeParser<?> parser, @NotNull A array) {
-        return parser.array(capacity -> array).parse(value());
+        return parser.array(capacity -> array).parse(getValue());
     }
 
     /**
@@ -219,7 +219,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> E[] asArray(@NotNull TypeParser<E> parser, @NotNull E[] array) {
-        return parser.array(capacity -> array).parse(value());
+        return parser.array(capacity -> array).parse(getValue());
     }
 
     /**
@@ -235,7 +235,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E, C extends Collection<E>> C asCollection(@NotNull TypeParser<E> parser, @NotNull C collection) {
-        return parser.collection(collection.getClass(), capacity -> collection).parse(value());
+        return parser.collection(collection.getClass(), capacity -> collection).parse(getValue());
     }
 
     /**
@@ -249,7 +249,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> List<E> asList(@NotNull TypeParser<E> parser) {
-        return parser.list().parse(value());
+        return parser.list().parse(getValue());
     }
 
     /**
@@ -263,7 +263,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> Set<E> asSet(@NotNull TypeParser<E> parser) {
-        return parser.set().parse(value());
+        return parser.set().parse(getValue());
     }
 
     /**
@@ -279,7 +279,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("all")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser) {
-        return (M) MapParser.of(keyParser, valueParser).parse(value());
+        return (M) MapParser.of(keyParser, valueParser).parse(getValue());
     }
 
     /**
@@ -296,7 +296,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("all")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull M map) {
-        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parse(value());
+        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parse(getValue());
     }
 
     /**
@@ -659,7 +659,7 @@ public interface AnyObject<T> {
             }
 
             @Override
-            public Object value() {
+            public Object getValue() {
                 return null;
             }
         };

@@ -44,7 +44,7 @@ public class AnySet<E> extends AnyCollection<E> {
     }
 
     @Override
-    public Set<E> value() {
-        return (Set<E>) super.value();
+    public Set<E> getValue() {
+        return (Set<E>) super.getValue();
     }
 }

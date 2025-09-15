@@ -34,7 +34,7 @@ public abstract class AnyCollection<E> implements AnyStructure<Collection<E>>, I
     }
 
     @Override
-    public Collection<E> value() {
+    public Collection<E> getValue() {
         return value;
     }
 
