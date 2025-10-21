@@ -4,6 +4,7 @@ import com.saicone.types.parser.ArrayParser;
 import com.saicone.types.parser.BitSetParser;
 import com.saicone.types.parser.BooleanParser;
 import com.saicone.types.parser.ClassParser;
+import com.saicone.types.parser.DurationParser;
 import com.saicone.types.parser.FileParser;
 import com.saicone.types.parser.ListParser;
 import com.saicone.types.parser.MapParser;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -196,6 +198,12 @@ public class Types {
      */
     public static final TypeParser<Path> PATH = PathParser.INSTANCE;
     /**
+     * Duration type parser.
+     *
+     * @see DurationParser
+     */
+    public static final TypeParser<Duration> DURATION = DurationParser.INSTANCE;
+    /**
      * LocalDate type parser.
      *
      * @see TemporalParser#LOCAL_DATE
@@ -293,6 +301,7 @@ public class Types {
         put(java.net.URL.class, URL);
         put(File.class, FILE);
         put(Path.class, PATH);
+        put(Duration.class, DURATION);
         put(LocalDate.class, LOCAL_DATE);
         put(LocalTime.class, LOCAL_TIME);
         put(LocalDateTime.class, LOCAL_DATE_TIME);

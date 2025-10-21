@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -75,6 +76,13 @@ public class TypesTest {
             final URL url = new URL("someurl.com");
             assertEquals(url, Types.URL.parse("someurl.com"));
         } catch (MalformedURLException ignored) { }
+        // Duration
+        final Duration duration = Duration.ofMinutes(30);
+        assertEquals(duration, Types.DURATION.parse(duration));
+        assertEquals(duration, Types.DURATION.parse("30 MINUTE"));
+        assertEquals(duration, Types.DURATION.parse("30 MINUTES"));
+        assertEquals(duration, Types.DURATION.parse("1800 SECONDS"));
+        assertEquals(duration, Types.DURATION.parse("1800000 MILLISECONDS"));
         // Date
         final LocalDate date = LocalDate.of(2024, 10, 24);
         assertEquals(date, Types.LOCAL_DATE.parse("2024-10-24"));
