@@ -20,7 +20,7 @@
     </a>
 </p>
 
-Types library can convert any object type into a required one, iterate any object, do structure transformations and wrap parametrized types.
+Types library can convert any object type into a required one, iterate any object, do structure transformations and wrap generic types.
 
 Convert!
 
@@ -86,7 +86,7 @@ Wrap!
 List<String> stringList = List.of("1", "2", "3", "4");
 
 // A view of original list as Integer list
-List<Integer> integerList = new WrappedList<>(stringList, TypeWrapper.of(Types.String, Types.INTEGER));
+List<Integer> integerList = new WrappedList<>(stringList, TypeWrapper.of(Types.STRING, Types.INTEGER));
 
 // So this
 if (integerList.contains(3)) {
@@ -114,7 +114,7 @@ This library contains the following artifacts:
 
 ```groovy
 plugins {
-    id 'com.gradleup.shadow' version '8.3.9'
+    id 'com.gradleup.shadow' version '9.2.2'
 }
 
 repositories {
@@ -122,7 +122,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone.types:types:1.4.0'
+    implementation 'com.saicone.types:types:1.4.1'
 }
 
 jar.dependsOn (shadowJar)
@@ -142,7 +142,7 @@ shadowJar {
 
 ```kotlin
 plugins {
-    id("com.gradleup.shadow") version "8.3.9"
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 repositories {
@@ -150,7 +150,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone.types:types:1.4.0")
+    implementation("com.saicone.types:types:1.4.1")
 }
 
 tasks {
@@ -184,7 +184,7 @@ tasks {
     <dependency>
         <groupId>com.saicone.types</groupId>
         <artifactId>types</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
@@ -532,6 +532,7 @@ for (Map.Entry<String, Integer> entry : AnyIterable.of(value)) {
 Type wrapping is a lazy object conversion that work in different dimensions using two types.
 
 **Type A:** Is the base type of object, you can get it by `unwrap` the type B.
+
 **Type B:** Is the type of object that `wrap` type A, in other words, to show A as B.
 
 **One dimension wrapper:**
