@@ -301,6 +301,9 @@ Well known Java objects and the accepted types to properly parse them.
   1. `String` separated by `/`
   2. `String[]`
   3. `File`
+* `java.time.Duration`
+  1. `String` formated like `15 MINUTES AND 30 SECONDS`
+  2. `String[]` formated like `["15 MINUTES", "30 SECONDS"]`
 * `java.time.LocalDate`
   1. Epoch day `Long`
   2. 2-length array (converted to int) `[year, dayOfYear]`

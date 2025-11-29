@@ -33,21 +33,37 @@ public class DurationParser implements TypeParser<Duration> {
             return (Duration) first;
         }
 
-        final String[] split = String.valueOf(first).split(" ");
-        if (split.length < 2) {
-            throw new IllegalArgumentException();
-        }
-        if (!split[1].toUpperCase().endsWith("S")) {
-            split[1] = split[1] + "S";
+        final String[] parts;
+        if (first instanceof String[]) {
+            parts = (String[]) first;
+        } else {
+            parts = String.valueOf(first).split("AND|&&?");
         }
 
-        try {
-            final long time = Long.parseLong(split[0]);
-            final TimeUnit unit = TimeUnit.valueOf(split[1].toUpperCase());
-            return toDuration(time, unit);
-        } catch (Throwable t) {
-            throw new IllegalArgumentException(t);
+        Duration result = null;
+        for (String part : parts) {
+            final String[] split = part.trim().split(" ");
+            if (split.length < 2) {
+                throw new IllegalArgumentException();
+            }
+            if (!split[1].toUpperCase().endsWith("S")) {
+                split[1] = split[1] + "S";
+            }
+
+            try {
+                final long time = Long.parseLong(split[0].trim());
+                final TimeUnit unit = TimeUnit.valueOf(split[1].trim().toUpperCase());
+                final Duration duration = toDuration(time, unit);
+                if (result == null) {
+                    result = duration;
+                } else {
+                    result = result.plus(duration);
+                }
+            } catch (Throwable t) {
+                throw new IllegalArgumentException(t);
+            }
         }
+        return result;
     }
 
     /**
