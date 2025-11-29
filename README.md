@@ -296,9 +296,11 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.io.File`
   1. `String` separated by `/`
   2. `String[]`
+  3. `Path`
 * `java.nio.file.Path`
   1. `String` separated by `/`
   2. `String[]`
+  3. `File`
 * `java.time.LocalDate`
   1. Epoch day `Long`
   2. 2-length array (converted to int) `[year, dayOfYear]`

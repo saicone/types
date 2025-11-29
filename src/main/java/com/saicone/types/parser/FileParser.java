@@ -50,9 +50,28 @@ public class FileParser implements TypeParser<File> {
             array = String.valueOf(single).split("/");
         }
 
+        return getFile(array);
+    }
+
+    /**
+     * Converts a string path into a {@link File}.<br>
+     * This method aims to avoid the usage of Strings with OS-driven separators.
+     *
+     * @param path a string path, not compatible with file separators.
+     * @return     the resulting {@link File}.
+     */
+    @NotNull
+    public static File getFile(@NotNull String... path) {
         File file = null;
-        for (String s : array) {
-            file = new File(file, s);
+        for (String part : path) {
+            if (part.isEmpty()) {
+                continue;
+            }
+            file = file == null ? new File(part) : new File(file, part);
+        }
+
+        if (file == null) {
+            file = new File(".");
         }
         return file;
     }
