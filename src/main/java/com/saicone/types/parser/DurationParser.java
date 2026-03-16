@@ -51,14 +51,24 @@ public class DurationParser implements TypeParser<Duration> {
             }
 
             try {
-                final long time = Long.parseLong(split[0].trim());
+                final String time = split[0].trim();
                 final TimeUnit unit = TimeUnit.valueOf(split[1].trim().toUpperCase());
-                final Duration duration = toDuration(time, unit);
+
+                final int point = time.indexOf('.');
+                final Duration duration;
+                if (point >= 0) {
+                    duration = toDuration(Double.parseDouble(time), unit);
+                } else {
+                    duration = toDuration(Long.parseLong(time), unit);
+                }
+
                 if (result == null) {
                     result = duration;
                 } else {
                     result = result.plus(duration);
                 }
+            } catch (IllegalArgumentException | NullPointerException e) {
+                throw e;
             } catch (Throwable t) {
                 throw new IllegalArgumentException(t);
             }
@@ -90,6 +100,35 @@ public class DurationParser implements TypeParser<Duration> {
                 return Duration.ofHours(time);
             case DAYS:
                 return Duration.ofDays(time);
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Convert given time and unit to Duration instance.
+     *
+     * @param time the time value.
+     * @param unit the time unit.
+     * @return     a duration instance.
+     */
+    @NotNull
+    public static Duration toDuration(double time, @NotNull TimeUnit unit) {
+        switch (unit) {
+            case NANOSECONDS:
+                return Duration.ofNanos(Math.round(time));
+            case MICROSECONDS:
+                return Duration.ofNanos(Math.round(time * 1_000));
+            case MILLISECONDS:
+                return Duration.ofMillis(Math.round(time));
+            case SECONDS:
+                return Duration.ofSeconds((long) time, Math.round((time - (long) time) * 1_000_000_000));
+            case MINUTES:
+                return Duration.ofSeconds(Math.round(time * 60));
+            case HOURS:
+                return Duration.ofSeconds(Math.round(time * 3_600));
+            case DAYS:
+                return Duration.ofSeconds(Math.round(time * 86_400));
             default:
                 throw new IllegalArgumentException();
         }
