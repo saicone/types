@@ -118,7 +118,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone:types:1.4.2'
+    implementation 'com.saicone:types:1.4.3'
 }
 ```
 
@@ -133,7 +133,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone:types:1.4.2")
+    implementation("com.saicone:types:1.4.3")
 }
 ```
 
@@ -147,7 +147,7 @@ dependencies {
     <dependency>
         <groupId>com.saicone</groupId>
         <artifactId>types</artifactId>
-        <version>1.4.2</version>
+        <version>1.4.3</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
