@@ -113,25 +113,12 @@ This library contains the following artifacts:
   <summary>build.gradle</summary>
 
 ```groovy
-plugins {
-    id 'com.gradleup.shadow' version '9.2.2'
-}
-
 repositories {
-    maven { url 'https://jitpack.io' }
+    mavenCentral()
 }
 
 dependencies {
-    implementation 'com.saicone.types:types:1.4.1'
-}
-
-jar.dependsOn (shadowJar)
-
-shadowJar {
-    // Relocate types
-    relocate 'com.saicone.types', project.group + '.libs.types'
-    // Exclude unused classes (optional)
-    minimize()
+    implementation 'com.saicone:types:1.4.2'
 }
 ```
 
@@ -141,29 +128,12 @@ shadowJar {
   <summary>build.gradle.kts</summary>
 
 ```kotlin
-plugins {
-    id("com.gradleup.shadow") version "9.2.2"
-}
-
 repositories {
-    maven("https://jitpack.io")
+    mavenCentral()
 }
 
 dependencies {
-    implementation("com.saicone.types:types:1.4.1")
-}
-
-tasks {
-    jar {
-        dependsOn(tasks.shadowJar)
-    }
-
-    shadowJar {
-        // Relocate types
-        relocate("com.saicone.types", "${project.group}.libs.types")
-        // Exclude unused classes (optional)
-        minimize()
-    }
+    implementation("com.saicone:types:1.4.2")
 }
 ```
 
@@ -173,48 +143,14 @@ tasks {
   <summary>pom.xml</summary>
 
 ```xml
-<repositories>
-    <repository>
-        <id>Jitpack</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-
 <dependencies>
     <dependency>
-        <groupId>com.saicone.types</groupId>
+        <groupId>com.saicone</groupId>
         <artifactId>types</artifactId>
-        <version>1.4.1</version>
+        <version>1.4.2</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
-
-<build>
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.3.0</version>
-        <configuration>
-            <relocations>
-                <!-- Relocate types -->
-                <relocation>
-                    <pattern>com.saicone.types</pattern>
-                    <shadedPattern>${project.groupId}.libs.types</shadedPattern>
-                </relocation>
-            </relocations>
-            <!-- Exclude unused classes (optional) -->
-            <minimizeJar>true</minimizeJar>
-        </configuration>
-        <executions>
-            <execution>
-                <phase>package</phase>
-                <goals>
-                    <goal>shade</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
-</build>
 ```
 
 </details>

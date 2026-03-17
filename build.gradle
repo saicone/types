@@ -1,7 +1,19 @@
+description = 'Types'
+
 allprojects {
     apply plugin: 'java'
+    apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
+
+    apply from: "$rootDir/gradle/publish-config.gradle"
+
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
+        }
+    }
 
     repositories {
         mavenCentral()
@@ -45,10 +57,13 @@ allprojects {
     publishing {
         publications {
             maven(MavenPublication) {
-                groupId = project.group
-                artifactId = project.name
-                version = project.version
                 from components.java
+
+                pom {
+                    afterEvaluate {
+                        description = 'A low-level java library to parse, iterate or wrap any object type'
+                    }
+                }
             }
         }
     }
@@ -57,6 +72,18 @@ allprojects {
 subprojects {
     dependencies {
         api rootProject
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                pom {
+                    afterEvaluate {
+                        description = "Module \"${project.name}\" of Types"
+                    }
+                }
+            }
+        }
     }
 }
 
