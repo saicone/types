@@ -12,8 +12,8 @@
     <a href="https://github.com/saicone/types">
         <img src="https://img.shields.io/github/languages/code-size/saicone/types?logo=github&logoColor=white&style=flat-square"/>
     </a>
-    <a href="https://jitpack.io/#com.saicone/types">
-        <img src="https://img.shields.io/github/v/tag/saicone/types?style=flat-square&logo=jitpack&logoColor=white&label=JitPack&color=brigthgreen"/>
+    <a href="https://mvnrepository.com/artifact/com.saicone/types">
+        <img src="https://img.shields.io/maven-central/v/com.saicone/types"/>
     </a>
     <a href="https://javadoc.saicone.com/types/">
         <img src="https://img.shields.io/badge/JavaDoc-Online-green?style=flat-square"/>
