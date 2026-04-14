@@ -45,6 +45,11 @@ import java.util.regex.Pattern;
 public class Types {
 
     private static final Map<Object, TypeParser<?>> PARSER_MAP = new HashMap<>();
+
+    /**
+     * Type parser to return null for any provided object.
+     */
+    public static final TypeParser<Void> VOID = TypeParser.of(Void.class, (object) -> null);
     /**
      * Type parser to return any object itself.
      */
