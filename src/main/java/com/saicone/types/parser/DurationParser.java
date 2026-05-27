@@ -31,6 +31,8 @@ public class DurationParser implements TypeParser<Duration> {
 
         if (first instanceof Duration) {
             return (Duration) first;
+        } else if (first instanceof Number) {
+            return Duration.ofMillis(((Number) first).longValue());
         }
 
         final String[] parts;
