@@ -125,17 +125,17 @@ public class Types {
      */
     public static final TypeParser<Integer> INTEGER = NumberParser.INTEGER;
     /**
-     * Float type parser.
-     *
-     * @see NumberParser
-     */
-    public static final TypeParser<Float> FLOAT = NumberParser.FLOAT;
-    /**
      * Long type parser.
      *
      * @see NumberParser
      */
     public static final TypeParser<Long> LONG = NumberParser.LONG;
+    /**
+     * Float type parser.
+     *
+     * @see NumberParser
+     */
+    public static final TypeParser<Float> FLOAT = NumberParser.FLOAT;
     /**
      * Double type parser.
      *

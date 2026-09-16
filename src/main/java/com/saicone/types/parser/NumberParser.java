@@ -305,69 +305,6 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     };
 
     /**
-     * Float type parser.
-     */
-    NumberParser<Float> FLOAT = new NumberParser<Float>() {
-        @Override
-        public @NotNull Type getType() {
-            return Float.class;
-        }
-
-        @Override
-        public char getSuffix() {
-            return 'f';
-        }
-
-        @Override
-        public @NotNull Float getMinValue() {
-            return Float.MIN_VALUE;
-        }
-
-        @Override
-        public @NotNull Float getMaxValue() {
-            return Float.MAX_VALUE;
-        }
-
-        @Override
-        public boolean isDecimalHolder() {
-            return true;
-        }
-
-        @Override
-        public boolean isInRange(@NotNull Number number) {
-            if (number instanceof BigDecimal) {
-                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
-            } else if (number instanceof BigInteger) {
-                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue().longValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue().longValue())) <= 0;
-            } else if (number instanceof Double) {
-                return (Double) number >= getMinValue() && (Double) number <= getMaxValue();
-            } else if (number instanceof Long) {
-                return (Long) number >= getMinValue() && (Long) number <= getMaxValue();
-            } else {
-                return true;
-            }
-        }
-
-        @Override
-        public @NotNull Float cast(@NotNull Number number) {
-            return number.floatValue();
-        }
-
-        @Override
-        public @NotNull Float parseNumber(@NotNull String s) throws NumberFormatException {
-            return Float.parseFloat(s);
-        }
-
-        @Override
-        public @NotNull Float parseNumber(@NotNull String s, int radix) throws NumberFormatException {
-            if (radix == 10) {
-                return parseNumber(s);
-            }
-            return cast(INTEGER.parseNumber(s, radix));
-        }
-    };
-
-    /**
      * Long type parser.
      */
     NumberParser<Long> LONG = new NumberParser<Long>() {
@@ -427,6 +364,69 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
         @Override
         public @NotNull Long parseUnsignedNumber(@NotNull String s, int radix) throws NumberFormatException {
             return Long.parseUnsignedLong(s, radix);
+        }
+    };
+
+    /**
+     * Float type parser.
+     */
+    NumberParser<Float> FLOAT = new NumberParser<Float>() {
+        @Override
+        public @NotNull Type getType() {
+            return Float.class;
+        }
+
+        @Override
+        public char getSuffix() {
+            return 'f';
+        }
+
+        @Override
+        public @NotNull Float getMinValue() {
+            return Float.MIN_VALUE;
+        }
+
+        @Override
+        public @NotNull Float getMaxValue() {
+            return Float.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isDecimalHolder() {
+            return true;
+        }
+
+        @Override
+        public boolean isInRange(@NotNull Number number) {
+            if (number instanceof BigDecimal) {
+                return ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMinValue())) >= 0 && ((BigDecimal) number).compareTo(BigDecimal.valueOf(getMaxValue())) <= 0;
+            } else if (number instanceof BigInteger) {
+                return ((BigInteger) number).compareTo(BigInteger.valueOf(getMinValue().longValue())) >= 0 && ((BigInteger) number).compareTo(BigInteger.valueOf(getMaxValue().longValue())) <= 0;
+            } else if (number instanceof Double) {
+                return (Double) number >= getMinValue() && (Double) number <= getMaxValue();
+            } else if (number instanceof Long) {
+                return (Long) number >= getMinValue() && (Long) number <= getMaxValue();
+            } else {
+                return true;
+            }
+        }
+
+        @Override
+        public @NotNull Float cast(@NotNull Number number) {
+            return number.floatValue();
+        }
+
+        @Override
+        public @NotNull Float parseNumber(@NotNull String s) throws NumberFormatException {
+            return Float.parseFloat(s);
+        }
+
+        @Override
+        public @NotNull Float parseNumber(@NotNull String s, int radix) throws NumberFormatException {
+            if (radix == 10) {
+                return parseNumber(s);
+            }
+            return cast(INTEGER.parseNumber(s, radix));
         }
     };
 
