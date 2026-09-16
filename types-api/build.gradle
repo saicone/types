@@ -1,0 +1,13 @@
+description = 'Types API'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom {
+                afterEvaluate {
+                    description = 'A low-level java library to parse, iterate or wrap any object type'
+                }
+            }
+        }
+    }
+}

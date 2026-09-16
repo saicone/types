@@ -104,56 +104,44 @@ How to implement Types library in your project.
 
 This library contains the following artifacts:
 
-* `types` - The main project, a type parsing and iteration API.
+* `types-api` - The main project, a type parsing and iteration API.
 * `types-annotated` - Annotated type parsing API.
 * `types-mapper` - (experimental) Type mapping and transformation API.
 * `types-wrapper` - Type wrapping API.
 
-<details>
-  <summary>build.gradle</summary>
-
+build.gradle
 ```groovy
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'com.saicone:types:1.4.3'
+    implementation 'com.saicone:types-api:1.4.3'
 }
 ```
 
-</details>
-
-<details>
-  <summary>build.gradle.kts</summary>
-
+build.gradle.kts
 ```kotlin
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("com.saicone:types:1.4.3")
+    implementation("com.saicone:types-api:1.4.3")
 }
 ```
 
-</details>
-
-<details>
-  <summary>pom.xml</summary>
-
+pom.xml
 ```xml
 <dependencies>
     <dependency>
         <groupId>com.saicone</groupId>
-        <artifactId>types</artifactId>
+        <artifactId>types-api</artifactId>
         <version>1.4.3</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
 ```
-
-</details>
 
 ## Supported types
 

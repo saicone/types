@@ -1,1 +1,5 @@
 description = 'Types Wrapper'
+
+dependencies {
+    api project(':types-api')
+}

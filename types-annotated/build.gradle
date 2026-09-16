@@ -1,1 +1,5 @@
 description = 'Types Annotated'
+
+dependencies {
+    api project(':types-api')
+}

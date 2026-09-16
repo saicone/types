@@ -1,1 +1,5 @@
 description = 'Types Mapper'
+
+dependencies {
+    api project(':types-api')
+}
