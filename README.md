@@ -245,6 +245,11 @@ Well known Java objects and the accepted types to properly parse them.
   3. 6-length array (converted to int) `[year, month, day, hour, minute, second]`
   4. 7-length array (converted to int) `[year, month, day, hour, minute, second, nanoOfSecond]`
   5. ISO-8601 `String` separated by `T` with time formatted as `hour:minute:second.nanoOfSecond`
+* `java.awt.Color`
+  1. Hex string `#RRGGBB` or `#RRGGBBAA`
+  2. RGB(A) string components like `RGB`, `RGBA` or `rgba(R, G, B, A)` with values between `0` and `255`
+  3. OKLCH string components `oklch(L, C, H)`
+  4. Map representation `{"red": R, "green": G, "blue": B, "alpha": A}`
 
 </details>
 

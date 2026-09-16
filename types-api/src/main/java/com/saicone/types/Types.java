@@ -4,6 +4,7 @@ import com.saicone.types.parser.ArrayParser;
 import com.saicone.types.parser.BitSetParser;
 import com.saicone.types.parser.BooleanParser;
 import com.saicone.types.parser.ClassParser;
+import com.saicone.types.parser.ColorParser;
 import com.saicone.types.parser.DurationParser;
 import com.saicone.types.parser.FileParser;
 import com.saicone.types.parser.ListParser;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.Color;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -227,6 +229,12 @@ public class Types {
      */
     public static final TypeParser<LocalDateTime> LOCAL_DATE_TIME = TemporalParser.LOCAL_DATE_TIME;
     /**
+     * Color type parser.
+     *
+     * @see ColorParser
+     */
+    public static final TypeParser<Color> COLOR = ColorParser.INSTANCE;
+    /**
      * Array of objects type parser.
      *
      * @see ArrayParser
@@ -310,6 +318,7 @@ public class Types {
         put(LocalDate.class, LOCAL_DATE);
         put(LocalTime.class, LOCAL_TIME);
         put(LocalDateTime.class, LOCAL_DATE_TIME);
+        put(Color.class, COLOR);
         put(BitSet.class, BIT_SET);
         put(Object[].class, ARRAY);
         put(List.class, LIST);
