@@ -116,7 +116,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone:types-api:1.4.3'
+    implementation 'com.saicone:types-api:1.4.4'
 }
 ```
 
@@ -127,7 +127,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone:types-api:1.4.3")
+    implementation("com.saicone:types-api:1.4.4")
 }
 ```
 
@@ -137,7 +137,7 @@ pom.xml
     <dependency>
         <groupId>com.saicone</groupId>
         <artifactId>types-api</artifactId>
-        <version>1.4.3</version>
+        <version>1.4.4</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
