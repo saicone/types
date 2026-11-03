@@ -16,25 +16,25 @@ public class PathParserTest {
     private static final File FILE_B = new File(new File(new File("other"), "path"), "for-file");
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         assertEquals(PATH_A, PathParser.INSTANCE.parse(PATH_A));
         assertEquals(PATH_B, PathParser.INSTANCE.parse(PATH_B));
     }
 
     @Test
-    public void testParseFile() {
+    public void testParseFile() throws Throwable {
         assertEquals(PATH_A, PathParser.INSTANCE.parse(FILE_A));
         assertEquals(PATH_B, PathParser.INSTANCE.parse(FILE_B));
     }
 
     @Test
-    public void testParseString() {
+    public void testParseString() throws Throwable {
         assertEquals(PATH_A, PathParser.INSTANCE.parse("some/file/path"));
         assertEquals(PATH_B, PathParser.INSTANCE.parse("other/path/for-file"));
     }
 
     @Test
-    public void testParseStringArray() {
+    public void testParseStringArray() throws Throwable {
         assertEquals(PATH_A, PathParser.INSTANCE.parse(new String[] { "some", "file", "path" }));
         assertEquals(PATH_B, PathParser.INSTANCE.parse(new String[] { "other", "path", "for-file" }));
     }

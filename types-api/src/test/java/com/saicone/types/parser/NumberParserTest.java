@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class NumberParserTest {
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         assertEquals((byte) 50, NumberParser.BYTE.parse((byte) 50));
         assertEquals((short) 50, NumberParser.SHORT.parse((short) 50));
         assertEquals((int) 50, NumberParser.INTEGER.parse((int) 50));
@@ -23,7 +23,7 @@ public class NumberParserTest {
     }
 
     @Test
-    public void testParseInteger() {
+    public void testParseInteger() throws Throwable {
         assertEquals((byte) 50, NumberParser.BYTE.parse((byte) 50));
         assertEquals((byte) 50, NumberParser.BYTE.parse((short) 50));
         assertEquals((byte) 50, NumberParser.BYTE.parse((int) 50));
@@ -73,7 +73,7 @@ public class NumberParserTest {
     final Float fl = new BigDecimal("0.05").floatValue();
 
     @Test
-    public void testParseDecimal() {
+    public void testParseDecimal() throws Throwable {
         assertEquals((float) 50f, NumberParser.FLOAT.parse((byte) 50));
         assertEquals((float) 50f, NumberParser.FLOAT.parse((short) 50));
         assertEquals((float) 50f, NumberParser.FLOAT.parse((int) 50));
@@ -105,7 +105,7 @@ public class NumberParserTest {
     }
 
     @Test
-    public void testParseBoolean() {
+    public void testParseBoolean() throws Throwable {
         assertEquals((byte) 0, NumberParser.BYTE.parse(false));
         assertEquals((short) 0, NumberParser.SHORT.parse(false));
         assertEquals((int) 0, NumberParser.INTEGER.parse(false));
@@ -126,7 +126,7 @@ public class NumberParserTest {
     }
 
     @Test
-    public void testParseEnum() {
+    public void testParseEnum() throws Throwable {
         for (EnumA value : EnumA.values()) {
             assertEquals((byte) value.ordinal(), NumberParser.BYTE.parse(value));
             assertEquals((short) value.ordinal(), NumberParser.SHORT.parse(value));

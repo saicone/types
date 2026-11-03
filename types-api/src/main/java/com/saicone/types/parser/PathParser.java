@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a parser that try to convert any object type to Path.<br>
@@ -29,15 +30,15 @@ public class PathParser implements TypeParser<Path> {
         return Path.class;
     }
 
+
     @Override
-    public @Nullable Path parse(@NotNull Object object) {
+    public @NotNull Path parse(@NotNull Object object) throws Throwable {
         if (object instanceof Path) {
             return (Path) object;
         }
+
         final Object single = AnyIterable.single(object);
-        if (single == null) {
-            return null;
-        }
+        Objects.requireNonNull(single, "Cannot get effective single element");
 
         if (single instanceof Path) {
             return (Path) single;

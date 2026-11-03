@@ -4,12 +4,12 @@ import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
 import com.saicone.types.Types;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a function that try to parse any type of object to enum type.<br>
@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Rubenicos
  *
- * @param <T> the type result of the function.
+ * @param <T> the type result of the function
  */
 @FunctionalInterface
 public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
@@ -26,9 +26,9 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
     /**
      * Create an enum type parser that convert any object into provided enum class type.
      *
-     * @param type the associated type with the parser.
-     * @return     an enum type parser that return an enum type.
-     * @param <T>  the enum type result of the function.
+     * @param type the associated type with the parser
+     * @return     an enum type parser that return an enum type
+     * @param <T>  the enum type result of the function
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -52,10 +52,10 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
      * Create an enum type parser that convert any object into provided enum class type
      * using provided array of enum values.
      *
-     * @param type   the associated type with the parser.
-     * @param values the enum array values.
-     * @return       an enum type parser that return an enum type.
-     * @param <T>    the enum type result of the function.
+     * @param type   the associated type with the parser
+     * @param values the enum array values
+     * @return       an enum type parser that return an enum type
+     * @param <T>    the enum type result of the function
      */
     @NotNull
     static <T extends Enum<T>> EnumParser<T> of(@NotNull Class<T> type, @NotNull T[] values) {
@@ -75,18 +75,16 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
     /**
      * Returns an array containing the constants of the enum type used by this parser.
      *
-     * @return the enum array values.
+     * @return the enum array values
      */
     @NotNull
     T[] values();
 
     @Override
     @SuppressWarnings("unchecked")
-    default @Nullable T parse(@NotNull Object object) {
+    default @NotNull T parse(@NotNull Object object) throws Throwable {
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
 
         final Type type = getType();
         if (type instanceof Class && ((Class<?>) type).isInstance(first)) {
@@ -111,23 +109,24 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
                     return value;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Cannot parse " + first + " to enum type " + getType());
         }
     }
 
     /**
      * Parses the given ordinal number as required enum type.
      *
-     * @param ordinal the ordinal number that represent an enum value.
-     * @return        the parsed enum value if ordinal is valid, null otherwise.
+     * @param ordinal the ordinal number that represent an enum value
+     * @return        the parsed enum value if ordinal is valid
+     * @throws IndexOutOfBoundsException if the ordinal is invalid
      */
-    @Nullable
-    default T parse(int ordinal) {
+    @NotNull
+    default T parse(int ordinal) throws IndexOutOfBoundsException {
         final T[] values = values();
         if (ordinal >= 0 && ordinal < values.length) {
             return values[ordinal];
         }
-        return null;
+        throw new IndexOutOfBoundsException("Invalid ordinal " + ordinal + " for enum type " + getType() + "(length: " + values.length + ")");
     }
 
     final class Static {

@@ -23,7 +23,7 @@ public class PatternAnnotatedParser extends PatternParser implements AnnotatedTy
     public static final PatternAnnotatedParser INSTANCE = new PatternAnnotatedParser();
 
     @Override
-    public @Nullable Pattern parse(@NotNull AnnotatedType type, @NotNull Object object) {
+    public @NotNull Pattern parse(@NotNull AnnotatedType type, @NotNull Object object) throws Throwable {
         final PatternFlags annotation = type.getAnnotation(PatternFlags.class);
         if (annotation == null) {
             return parse(object);

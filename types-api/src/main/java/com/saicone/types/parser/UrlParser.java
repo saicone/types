@@ -7,10 +7,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * Represents a parser that try to convert any object type to URL.<br>
@@ -31,34 +31,25 @@ public class UrlParser implements TypeParser<URL> {
     }
 
     @Override
-    public @Nullable URL parse(@NotNull Object object) {
-        try {
-            if (object instanceof Path) {
-                return ((Path) object).toUri().toURL();
-            }
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
+    public @NotNull URL parse(@NotNull Object object) throws Throwable {
+        if (object instanceof Path) {
+            return ((Path) object).toUri().toURL();
         }
+
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
 
         if (first instanceof URL) {
             return (URL) first;
         }
 
-        try {
-            if (first instanceof URI) {
-                return ((URI) first).toURL();
-            } else if (first instanceof File) {
-                return ((File) first).toURI().toURL();
-            } else if (first instanceof Path) {
-                return ((Path) first).toUri().toURL();
-            }
-            return new URL(String.valueOf(first));
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
+        if (first instanceof URI) {
+            return ((URI) first).toURL();
+        } else if (first instanceof File) {
+            return ((File) first).toURI().toURL();
+        } else if (first instanceof Path) {
+            return ((Path) first).toUri().toURL();
         }
+        return new URL(String.valueOf(first));
     }
 }

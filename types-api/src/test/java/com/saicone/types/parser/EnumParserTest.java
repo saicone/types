@@ -10,7 +10,7 @@ public class EnumParserTest {
     private static final EnumParser<EnumB> ENUM_B_PARSER = EnumParser.of(EnumB.class, EnumB.values());
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         assertEquals(EnumA.ONE, ENUM_A_PARSER.parse(EnumA.ONE));
         assertEquals(EnumA.TWO, ENUM_A_PARSER.parse(EnumA.TWO));
         assertEquals(EnumA.THREE, ENUM_A_PARSER.parse(EnumA.THREE));
@@ -23,7 +23,7 @@ public class EnumParserTest {
     }
 
     @Test
-    public void testParseName() {
+    public void testParseName() throws Throwable {
         assertEquals(EnumA.ONE, ENUM_A_PARSER.parse("ONE"));
         assertEquals(EnumA.TWO, ENUM_A_PARSER.parse("TWO"));
         assertEquals(EnumA.THREE, ENUM_A_PARSER.parse("THREE"));
@@ -49,7 +49,7 @@ public class EnumParserTest {
     }
 
     @Test
-    public void testParseEnum() {
+    public void testParseEnum() throws Throwable {
         assertEquals(EnumA.ONE, ENUM_A_PARSER.parse(EnumB.FIRST));
         assertEquals(EnumA.TWO, ENUM_A_PARSER.parse(EnumB.SECOND));
         assertEquals(EnumA.THREE, ENUM_A_PARSER.parse(EnumB.THIRD));

@@ -29,22 +29,22 @@ public class UriParserTest {
     }
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         assertEquals(URI_HTTPS, UriParser.INSTANCE.parse(URI_HTTPS));
     }
 
     @Test
-    public void testParseString() {
+    public void testParseString() throws Throwable {
         assertEquals(URI_HTTPS, UriParser.INSTANCE.parse("https://some/kind/of/path"));
     }
 
     @Test
-    public void testParseFile() {
+    public void testParseFile() throws Throwable {
         assertEquals(URI_FILE, UriParser.INSTANCE.parse(FILE));
     }
 
     @Test
-    public void testParsePath() {
+    public void testParsePath() throws Throwable {
         assertEquals(URI_PATH, UriParser.INSTANCE.parse(PATH));
     }
 }

@@ -3,9 +3,9 @@ package com.saicone.types.parser;
 import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,11 +23,9 @@ public class DurationParser implements TypeParser<Duration> {
     public static final DurationParser INSTANCE = new DurationParser();
 
     @Override
-    public @Nullable Duration parse(@NotNull Object object) {
+    public @NotNull Duration parse(@NotNull Object object) throws Throwable {
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
 
         if (first instanceof Duration) {
             return (Duration) first;
@@ -40,6 +38,10 @@ public class DurationParser implements TypeParser<Duration> {
             parts = (String[]) first;
         } else {
             parts = String.valueOf(first).split("AND|&&?");
+        }
+
+        if (parts.length == 0) {
+            throw new IllegalArgumentException();
         }
 
         Duration result = null;
@@ -81,9 +83,9 @@ public class DurationParser implements TypeParser<Duration> {
     /**
      * Convert given time and unit to Duration instance.
      *
-     * @param time the time value.
-     * @param unit the time unit.
-     * @return     a duration instance.
+     * @param time the time value
+     * @param unit the time unit
+     * @return     a duration instance
      */
     @NotNull
     public static Duration toDuration(long time, @NotNull TimeUnit unit) {
@@ -110,9 +112,9 @@ public class DurationParser implements TypeParser<Duration> {
     /**
      * Convert given time and unit to Duration instance.
      *
-     * @param time the time value.
-     * @param unit the time unit.
-     * @return     a duration instance.
+     * @param time the time value
+     * @param unit the time unit
+     * @return     a duration instance
      */
     @NotNull
     public static Duration toDuration(double time, @NotNull TimeUnit unit) {

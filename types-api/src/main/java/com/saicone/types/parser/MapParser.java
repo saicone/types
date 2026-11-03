@@ -2,6 +2,7 @@ package com.saicone.types.parser;
 
 import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
+import com.saicone.types.TypeParserFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -19,8 +19,8 @@ import java.util.function.Supplier;
  *
  * @author Rubenicos
  *
- * @param <K> the type of keys in the map.
- * @param <V> the type of values in the map.
+ * @param <K> the type of keys in the map
+ * @param <V> the type of values in the map
  */
 public class MapParser<K, V> extends AllocParser<Map<K, V>> {
 
@@ -30,11 +30,11 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Create a map parser using key and value parser.
      *
-     * @param keyParser   the type parser to parse keys.
-     * @param valueParser the type parser to parse values.
-     * @return            a newly generated map parser or a cached one.
-     * @param <K> the type of keys in the map.
-     * @param <V> the type of values in the map.
+     * @param keyParser   the type parser to parse keys
+     * @param valueParser the type parser to parse values
+     * @return            a newly generated map parser or a cached one
+     * @param <K> the type of keys in the map
+     * @param <V> the type of values in the map
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -54,9 +54,9 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Constructs a map parser with defined parameters.
      *
-     * @param supplier    the supplier that generate a map.
-     * @param keyParser   the type parser to parse keys.
-     * @param valueParser the type parser to parse values.
+     * @param supplier    the supplier that generate a map
+     * @param keyParser   the type parser to parse keys
+     * @param valueParser the type parser to parse values
      */
     public MapParser(@NotNull Supplier<Map<K, V>> supplier, @NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser) {
         this(capacity -> supplier.get(), keyParser, valueParser);
@@ -65,9 +65,9 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Constructs a map parser with defined parameters.
      *
-     * @param supplier    the function that generate a map with allocated size.
-     * @param keyParser   the type parser to parse keys.
-     * @param valueParser the type parser to parse values.
+     * @param supplier    the function that generate a map with allocated size
+     * @param keyParser   the type parser to parse keys
+     * @param valueParser the type parser to parse values
      */
     public MapParser(@NotNull Function<Integer, Map<K, V>> supplier, @NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser) {
         super(supplier);
@@ -83,7 +83,7 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Get the type associated with the keys that hold the map of this parser.
      *
-     * @return a type object if present, null otherwise.
+     * @return a type object if present, null otherwise
      */
     @Nullable
     public Type getKeyType() {
@@ -93,7 +93,7 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Get the type associated with the values that hold the map of this parser.
      *
-     * @return a type object if present, null otherwise.
+     * @return a type object if present, null otherwise
      */
     @Nullable
     public Type getValueType() {
@@ -103,7 +103,7 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Get the type parser to parse keys.
      *
-     * @return a type parser.
+     * @return a type parser
      */
     @NotNull
     public TypeParser<K> getKeyParser() {
@@ -113,7 +113,7 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Get the type parser to parse values.
      *
-     * @return a type parser.
+     * @return a type parser
      */
     @NotNull
     public TypeParser<V> getValueParser() {
@@ -140,8 +140,8 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Check if the given object is instance of key parser type.
      *
-     * @param object the object to check.
-     * @return       true if the object is an instance of key parser type.
+     * @param object the object to check
+     * @return       true if the object is an instance of key parser type
      */
     public boolean isKeyInstance(@Nullable Object object) {
         return keyParser.isInstance(object);
@@ -150,29 +150,29 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
     /**
      * Check if the given object is instance of value parser type.
      *
-     * @param object the object to check.
-     * @return       true if the object is an instance of value parser type.
+     * @param object the object to check
+     * @return       true if the object is an instance of value parser type
      */
     public boolean isValueInstance(@Nullable Object object) {
         return valueParser.isInstance(object);
     }
 
     @Override
-    public @NotNull Map<K, V> parse(@Nullable Object object) {
-        return parseEach(object, (key, parser) -> parser.parseOrNull(key), (value, parser) -> parser.parseOrNull(value));
+    public @NotNull Map<K, V> parse(@NotNull Object object) throws Throwable {
+        return parseEach(object, (key, parser) -> parser.parse(key), (value, parser) -> parser.parse(value));
     }
 
     /**
      * Parse the provided object into required type by converting each applicable entry using defined function.
      *
-     * @param object        the object to parse.
-     * @param keyFunction   the function that convert a key and the parser for its object to required component type.
-     * @param valueFunction the function that convert a value and the parser for its object to required component type.
-     * @return              a converted value type, empty by default.
+     * @param object        the object to parse
+     * @param keyFunction   the function that convert a key and the parser for its object to required component type
+     * @param valueFunction the function that convert a value and the parser for its object to required component type
+     * @return              a converted value type, empty by default
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Map<K, V> parseEach(@Nullable Object object, @NotNull BiFunction<Object, TypeParser<K>, K> keyFunction, @NotNull BiFunction<Object, TypeParser<V>, V> valueFunction) {
+    public Map<K, V> parseEach(@Nullable Object object, @NotNull TypeParserFunction<K> keyFunction, @NotNull TypeParserFunction<V> valueFunction) throws Throwable {
         if (object == null) {
             return create();
         } else if (isInstance(object)) {

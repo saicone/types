@@ -355,11 +355,11 @@ public abstract class TypeOf<T> implements TypeParser<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public @Nullable T parse(@NotNull Object object) {
+    public @NotNull T parse(@NotNull Object object) throws Throwable {
         if (delegate == null) {
             delegate = getParser();
         }
-        return (T) delegate.parseOrNull(object);
+        return (T) delegate.parse(object);
     }
 
     @Override

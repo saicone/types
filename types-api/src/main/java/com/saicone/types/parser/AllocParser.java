@@ -10,7 +10,7 @@ import java.util.function.Function;
  *
  * @author Rubenicos
  *
- * @param <T> the type result of the allocatable size structure.
+ * @param <T> the type result of the allocatable size structure
  */
 public abstract class AllocParser<T> implements TypeParser<T> {
 
@@ -19,7 +19,7 @@ public abstract class AllocParser<T> implements TypeParser<T> {
     /**
      * Construct an allocatable size object parser with function that supply a newly generated object to fill.
      *
-     * @param supplier the function that generate an object with allocatable size.
+     * @param supplier the function that generate an object with allocatable size
      */
     public AllocParser(@NotNull Function<Integer, T> supplier) {
         this.supplier = supplier;
@@ -28,7 +28,7 @@ public abstract class AllocParser<T> implements TypeParser<T> {
     /**
      * Create an allocatable size object without a defined capacity.
      *
-     * @return a newly generated structure.
+     * @return a newly generated structure
      */
     @NotNull
     public T create() {
@@ -38,8 +38,8 @@ public abstract class AllocParser<T> implements TypeParser<T> {
     /**
      * Create an allocatable size object with a defined capacity.
      *
-     * @param capacity the initial capacity of the object.
-     * @return         a newly generated structure.
+     * @param capacity the initial capacity of the object
+     * @return         a newly generated structure
      */
     @NotNull
     public T create(int capacity) {

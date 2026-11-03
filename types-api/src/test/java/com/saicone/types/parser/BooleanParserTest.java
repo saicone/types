@@ -37,7 +37,7 @@ public class BooleanParserTest {
     }
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         assertTrue(BooleanParser.INSTANCE.parse(true));
         assertFalse(BooleanParser.INSTANCE.parse(false));
     }
@@ -59,7 +59,7 @@ public class BooleanParserTest {
     );
 
     @Test
-    public void testParseString() {
+    public void testParseString() throws Throwable {
         for (String s : TRUE_STRING) {
             assertEquals(Boolean.TRUE, BooleanParser.INSTANCE.parse(s));
             assertEquals(Boolean.TRUE, BooleanParser.INSTANCE.parse(" " + s + " "));
@@ -97,7 +97,7 @@ public class BooleanParserTest {
     );
 
     @Test
-    public void testParseInteger() {
+    public void testParseInteger() throws Throwable {
         for (Number number : TRUE_INTEGER) {
             assertEquals(Boolean.TRUE, BooleanParser.INSTANCE.parse(number));
         }
@@ -133,7 +133,7 @@ public class BooleanParserTest {
     );
 
     @Test
-    public void testParseDecimal() {
+    public void testParseDecimal() throws Throwable {
         for (Number number : TRUE_DECIMAL) {
             assertEquals(Boolean.TRUE, BooleanParser.INSTANCE.parse(number));
         }

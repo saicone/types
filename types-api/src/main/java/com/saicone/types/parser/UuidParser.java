@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -32,11 +33,9 @@ public class UuidParser implements TypeParser<UUID> {
     }
 
     @Override
-    public @Nullable UUID parse(@NotNull Object object) {
+    public @NotNull UUID parse(@NotNull Object object) throws Throwable {
         final Object single = AnyIterable.single(object);
-        if (single == null) {
-            return null;
-        }
+        Objects.requireNonNull(single, "Cannot get effective single element");
 
         if (single instanceof UUID) {
             return (UUID) single;
@@ -44,8 +43,9 @@ public class UuidParser implements TypeParser<UUID> {
             return parseUuid(ArrayIterator.of(single));
         } else if (single instanceof String) {
             return parseUuid((String) single);
+        } else {
+            throw new IllegalArgumentException("Cannot parse UUID from " + single.getClass().getName() + ": " + single);
         }
-        return null;
     }
 
     /**
@@ -53,17 +53,18 @@ public class UuidParser implements TypeParser<UUID> {
      * Accepts 2-length long array representation of mostSigBits-leastSigBits,
      * and 4-length int array.
      *
-     * @param iterator the iterator to parse.
-     * @return         a converted UUID or null if the array is not valid.
+     * @param iterator the iterator to parse
+     * @return         a converted UUID or null if the array is not valid
+     * @throws IllegalArgumentException if the array is not a valid UUID representation
      */
-    @Nullable
-    public UUID parseUuid(@NotNull ArrayIterator<?> iterator) {
+    @NotNull
+    public UUID parseUuid(@NotNull ArrayIterator<?> iterator) throws IllegalArgumentException {
         final int size = iterator.size();
         if (size == 2) {
             final Long mostSigBits = Types.LONG.parseOrNull(iterator.next());
             final Long leastSigBits = Types.LONG.parseOrNull(iterator.next());
             if (mostSigBits == null || leastSigBits == null) {
-                return null;
+                throw new IllegalArgumentException("Cannot parse UUID from 2-length long array: " + iterator);
             }
             return new UUID(mostSigBits, leastSigBits);
         } else if (size == 4) {
@@ -71,7 +72,7 @@ public class UuidParser implements TypeParser<UUID> {
             while (iterator.hasNext()) {
                 final Integer i = Types.INTEGER.parseOrNull(iterator.next());
                 if (i == null) {
-                    return null;
+                    throw new IllegalArgumentException("Cannot parse UUID from 4-length int array: " + iterator);
                 }
                 String hex = Integer.toHexString(i);
                 builder.append(new String(new char[8 - hex.length()]).replace('\0', '0')).append(hex);
@@ -83,23 +84,25 @@ public class UuidParser implements TypeParser<UUID> {
                 throw new IllegalArgumentException("The final converted UUID '" + builder + "' isn't a 32-length string");
             }
         }
-        return null;
+        throw new IllegalArgumentException("Cannot parse UUID from array of length " + size + ": " + iterator);
     }
 
     /**
      * Parses the given string as UUID.<br>
      * Accepts 36-length string (with dashes) and 32-length string (without dashes).
      *
-     * @param s the string to parse.
-     * @return  a converted UUID or null if the string is not valid.
+     * @param s the string to parse
+     * @return  a converted UUID or null if the string is not valid
+     * @throws IllegalArgumentException if the string is not a valid UUID representation
      */
-    @Nullable
-    public UUID parseUuid(@NotNull String s) {
+    @NotNull
+    public UUID parseUuid(@NotNull String s) throws IllegalArgumentException {
         if (s.length() == 36) {
             return UUID.fromString(s);
         } else if (s.length() == 32) {
             return UUID.fromString(new StringBuilder(s).insert(20, '-').insert(16, '-').insert(12, '-').insert(8, '-').toString());
+        } else {
+            throw new IllegalArgumentException("Invalid UUID string length: " + s.length());
         }
-        return null;
     }
 }

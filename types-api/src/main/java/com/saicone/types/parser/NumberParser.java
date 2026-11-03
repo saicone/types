@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -20,7 +21,7 @@ import java.util.function.Function;
  *
  * @author Rubenicos
  *
- * @param <T> the type result of the function.
+ * @param <T> the type result of the function
  */
 @FunctionalInterface
 public interface NumberParser<T extends Number> extends TypeParser<T> {
@@ -600,14 +601,14 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Crate a number type parser with associated type that return a number type.
      *
-     * @param type           the associated type with the parser.
-     * @param suffix         the associated char suffix with the parser.
-     * @param min            the minimum allowed value.
-     * @param max            the maximum allowed value.
-     * @param numberFunction the function that cast any number type to required number.
-     * @param stringFunction the function that convert any string with associated radix to required number.
-     * @return               a type parser that return a number type.
-     * @param <T>            the number type result of the function.
+     * @param type           the associated type with the parser
+     * @param suffix         the associated char suffix with the parser
+     * @param min            the minimum allowed value
+     * @param max            the maximum allowed value
+     * @param numberFunction the function that cast any number type to required number
+     * @param stringFunction the function that convert any string with associated radix to required number
+     * @return               a type parser that return a number type
+     * @param <T> the number type result of the function
      */
     @NotNull
     static <T extends Number> NumberParser<T> of(@Nullable Type type, char suffix, @NotNull T min, @NotNull T max, @NotNull Function<Number, T> numberFunction, @NotNull BiFunction<String, Integer, T> stringFunction) {
@@ -662,7 +663,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Get the lowercase number suffix represented by this parser.
      *
-     * @return a number suffix character.
+     * @return a number suffix character
      */
     default char getSuffix() {
         return '\0';
@@ -671,7 +672,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Get the minimum supported value by this parser.
      *
-     * @return a minimum value number, 0 if this parser allows any value.
+     * @return a minimum value number, 0 if this parser allows any value
      */
     @NotNull
     default T getMinValue() {
@@ -681,7 +682,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Get the maximum supported value by this parser.
      *
-     * @return a maximum value number, 0 if this parser allows any value.
+     * @return a maximum value number, 0 if this parser allows any value
      */
     @NotNull
     default T getMaxValue() {
@@ -691,7 +692,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Check if this parser is for big numbers such as BigInteger or BigDecimal.
      *
-     * @return true if this parser hold big numbers.
+     * @return true if this parser hold big numbers
      */
     default boolean isBigHolder() {
         return false;
@@ -700,7 +701,7 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Check if this parser allows decimal numbers such as BigDecimal, Double or Float.
      *
-     * @return true if this parser can hold decimal numbers.
+     * @return true if this parser can hold decimal numbers
      */
     default boolean isDecimalHolder() {
         return false;
@@ -709,8 +710,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Check if the provided number is in range to be pársed as current type.
      *
-     * @param number the number to check.
-     * @return       true if the number meet the min and max requirement.
+     * @param number the number to check
+     * @return       true if the number meet the min and max requirement
      */
     default boolean isInRange(@NotNull Number number) {
         return true;
@@ -719,8 +720,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Cast any number to required number type.
      *
-     * @param number a number object.
-     * @return       a converted number type, can generate an exception.
+     * @param number a number object
+     * @return       a converted number type, can generate an exception
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -729,16 +730,15 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     }
 
     @Override
-    default @Nullable T parse(@NotNull Object object) {
+    default @NotNull T parse(@NotNull Object object) throws Throwable {
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
+
         if (first instanceof Number) {
             return parseNumber((Number) first);
         } else if (first instanceof Boolean) {
             return parseNumber((Boolean) first);
-        } else if (object instanceof Enum) {
+        } else if (first instanceof Enum) {
             return parseNumber((Enum<?>) first);
         } else {
             return parse(String.valueOf(first));
@@ -749,11 +749,11 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
      * Parses the given string argument as required number type.<br>
      * This method allows various types of number formats.
      *
-     * @param s the string to parse.
-     * @return  a converted number type.
+     * @param s the string to parse
+     * @return  a converted number type
      * @throws NumberFormatException if the string does not contain a parsable number type
      */
-    @Nullable
+    @NotNull
     default T parse(@NotNull String s) throws NumberFormatException {
         if (s.trim().isEmpty()) {
             throw new IllegalArgumentException("Cannot parse empty string");
@@ -874,8 +874,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
      * Parses the given number argument as required number type.<br>
      * This method check any out of range number.
      *
-     * @param number the number to parse.
-     * @return       a converted number type.
+     * @param number the number to parse
+     * @return       a converted number type
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -892,8 +892,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Parses the given boolean argument as required number type.
      *
-     * @param bool the boolean to parse.
-     * @return     a converted number type.
+     * @param bool the boolean to parse
+     * @return     a converted number type
      */
     @NotNull
     default T parseNumber(boolean bool) {
@@ -903,8 +903,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Parses the given enum argument as required number type.
      *
-     * @param e the enum to parse.
-     * @return  a converted number type.
+     * @param e the enum to parse
+     * @return  a converted number type
      */
     @NotNull
     default T parseNumber(@NotNull Enum<?> e) {
@@ -914,8 +914,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Parses the given string argument as required number type.
      *
-     * @param s the string to parse.
-     * @return  a converted number type.
+     * @param s the string to parse
+     * @return  a converted number type
      * @throws NumberFormatException if the string does not contain a parsable number type
      */
     @NotNull
@@ -924,9 +924,9 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Parses the given string argument as required number type in the radix specified by the second argument.
      *
-     * @param s     the string to parse.
-     * @param radix the radix to be used while parsing the string.
-     * @return      a converted number type.
+     * @param s     the string to parse
+     * @param radix the radix to be used while parsing the string
+     * @return      a converted number type
      * @throws NumberFormatException if the string does not contain a parsable number type
      */
     @NotNull
@@ -940,8 +940,8 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Parses the given string argument as an unsigned required number type.
      *
-     * @param s the string to parse.
-     * @return  a converted number type.
+     * @param s the string to parse
+     * @return  a converted number type
      * @throws NumberFormatException if the string does not contain a parsable number type
      */
     @NotNull
@@ -955,9 +955,9 @@ public interface NumberParser<T extends Number> extends TypeParser<T> {
     /**
      * Parses the given string argument as an unsigned required number type in the radix specified by the second argument.
      *
-     * @param s     the string to parse.
-     * @param radix the radix to be used while parsing the string.
-     * @return      a converted number type.
+     * @param s     the string to parse
+     * @param radix the radix to be used while parsing the string
+     * @return      a converted number type
      * @throws NumberFormatException if the string does not contain a parsable number type
      */
     @NotNull

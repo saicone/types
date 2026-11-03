@@ -5,7 +5,6 @@ import com.saicone.types.TypeParser;
 import com.saicone.types.Types;
 import com.saicone.types.iterator.ArrayIterator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -15,6 +14,7 @@ import java.time.Month;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Objects;
 
 /**
  * Represents an interface that try to parse any object type to temporal object instance.<br>
@@ -48,13 +48,13 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
         }
 
         @Override
-        public @Nullable LocalDate parseTemporal(@NotNull ArrayIterator<Integer> iterator) {
+        public @NotNull LocalDate parseTemporal(@NotNull ArrayIterator<Integer> iterator) {
             if (iterator.size() == 2) {
                 return LocalDate.ofYearDay(iterator.next(), iterator.next());
             } else if (iterator.size() == 3) {
                 return LocalDate.of(iterator.next(), iterator.next(), iterator.next());
             }
-            return null;
+            throw new IllegalArgumentException("Invalid number of elements in iterator");
         }
 
         @Override
@@ -86,7 +86,7 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
         }
 
         @Override
-        public @Nullable LocalTime parseTemporal(@NotNull ArrayIterator<Integer> iterator) {
+        public @NotNull LocalTime parseTemporal(@NotNull ArrayIterator<Integer> iterator) {
             switch (iterator.size()) {
                 case 2:
                     return LocalTime.of(iterator.next(), iterator.next());
@@ -95,7 +95,7 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
                 case 4:
                     return LocalTime.of(iterator.next(), iterator.next(), iterator.next(), iterator.next());
                 default:
-                    return null;
+                    throw new IllegalArgumentException("Invalid number of elements in iterator");
             }
         }
 
@@ -128,7 +128,7 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
         }
 
         @Override
-        public @Nullable LocalDateTime parseTemporal(@NotNull ArrayIterator<Integer> iterator) {
+        public @NotNull LocalDateTime parseTemporal(@NotNull ArrayIterator<Integer> iterator) {
             switch (iterator.size()) {
                 case 5:
                     return LocalDateTime.of(iterator.next(), iterator.next(), iterator.next(), iterator.next(), iterator.next());
@@ -137,7 +137,7 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
                 case 7:
                     return LocalDateTime.of(iterator.next(), iterator.next(), iterator.next(), iterator.next(), iterator.next(), iterator.next(), iterator.next());
                 default:
-                    return null;
+                    throw new IllegalArgumentException("Invalid number of elements in iterator");
             }
         }
 
@@ -148,11 +148,9 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
     };
 
     @Override
-    default @Nullable T parse(@NotNull Object object) {
+    default @NotNull T parse(@NotNull Object object) throws Throwable {
         final Object single = AnyIterable.single(object);
-        if (single == null) {
-            return null;
-        }
+        Objects.requireNonNull(single, "Cannot get effective single element");
 
         if (single instanceof Number) {
             return parseTemporal((Number) single);
@@ -166,8 +164,8 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
     /**
      * Parses the given number argument as required temporal type.
      *
-     * @param number the number to parse.
-     * @return       a converted temporal type.
+     * @param number the number to parse
+     * @return       a converted temporal type
      */
     @NotNull
     T parseTemporal(@NotNull Number number);
@@ -175,17 +173,17 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
     /**
      * Parses the given int array iterator as required temporal type.
      *
-     * @param iterator the iterator to parse.
-     * @return         a converted temporal type if the array is valid, null otherwise.
+     * @param iterator the iterator to parse
+     * @return a converted temporal type if the array is valid
      */
-    @Nullable
+    @NotNull
     T parseTemporal(@NotNull ArrayIterator<Integer> iterator);
 
     /**
      * Parses the given formatted string argument as required temporal type.
      *
-     * @param s the string to parse.
-     * @return  a converted temporal type.
+     * @param s the string to parse
+     * @return  a converted temporal type
      */
     @NotNull
     T parseTemporal(@NotNull String s);

@@ -1,5 +1,6 @@
 package com.saicone.types;
 
+import com.saicone.types.parser.StringParser;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
@@ -16,6 +17,9 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TypesTest {
+
+    private static final TypeParser<String> TEXT_PARSER = StringParser.composed()
+            .formatArrays();
 
     @Test
     public void testParse() {
@@ -34,9 +38,9 @@ public class TypesTest {
         assertEquals("1234", Types.STRING.parse(1234));
         assertEquals("5", Types.STRING.parse('5'));
         // Text
-        assertEquals("[1, 2, 3, 4]", Types.TEXT.parse(new int[] { 1, 2, 3, 4 }));
-        assertEquals("[true, false]", Types.TEXT.parse(new Boolean[] { true, false }));
-        assertEquals("[one, two, three, four]", Types.TEXT.parse(new String[] { "one", "two", "three", "four" }));
+        assertEquals("[1, 2, 3, 4]", TEXT_PARSER.parse(new int[] { 1, 2, 3, 4 }));
+        assertEquals("[true, false]", TEXT_PARSER.parse(new Boolean[] { true, false }));
+        assertEquals("[one, two, three, four]", TEXT_PARSER.parse(new String[] { "one", "two", "three", "four" }));
         // Character
         assertEquals('Ӓ', Types.CHAR.parse(1234));
         assertEquals('T', Types.CHAR.parse("TEST"));

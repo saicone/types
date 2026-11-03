@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * Represents a parser that try to convert any object type to URI.<br>
@@ -31,14 +31,13 @@ public class UriParser implements TypeParser<URI> {
     }
 
     @Override
-    public @Nullable URI parse(@NotNull Object object) {
+    public @NotNull URI parse(@NotNull Object object) throws Throwable {
         if (object instanceof Path) {
             return ((Path) object).toUri();
         }
+
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
 
         if (first instanceof URI) {
             return (URI) first;
@@ -48,13 +47,9 @@ public class UriParser implements TypeParser<URI> {
             return ((Path) first).toUri();
         }
 
-        try {
-            if (first instanceof URL) {
-                return ((URL) first).toURI();
-            }
-            return new URI(String.valueOf(first));
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
+        if (first instanceof URL) {
+            return ((URL) first).toURI();
         }
+        return new URI(String.valueOf(first));
     }
 }

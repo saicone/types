@@ -20,7 +20,7 @@ public class TypeOfTest {
     private static final TypeOf<EnumType> ENUM_TYPE = new TypeOf<EnumType>() {};
 
     @Test
-    public void testObject() {
+    public void testObject() throws Throwable {
         assertEquals("test", STRING_TYPE.parse("test"));
         assertEquals("1234", STRING_TYPE.parse(1234));
         assertEquals("true", STRING_TYPE.parse(true));
@@ -31,7 +31,7 @@ public class TypeOfTest {
     }
 
     @Test
-    public void testEnum() {
+    public void testEnum() throws Throwable {
         assertEquals(EnumType.SECOND, ENUM_TYPE.parse("SECOND"));
 
         assertEquals(EnumType.SECOND, ENUM_TYPE.parse(1));
@@ -39,7 +39,7 @@ public class TypeOfTest {
     }
 
     @Test
-    public void testMap() {
+    public void testMap() throws Throwable {
         final Map<Integer, Boolean> expected = ImmutableMap.of(1, true, 4, false);
         final Map<String, String> actual = ImmutableMap.of("1", "true", "4", "false");
 
@@ -48,7 +48,7 @@ public class TypeOfTest {
     }
 
     @Test
-    public void testList() {
+    public void testList() throws Throwable {
         final List<Double> expected = ImmutableList.of(1.5, 1.3, 1.2, 1.1);
         final List<String> actual = ImmutableList.of("1.5", "1.3", "1.2", "1.1");
 
@@ -57,7 +57,7 @@ public class TypeOfTest {
     }
 
     @Test
-    public void testObjectArray() {
+    public void testObjectArray() throws Throwable {
         final String[] expected = new String[] { "1.5", "1.3", "1.2", "1.1" };
 
         assertArrayEquals(expected, OBJECT_ARRAY_TYPE.parse(ImmutableList.of(1.5, 1.3, 1.2, 1.1)));
@@ -65,7 +65,7 @@ public class TypeOfTest {
     }
 
     @Test
-    public void testPrimitiveArray() {
+    public void testPrimitiveArray() throws Throwable {
         final int[] expected = new int[] { 15, 1234, 14, 1 };
 
         assertArrayEquals(expected, PRIMITIVE_ARRAY_TYPE.parse(ImmutableList.of(15.2, "1234", 14.8, true)));

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -49,12 +50,11 @@ public class ColorParser implements TypeParser<Color> {
         return rgba;
     }
 
+
     @Override
-    public @Nullable Color parse(@NotNull Object object) {
+    public @NotNull Color parse(@NotNull Object object) throws Throwable {
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
 
         if (first instanceof Color) {
             return (Color) first;

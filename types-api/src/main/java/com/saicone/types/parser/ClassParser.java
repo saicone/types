@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a parser that try to convert any String representation of Class name.<br>
@@ -56,8 +57,8 @@ public class ClassParser implements TypeParser<Class<?>> {
      * Create a class parser with given class loader.<br>
      * This method creates a class parser that doesn't initialize classes.
      *
-     * @param classLoader class loader from which the classes must be loaded.
-     * @return            a newly created class parser.
+     * @param classLoader class loader from which the classes must be loaded
+     * @return            a newly created class parser
      */
     @NotNull
     public static ClassParser of(@NotNull ClassLoader classLoader) {
@@ -70,8 +71,8 @@ public class ClassParser implements TypeParser<Class<?>> {
     /**
      * Constructs a class parser with given parameters.
      *
-     * @param initialize  if true any created class object will be initialized.
-     * @param classLoader class loader from which the classes must be loaded.
+     * @param initialize  if true any created class object will be initialized
+     * @param classLoader class loader from which the classes must be loaded
      */
     public ClassParser(boolean initialize, @NotNull ClassLoader classLoader) {
         this.initialize = initialize;
@@ -81,7 +82,7 @@ public class ClassParser implements TypeParser<Class<?>> {
     /**
      * Get initialization state of this parser.
      *
-     * @return true if any created class object will be initialized.
+     * @return true if any created class object will be initialized
      */
     public boolean isInitialize() {
         return initialize;
@@ -95,28 +96,22 @@ public class ClassParser implements TypeParser<Class<?>> {
     /**
      * Get the class loaded used in this parser.
      *
-     * @return a class loader from which the classes must be loaded.
+     * @return a class loader from which the classes must be loaded
      */
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
     @Override
-    public @Nullable Class<?> parse(@NotNull Object object) {
+    public @NotNull Class<?> parse(@NotNull Object object) throws Throwable {
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
 
         if (first instanceof Class) {
             return (Class<?>) first;
         }
 
-        try {
-            return forName(getReadableName(String.valueOf(first)));
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return forName(getReadableName(String.valueOf(first)));
     }
 
     /**
@@ -124,9 +119,9 @@ public class ClassParser implements TypeParser<Class<?>> {
      * meaning this method is compatible with primitive types and readable array
      * name declaration such as {@code java.lang.String[]} or {@code int[][]}.
      *
-     * @param name the name of the desired class.
-     * @return     class object representing the desired class.
-     * @throws ClassNotFoundException if the class cannot be located.
+     * @param name the name of the desired class
+     * @return     class object representing the desired class
+     * @throws ClassNotFoundException if the class cannot be located
      */
     @NotNull
     public Class<?> forName(@NotNull String name) throws ClassNotFoundException {
@@ -145,8 +140,8 @@ public class ClassParser implements TypeParser<Class<?>> {
      * The result of this method may not be compatible with {@link Class#forName(String)},
      * but is always compatible with {@link ClassParser#forName(String)}.
      *
-     * @param name the class name to convert.
-     * @return     a readable class name.
+     * @param name the class name to convert
+     * @return     a readable class name
      */
     @NotNull
     public static String getReadableName(@NotNull String name) {
@@ -189,9 +184,9 @@ public class ClassParser implements TypeParser<Class<?>> {
      * Create an array class type for the given component type.<br>
      * This method is almost compatible with every component type, only restricted by Java language itself.
      *
-     * @param componentType the component to create an array of.
-     * @return              a newly generated array class type.
-     * @throws ClassNotFoundException if the class cannot be located.
+     * @param componentType the component to create an array of
+     * @return              a newly generated array class type
+     * @throws ClassNotFoundException if the class cannot be located
      */
     @NotNull
     public static Class<?> getArrayType(@NotNull Class<?> componentType) throws ClassNotFoundException {

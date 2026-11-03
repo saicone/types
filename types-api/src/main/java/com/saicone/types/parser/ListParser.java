@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  *
  * @author Rubenicos
  *
- * @param <E> the type of elements in the list.
+ * @param <E> the type of elements in the list
  */
 public class ListParser<E> extends CollectionParser<List<E>, E> {
 
@@ -26,9 +26,9 @@ public class ListParser<E> extends CollectionParser<List<E>, E> {
     /**
      * Create a list parser using element parser.
      *
-     * @param elementParser the type parser to parse elements.
-     * @return              a newly generated list parser or a cached one.
-     * @param <E> the type of elements in the list.
+     * @param elementParser the type parser to parse elements
+     * @return              a newly generated list parser or a cached one
+     * @param <E> the type of elements in the list
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -45,8 +45,8 @@ public class ListParser<E> extends CollectionParser<List<E>, E> {
     /**
      * Construct a list parser with defined supplier and element parser.
      *
-     * @param supplier      the supplier that generate a list.
-     * @param elementParser the type parser to parse elements.
+     * @param supplier      the supplier that generate a list
+     * @param elementParser the type parser to parse elements
      */
     public ListParser(@NotNull Supplier<List<E>> supplier, @NotNull TypeParser<E> elementParser) {
         super(supplier, elementParser);
@@ -55,8 +55,8 @@ public class ListParser<E> extends CollectionParser<List<E>, E> {
     /**
      * Construct a list parser with defined supplier and element parser.
      *
-     * @param supplier      the function that generate a list with allocated size.
-     * @param elementParser the type parser to parse elements.
+     * @param supplier      the function that generate a list with allocated size
+     * @param elementParser the type parser to parse elements
      */
     public ListParser(@NotNull Function<Integer, List<E>> supplier, @NotNull TypeParser<E> elementParser) {
         super(supplier, elementParser);

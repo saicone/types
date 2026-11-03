@@ -19,7 +19,7 @@ public class ClassParserTest {
     );
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         for (Map.Entry<Class<?>, Class<?>> entry : LITERAL.entrySet()) {
             assertEquals(entry.getKey(), ClassParser.INSTANCE.parse(entry.getValue()));
         }
@@ -35,7 +35,7 @@ public class ClassParserTest {
     );
 
     @Test
-    public void testParseQualifiedName() {
+    public void testParseQualifiedName() throws Throwable {
         for (Map.Entry<Class<?>, String> entry : QUALIFIED.entrySet()) {
             assertEquals(entry.getKey(), ClassParser.INSTANCE.parse(entry.getValue()));
         }
@@ -55,7 +55,7 @@ public class ClassParserTest {
     );
 
     @Test
-    public void testParseFilePath() {
+    public void testParseFilePath() throws Throwable {
         for (Map.Entry<Class<?>, String> entry : FILE_PATH1.entrySet()) {
             assertEquals(entry.getKey(), ClassParser.INSTANCE.parse(entry.getValue()));
             // with separator prefix
@@ -78,7 +78,7 @@ public class ClassParserTest {
     );
 
     @Test
-    public void testParseDescriptor() {
+    public void testParseDescriptor() throws Throwable {
         for (Map.Entry<Class<?>, String> entry : DESCRIPTOR.entrySet()) {
             assertEquals(entry.getKey(), ClassParser.INSTANCE.parse(entry.getValue()));
         }
@@ -94,7 +94,7 @@ public class ClassParserTest {
     );
 
     @Test
-    public void testParseReadable() {
+    public void testParseReadable() throws Throwable {
         for (Map.Entry<Class<?>, String> entry : READABLE.entrySet()) {
             assertEquals(entry.getKey(), ClassParser.INSTANCE.parse(entry.getValue()));
         }

@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  *
  * @author Rubenicos
  *
- * @param <E> the type of elements in the set.
+ * @param <E> the type of elements in the set
  */
 public class SetParser<E> extends CollectionParser<Set<E>, E> {
 
@@ -26,9 +26,9 @@ public class SetParser<E> extends CollectionParser<Set<E>, E> {
     /**
      * Create a set parser using element parser.
      *
-     * @param elementParser the type parser to parse elements.
-     * @return              a newly generated set parser or a cached one.
-     * @param <E> the type of elements in the set.
+     * @param elementParser the type parser to parse elements
+     * @return              a newly generated set parser or a cached one
+     * @param <E> the type of elements in the set
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -45,8 +45,8 @@ public class SetParser<E> extends CollectionParser<Set<E>, E> {
     /**
      * Construct a set parser with defined supplier and element parser.
      *
-     * @param supplier      the supplier that generate a set.
-     * @param elementParser the type parser to parse elements.
+     * @param supplier      the supplier that generate a set
+     * @param elementParser the type parser to parse elements
      */
     public SetParser(@NotNull Supplier<Set<E>> supplier, @NotNull TypeParser<E> elementParser) {
         super(supplier, elementParser);
@@ -55,8 +55,8 @@ public class SetParser<E> extends CollectionParser<Set<E>, E> {
     /**
      * Construct a set parser with defined supplier and element parser.
      *
-     * @param supplier      the function that generate a set with allocated size.
-     * @param elementParser the type parser to parse elements.
+     * @param supplier      the function that generate a set with allocated size
+     * @param elementParser the type parser to parse elements
      */
     public SetParser(@NotNull Function<Integer, Set<E>> supplier, @NotNull TypeParser<E> elementParser) {
         super(supplier, elementParser);

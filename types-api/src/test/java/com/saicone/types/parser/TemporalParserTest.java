@@ -19,7 +19,7 @@ public class TemporalParserTest {
     private static final LocalDateTime LOCAL_DATE_TIME3 = LocalDateTime.of(2025, 1, 2, 7, 8, 9, 10);
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         assertEquals(LOCAL_DATE, TemporalParser.LOCAL_DATE.parse(LOCAL_DATE));
         assertEquals(LOCAL_TIME1, TemporalParser.LOCAL_TIME.parse(LOCAL_TIME1));
         assertEquals(LOCAL_TIME2, TemporalParser.LOCAL_TIME.parse(LOCAL_TIME2));
@@ -30,7 +30,7 @@ public class TemporalParserTest {
     }
 
     @Test
-    public void testParseLocalDate() {
+    public void testParseLocalDate() throws Throwable {
         assertEquals(LOCAL_DATE, TemporalParser.LOCAL_DATE.parse(LOCAL_DATE.toEpochDay()));
         assertEquals(LOCAL_DATE, TemporalParser.LOCAL_DATE.parse(new int[] { 2025, 2 }));
         assertEquals(LOCAL_DATE, TemporalParser.LOCAL_DATE.parse(new int[] { 2025, 1, 2 }));
@@ -38,7 +38,7 @@ public class TemporalParserTest {
     }
 
     @Test
-    public void testParseLocalTime() {
+    public void testParseLocalTime() throws Throwable {
         assertEquals(LOCAL_TIME2, TemporalParser.LOCAL_TIME.parse(LOCAL_TIME2.toSecondOfDay()));
         assertEquals(LOCAL_TIME1, TemporalParser.LOCAL_TIME.parse(new int[] { 7, 8 }));
         assertEquals(LOCAL_TIME2, TemporalParser.LOCAL_TIME.parse(new int[] { 7, 8, 9 }));
@@ -49,7 +49,7 @@ public class TemporalParserTest {
     }
 
     @Test
-    public void testParseLocalDateTime() {
+    public void testParseLocalDateTime() throws Throwable {
         //assertEquals(LOCAL_DATE_TIME2, TemporalParser.LOCAL_DATE_TIME.parse(1735823289L));
         assertEquals(LOCAL_DATE_TIME1, TemporalParser.LOCAL_DATE_TIME.parse(new int[] { 2025, 1, 2, 7, 8 }));
         assertEquals(LOCAL_DATE_TIME2, TemporalParser.LOCAL_DATE_TIME.parse(new int[] { 2025, 1, 2, 7, 8, 9 }));

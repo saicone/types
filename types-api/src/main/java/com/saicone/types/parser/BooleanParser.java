@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Represents a parser that try to convert any object type to Boolean.<br>
@@ -27,8 +28,8 @@ public class BooleanParser implements TypeParser<Boolean> {
      * Check if the provided string is a valid boolean representation.<br>
      * This method doesn't check for number representations.
      *
-     * @param s the string to check.
-     * @return  true if the provided string is a valid boolean, false otherwise.
+     * @param s the string to check
+     * @return  true if the provided string is a valid boolean, false otherwise
      */
     public static boolean isValid(@NotNull String s) {
         switch (s.trim().toLowerCase()) {
@@ -54,11 +55,9 @@ public class BooleanParser implements TypeParser<Boolean> {
     }
 
     @Override
-    public @Nullable Boolean parse(@NotNull Object object) {
+    public @NotNull Boolean parse(@NotNull Object object) throws Throwable {
         final Object first = AnyIterable.first(object);
-        if (first == null) {
-            return null;
-        }
+        Objects.requireNonNull(first, "Cannot get effective first element");
 
         if (first instanceof Boolean) {
             return (Boolean) first;
@@ -74,11 +73,11 @@ public class BooleanParser implements TypeParser<Boolean> {
      * This method also interpret decimal values between ZERO and ONE as {@code true}
      * following elasticity check from mathematical functions.
      *
-     * @param number the number to parse.
-     * @return       a converted Boolean value if Number is valid, null otherwise.
+     * @param number the number to parse
+     * @return       a converted Boolean value if Number is valid
+     * @throws IllegalArgumentException if the Number is not a valid representation
      */
-    @Nullable
-    public Boolean parseBoolean(@NotNull Number number) {
+    public static boolean parseBoolean(@NotNull Number number) throws IllegalArgumentException {
         if (number instanceof BigDecimal) {
             final BigDecimal decimal = (BigDecimal) number;
             if (decimal.equals(BigDecimal.ZERO)) {
@@ -106,7 +105,7 @@ public class BooleanParser implements TypeParser<Boolean> {
                 return true;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Invalid boolean representation: " + number);
     }
 
     /**
@@ -119,11 +118,11 @@ public class BooleanParser implements TypeParser<Boolean> {
      * {@code on | off}<br>
      * {@code y | n}
      *
-     * @param s the string to parse.
-     * @return  a converted Boolean value if String is a valid representations, null otherwise.
+     * @param s the string to parse
+     * @return  a converted Boolean value if String is a valid representations
+     * @throws IllegalArgumentException if the String is not a valid representation
      */
-    @Nullable
-    public Boolean parseBoolean(@NotNull String s) {
+    public static boolean parseBoolean(@NotNull String s) throws IllegalArgumentException {
         switch (s.trim().toLowerCase()) {
             case "true":
             case "t":
@@ -140,7 +139,7 @@ public class BooleanParser implements TypeParser<Boolean> {
             case "n":
                 return false;
             default:
-                return null;
+                throw new IllegalArgumentException("Invalid boolean representation: " + s);
         }
     }
 }

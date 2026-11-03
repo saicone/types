@@ -11,12 +11,12 @@ public class PatternParserTest {
     private static final Pattern PATTERN = Pattern.compile("test|asd|123");
 
     @Test
-    public void testParseLiteral() {
+    public void testParseLiteral() throws Throwable {
         assertEquals(PATTERN, PatternParser.INSTANCE.parse(PATTERN));
     }
 
     @Test
-    public void testParseString() {
+    public void testParseString() throws Throwable {
         assertEquals("test|asd|123", PatternParser.INSTANCE.parse("test|asd|123").toString());
     }
 }

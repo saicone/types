@@ -2,6 +2,7 @@ package com.saicone.types.parser;
 
 import com.saicone.types.AnyIterable;
 import com.saicone.types.TypeParser;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +24,7 @@ public class PatternParser implements TypeParser<Pattern> {
     /**
      * {@link PatternParser} public instance.
      *
-     * @return a pattern parser instance.
+     * @return a pattern parser instance
      */
     @NotNull
     public static PatternParser instance() {
@@ -35,6 +36,7 @@ public class PatternParser implements TypeParser<Pattern> {
         }
     }
 
+    @MagicConstant(flagsFromClass = Pattern.class)
     private final int flags;
 
     /**
@@ -47,17 +49,18 @@ public class PatternParser implements TypeParser<Pattern> {
     /**
      * Create a pattern parser with given flags to compile patterns.
      *
-     * @param flags a bit mask of match flags.
+     * @param flags a bit mask of match flags
      */
-    public PatternParser(int flags) {
+    public PatternParser(@MagicConstant(flagsFromClass = Pattern.class) int flags) {
         this.flags = flags;
     }
 
     /**
      * Return the flags used to compile patterns.
      *
-     * @return a bit mask of match flags.
+     * @return a bit mask of match flags
      */
+    @MagicConstant(flagsFromClass = Pattern.class)
     public int getFlags() {
         return flags;
     }
@@ -68,7 +71,7 @@ public class PatternParser implements TypeParser<Pattern> {
     }
 
     @Override
-    public @Nullable Pattern parse(@NotNull Object object) {
+    public @NotNull Pattern parse(@NotNull Object object) throws Throwable {
         final Object first = AnyIterable.first(object);
         if (first instanceof Pattern) {
             return (Pattern) first;

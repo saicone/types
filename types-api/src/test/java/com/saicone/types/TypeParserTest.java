@@ -64,7 +64,7 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testArray()  {
+    public void testArray() throws Throwable {
         final String[] expected = new String[] { "1.5", "1.3", "1.2", "1.1" };
         assertArrayEquals(expected, Types.STRING.<String[]>array().parse(ImmutableList.of(1.5, 1.3, 1.2, 1.1)));
 

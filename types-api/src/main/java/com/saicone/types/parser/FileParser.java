@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * Represents a parser that try to convert any object type to File.<br>
@@ -28,14 +29,13 @@ public class FileParser implements TypeParser<File> {
     }
 
     @Override
-    public @Nullable File parse(@NotNull Object object) {
+    public @NotNull File parse(@NotNull Object object) throws Throwable {
         if (object instanceof Path) {
             return ((Path) object).toFile();
         }
+
         final Object single = AnyIterable.single(object);
-        if (single == null) {
-            return null;
-        }
+        Objects.requireNonNull(single, "Cannot get effective single element");
 
         if (single instanceof File) {
             return (File) single;
@@ -57,8 +57,8 @@ public class FileParser implements TypeParser<File> {
      * Converts a string path into a {@link File}.<br>
      * This method aims to avoid the usage of Strings with OS-driven separators.
      *
-     * @param path a string path, not compatible with file separators.
-     * @return     the resulting {@link File}.
+     * @param path a string path, not compatible with file separators
+     * @return     the resulting {@link File}
      */
     @NotNull
     public static File getFile(@NotNull String... path) {
