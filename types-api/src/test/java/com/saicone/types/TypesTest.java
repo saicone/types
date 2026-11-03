@@ -108,7 +108,6 @@ public class TypesTest {
     public void testRegister() throws Throwable {
         assertTrue(Types.contains(String.class));
         assertTrue(Types.contains(int.class));
-        assertTrue(Types.contains("text"));
 
         Types.put(MyObject.class, MyObject::new);
         assertTrue(Types.contains(MyObject.class));

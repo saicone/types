@@ -63,12 +63,12 @@ public class BooleanParserTest {
         for (String s : TRUE_STRING) {
             assertEquals(Boolean.TRUE, BooleanParser.INSTANCE.parse(s));
             assertEquals(Boolean.TRUE, BooleanParser.INSTANCE.parse(" " + s + " "));
-            assertNull(BooleanParser.INSTANCE.parse(s + "-"));
+            assertNull(BooleanParser.INSTANCE.parseOrNull(s + "-"));
         }
         for (String s : FALSE_STRING) {
             assertEquals(Boolean.FALSE, BooleanParser.INSTANCE.parse(s));
             assertEquals(Boolean.FALSE, BooleanParser.INSTANCE.parse(" " + s + " "));
-            assertNull(BooleanParser.INSTANCE.parse(s + "-"));
+            assertNull(BooleanParser.INSTANCE.parseOrNull(s + "-"));
         }
     }
 
@@ -107,7 +107,7 @@ public class BooleanParserTest {
         }
 
         for (Number number : INVALID_INTEGER) {
-            assertNull(BooleanParser.INSTANCE.parse(number));
+            assertNull(BooleanParser.INSTANCE.parseOrNull(number));
         }
     }
 
@@ -143,7 +143,7 @@ public class BooleanParserTest {
         }
 
         for (Number number : INVALID_DECIMAL) {
-            assertNull(BooleanParser.INSTANCE.parse(number));
+            assertNull(BooleanParser.INSTANCE.parseOrNull(number));
         }
     }
 }

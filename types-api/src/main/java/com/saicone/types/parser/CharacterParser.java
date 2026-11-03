@@ -6,6 +6,7 @@ import com.saicone.types.Types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -22,6 +23,11 @@ public class CharacterParser implements TypeParser<Character> {
      * {@link CharacterParser} public instance.
      */
     public static final CharacterParser INSTANCE = new CharacterParser();
+
+    @Override
+    public @NotNull Type getType() {
+        return Character.class;
+    }
 
     @Override
     public @NotNull Character parse(@NotNull Object object) throws Throwable {

@@ -5,6 +5,7 @@ import com.saicone.types.TypeParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -35,6 +36,11 @@ public class StringParser implements TypeParser<String> {
     @NotNull
     public static Composed composed() {
         return new Composed();
+    }
+
+    @Override
+    public @NotNull Type getType() {
+        return String.class;
     }
 
     @Override

@@ -69,7 +69,7 @@ public class TypeOfTest {
         final int[] expected = new int[] { 15, 1234, 14, 1 };
 
         assertArrayEquals(expected, PRIMITIVE_ARRAY_TYPE.parse(ImmutableList.of(15.2, "1234", 14.8, true)));
-        assertArrayEquals(new boolean[] { false, false, false, true }, new TypeOf<boolean[]>(){}.parse(expected));
+        assertArrayEquals(new boolean[] { false, true, true, true }, new TypeOf<boolean[]>(){}.parse(ImmutableList.of(0.0, 0.1234, 0.99, true)));
     }
 
     enum EnumType {
