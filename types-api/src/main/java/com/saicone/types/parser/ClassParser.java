@@ -103,7 +103,7 @@ public class ClassParser implements TypeParser<Class<?>> {
 
     @Override
     public @Nullable Class<?> parse(@NotNull Object object) {
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first == null) {
             return null;
         }

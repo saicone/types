@@ -32,7 +32,7 @@ public class FileParser implements TypeParser<File> {
         if (object instanceof Path) {
             return ((Path) object).toFile();
         }
-        final Object single = AnyIterable.of(object).single();
+        final Object single = AnyIterable.single(object);
         if (single == null) {
             return null;
         }

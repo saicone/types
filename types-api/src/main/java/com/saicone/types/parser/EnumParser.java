@@ -83,7 +83,7 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
     @Override
     @SuppressWarnings("unchecked")
     default @Nullable T parse(@NotNull Object object) {
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first == null) {
             return null;
         }

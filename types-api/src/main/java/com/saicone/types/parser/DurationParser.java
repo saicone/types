@@ -24,7 +24,7 @@ public class DurationParser implements TypeParser<Duration> {
 
     @Override
     public @Nullable Duration parse(@NotNull Object object) {
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first == null) {
             return null;
         }

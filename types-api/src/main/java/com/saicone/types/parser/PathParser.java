@@ -34,7 +34,7 @@ public class PathParser implements TypeParser<Path> {
         if (object instanceof Path) {
             return (Path) object;
         }
-        final Object single = AnyIterable.of(object).single();
+        final Object single = AnyIterable.single(object);
         if (single == null) {
             return null;
         }

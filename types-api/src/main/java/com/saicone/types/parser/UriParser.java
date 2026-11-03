@@ -35,7 +35,7 @@ public class UriParser implements TypeParser<URI> {
         if (object instanceof Path) {
             return ((Path) object).toUri();
         }
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first == null) {
             return null;
         }

@@ -29,7 +29,7 @@ public class PatternAnnotatedParser extends PatternParser implements AnnotatedTy
             return parse(object);
         }
 
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first instanceof Pattern) {
             return (Pattern) first;
         }

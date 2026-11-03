@@ -39,7 +39,7 @@ public class UrlParser implements TypeParser<URL> {
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first == null) {
             return null;
         }

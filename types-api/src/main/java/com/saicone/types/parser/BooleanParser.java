@@ -55,7 +55,7 @@ public class BooleanParser implements TypeParser<Boolean> {
 
     @Override
     public @Nullable Boolean parse(@NotNull Object object) {
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first == null) {
             return null;
         }

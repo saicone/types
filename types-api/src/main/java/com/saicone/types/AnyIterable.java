@@ -19,7 +19,7 @@ import java.util.Objects;
  *
  * @author Rubenicos
  *
- * @param <T> the iterable object type.
+ * @param <T> the iterable object type
  */
 @FunctionalInterface
 public interface AnyIterable<T> extends Iterable<T> {
@@ -27,8 +27,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type object.
      *
-     * @param value the value to iterate over.
-     * @return      a new iterable type.
+     * @param value the value to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Object> of(@NotNull Object value) {
@@ -41,8 +41,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive char array.
      *
-     * @param value the char array to iterate over.
-     * @return      a new iterable type.
+     * @param value the char array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Character> of(char[] value) {
@@ -52,8 +52,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive boolean array.
      *
-     * @param value the boolean array to iterate over.
-     * @return      a new iterable type.
+     * @param value the boolean array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Boolean> of(boolean[] value) {
@@ -63,8 +63,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive byte array.
      *
-     * @param value the byte array to iterate over.
-     * @return      a new iterable type.
+     * @param value the byte array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Byte> of(byte[] value) {
@@ -74,8 +74,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive short array.
      *
-     * @param value the short array to iterate over.
-     * @return      a new iterable type.
+     * @param value the short array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Short> of(short[] value) {
@@ -85,8 +85,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive int array.
      *
-     * @param value the int array to iterate over.
-     * @return      a new iterable type.
+     * @param value the int array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Integer> of(int[] value) {
@@ -96,8 +96,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive float array.
      *
-     * @param value the float array to iterate over.
-     * @return      a new iterable type.
+     * @param value the float array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Float> of(float[] value) {
@@ -107,8 +107,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive long array.
      *
-     * @param value the long array to iterate over.
-     * @return      a new iterable type.
+     * @param value the long array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Long> of(long[] value) {
@@ -118,8 +118,8 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with primitive double array.
      *
-     * @param value the double array to iterate over.
-     * @return      a new iterable type.
+     * @param value the double array to iterate over
+     * @return      a new iterable type
      */
     @NotNull
     static AnyIterable<Double> of(double[] value) {
@@ -129,9 +129,9 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create a read-only iterable type with object array.
      *
-     * @param value the object array to iterate over.
-     * @return      a new iterable type.
-     * @param <T>   the iterable array type.
+     * @param value the object array to iterate over
+     * @return      a new iterable type
+     * @param <T> the iterable array type
      */
     @NotNull
     static <T> AnyIterable<T> of(@NotNull T[] value) {
@@ -141,9 +141,9 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create an iterable type that can remove objects from provided iterable parameter.
      *
-     * @param value the iterable to iterate over.
-     * @return      a new iterable type.
-     * @param <E>   the iterable object type.
+     * @param value the iterable to iterate over
+     * @return      a new iterable type
+     * @param <E> the iterable object type
      */
     @NotNull
     static <E> AnyIterable<E> of(@NotNull Iterable<E> value) {
@@ -153,10 +153,10 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create an iterable type that can remove objects from provided map.
      *
-     * @param value the map to iterate over.
-     * @return      a new iterable type.
-     * @param <K>   the type of keys maintained by the map.
-     * @param <V>   the type of mapped values.
+     * @param value the map to iterate over
+     * @return      a new iterable type
+     * @param <K> the type of keys maintained by the map
+     * @param <V> the type of mapped values
      */
     @NotNull
     static <K, V> AnyIterable<Map.Entry<K, V>> of(@NotNull Map<K, V> value) {
@@ -166,9 +166,9 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Create an unchecked iterable type from any object.
      *
-     * @param value the object to iterate over.
-     * @return      a new iterable type.
-     * @param <T>   the iterable object type.
+     * @param value the object to iterate over
+     * @return      a new iterable type
+     * @param <T> the iterable object type
      */
     @NotNull
     static <T> AnyIterable<T> ofAny(@NotNull Object value) {
@@ -178,15 +178,15 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Get the object that can be iterated.
      *
-     * @return an iterable object.
+     * @return an iterable object
      */
     Object getValue();
 
     /**
      * Set the object that can be iterated.
      *
-     * @param value an iterable object.
-     * @return      an object.
+     * @param value an iterable object
+     * @return      an object
      */
     default Object setValue(Object value) {
         throw new IllegalStateException("The current iterable type doesn't allow value override");
@@ -196,10 +196,20 @@ public interface AnyIterable<T> extends Iterable<T> {
      * Check if the current object can be iterated using for statement.<br>
      * This condition can be applied to any {@link Iterable} type, map or array.
      *
-     * @return true if the object can be iterated.
+     * @return true if the object can be iterated
      */
     default boolean isIterable() {
-        final Object value = getValue();
+        return isIterable(getValue());
+    }
+
+    /**
+     * Check if the provided object can be iterated using for statement.<br>
+     * This condition can be applied to any {@link Iterable} type, map or array.
+     *
+     * @param value an object
+     * @return      true if the object can be iterated
+     */
+    static boolean isIterable(@Nullable Object value) {
         return value != null && (value instanceof Iterable || value instanceof Map || value.getClass().isArray());
     }
 
@@ -207,31 +217,29 @@ public interface AnyIterable<T> extends Iterable<T> {
      * Check if the current object can return a {@link ListIterator} on {@link #listIterator()}.<br>
      * This condition can be applied to any {@link List} type or array.
      *
-     * @return true if the object can return a {@link ListIterator}.
+     * @return true if the object can return a {@link ListIterator}
      */
     default boolean isListIterable() {
-        final Object value = getValue();
+        return isListIterable(getValue());
+    }
+
+    /**
+     * Check if the provided object can return a {@link ListIterator} on {@link #listIterator()}.<br>
+     * This condition can be applied to any {@link List} type or array.
+     *
+     * @param value an object
+     * @return      true if the object can return a {@link ListIterator}
+     */
+    static boolean isListIterable(@Nullable Object value) {
         return value != null && (value instanceof List || value.getClass().isArray());
     }
 
     /**
-     * Same has {@link #isIterable()} but with inverted result.
+     * Return an iterator over the elements of the current value.<br>
+     * This method can return a properly made iterator if the current value is an iterable, map or array.
      *
-     * @return true if the object can't be iterated.
+     * @return a newly generated iterator
      */
-    default boolean isNotIterable() {
-        return !isIterable();
-    }
-
-    /**
-     * Same has {@link #isListIterable()} but with inverted result.
-     *
-     * @return true if the object can't return a {@link ListIterator}.
-     */
-    default boolean isNotListIterable() {
-        return !isListIterable();
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     default @NotNull Iterator<T> iterator() {
@@ -262,8 +270,8 @@ public interface AnyIterable<T> extends Iterable<T> {
      * Return a list iterator over the elements of the current value<br>
      * This method can return a properly made list iterator if the current value is a list or an array.
      *
-     * @return      a newly generated list iterator.
-     * @throws IllegalStateException if the current value is no compatible with list iterator.
+     * @return a newly generated list iterator
+     * @throws IllegalStateException if the current value is no compatible with list iterator
      */
     @NotNull
     default ListIterator<T> listIterator() {
@@ -274,9 +282,9 @@ public interface AnyIterable<T> extends Iterable<T> {
      * Return a list iterator over the elements of the current value, starting at the specified position in the value.<br>
      * This method can return a properly made list iterator if the current value is a list or an array.
      *
-     * @param index the index of the first element to be returned from the list iterator.
-     * @return      a newly generated list iterator.
-     * @throws IllegalStateException if the current value is no compatible with list iterator.
+     * @param index the index of the first element to be returned from the list iterator
+     * @return      a newly generated list iterator
+     * @throws IllegalStateException if the current value is no compatible with list iterator
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -300,11 +308,20 @@ public interface AnyIterable<T> extends Iterable<T> {
     /**
      * Get the size of the current object.
      *
-     * @return a number that represent the current amount of values the object has.
+     * @return a number that represent the current amount of values the object has
      */
     default int size() {
-        Objects.requireNonNull(getValue(), "Cannot get the size of a null object");
-        final Object value = getValue();
+        return size(getValue());
+    }
+
+    /**
+     * Get the size of the provided object.
+     *
+     * @param value an object
+     * @return      a number that represent the current amount of values the object has
+     */
+    static int size(@NotNull Object value) {
+        Objects.requireNonNull(value, "Cannot get the size of a null object");
         if (value instanceof Collection) {
             return ((Collection<?>) value).size();
         } else if (value instanceof Map) {
@@ -318,16 +335,28 @@ public interface AnyIterable<T> extends Iterable<T> {
     }
 
     /**
-     * Convert the current type into the first object representation,
-     * this means that any object compatible with this instance will
-     * be iterated to get the first object.
+     * Get from current type the first available object, this method
+     * is only effective with {@link Iterable} and array objects, in any other case
+     * it will return the value itself.
      *
-     * @return the first object, null if current value is empty or null.
+     * @return the first object, null if current value is empty or null
+     */
+    @Nullable
+    default T first() {
+        return first(getValue());
+    }
+
+    /**
+     * Get from provided object the first available object, this method
+     * is only effective with {@link Iterable} and array objects, in any other case
+     * it will return the value itself.
+     *
+     * @param value an object
+     * @return      the first object, null if current value is empty or null
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    default T first() {
-        final Object value = getValue();
+    static <T> T first(@Nullable Object value) {
         if (value instanceof Iterable) {
             final Iterator<T> iterator = ((Iterable<T>) value).iterator();
             if (iterator.hasNext()) {
@@ -338,7 +367,7 @@ public interface AnyIterable<T> extends Iterable<T> {
             if (array.length > 0) {
                 return (T) array[0];
             }
-        } else if (value.getClass().isArray()) {
+        } else if (value != null && value.getClass().isArray()) {
             if (Array.getLength(value) > 0) {
                 return (T) Array.get(value, 0);
             }
@@ -350,9 +379,10 @@ public interface AnyIterable<T> extends Iterable<T> {
 
     /**
      * Get from current type the last available object, this method
-     * is only compatible with list and array values.
+     * is only effective with {@link List} and array objects, in any other case
+     * it will return the value itself.
      *
-     * @return the last object, null if current value is empty or incompatible.
+     * @return the last object, null if current value is empty or null
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -379,18 +409,61 @@ public interface AnyIterable<T> extends Iterable<T> {
         return null;
     }
 
+    /**
+     * Get from provided object the last available object, this method
+     * is only effective with {@link List} and array objects, in any other case
+     * it will return the value itself.
+     *
+     * @param value an object
+     * @return      the last object, null if current value is empty or null
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    static <T> T last(@Nullable Object value) {
+        if (value instanceof List) {
+            final List<T> list = (List<T>) value;
+            if (!list.isEmpty()) {
+                return list.get(list.size() - 1);
+            }
+        } else if (value instanceof Object[]) {
+            final Object[] array = (Object[]) value;
+            if (array.length > 0) {
+                return (T) array[array.length - 1];
+            }
+        } else if (value != null && value.getClass().isArray()) {
+            final int length = Array.getLength(value);
+            if (length > 0) {
+                return (T) Array.get(value, length - 1);
+            }
+        } else {
+            return (T) value;
+        }
+        return null;
+    }
 
     /**
      * Convert the current type into a single object representation,
      * this means that any iterable object will be converted into
      * single object by taking the first iterated value.
      *
-     * @return a single object.
+     * @return a single object
+     */
+    @Nullable
+    default T single() {
+        return single(getValue());
+    }
+
+    /**
+     * Convert the provided object into a single object representation,
+     * this means that any iterable object will be converted into
+     * single object by taking the first iterated value.
+     *
+     * @param value an object
+     * @return      a single object
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    default T single() {
-        final Object value = getValue();
+    static <T> T single(@Nullable Object value) {
         if (value instanceof Iterable) {
             final Iterator<Object> iterator = ((Iterable<Object>) value).iterator();
             final Object obj;

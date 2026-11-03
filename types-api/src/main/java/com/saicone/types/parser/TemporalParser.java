@@ -149,7 +149,7 @@ public interface TemporalParser<T extends Temporal> extends TypeParser<T> {
 
     @Override
     default @Nullable T parse(@NotNull Object object) {
-        final Object single = AnyIterable.of(object).single();
+        final Object single = AnyIterable.single(object);
         if (single == null) {
             return null;
         }

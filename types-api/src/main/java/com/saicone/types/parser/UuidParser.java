@@ -33,7 +33,7 @@ public class UuidParser implements TypeParser<UUID> {
 
     @Override
     public @Nullable UUID parse(@NotNull Object object) {
-        final Object single = AnyIterable.of(object).single();
+        final Object single = AnyIterable.single(object);
         if (single == null) {
             return null;
         }

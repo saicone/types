@@ -52,7 +52,7 @@ public interface TypeParser<T> extends Function<Object, T> {
     }
 
     /**
-     * Create a type parser that accepts a {@link AnyIterable#first()}.
+     * Create a type parser that accepts a {@link AnyIterable#first(Object)}.
      *
      * @param parser the delegate parser that process any first object.
      * @return       a type parser that accepts the first object.
@@ -64,7 +64,7 @@ public interface TypeParser<T> extends Function<Object, T> {
     }
 
     /**
-     * Create a type parser with associated type that accepts a {@link AnyIterable#first()}.
+     * Create a type parser with associated type that accepts a {@link AnyIterable#first(Object)}.
      *
      * @param type   the associated type with the parser.
      * @param parser the delegate parser that process any first object.
@@ -81,17 +81,17 @@ public interface TypeParser<T> extends Function<Object, T> {
 
             @Override
             public @Nullable T parse(@NotNull Object object) {
-                final Object single = AnyIterable.of(object).first();
-                if (single == null) {
+                final Object first = AnyIterable.first(object);
+                if (first == null) {
                     return null;
                 }
-                return parser.parse(single);
+                return parser.parse(first);
             }
         };
     }
 
     /**
-     * Create a type parser that accepts a {@link AnyIterable#single()}.
+     * Create a type parser that accepts a {@link AnyIterable#single(Object)}.
      *
      * @param parser the delegate parser that process any single object.
      * @return       a type parser that accepts a single object.
@@ -103,7 +103,7 @@ public interface TypeParser<T> extends Function<Object, T> {
     }
 
     /**
-     * Create a type parser with associated type that accepts a {@link AnyIterable#single()}.
+     * Create a type parser with associated type that accepts a {@link AnyIterable#single(Object)}.
      *
      * @param type   the associated type with the parser.
      * @param parser the delegate parser that process any single object.
@@ -120,7 +120,7 @@ public interface TypeParser<T> extends Function<Object, T> {
 
             @Override
             public @Nullable T parse(@NotNull Object object) {
-                final Object single = AnyIterable.of(object).single();
+                final Object single = AnyIterable.single(object);
                 if (single == null) {
                     return null;
                 }

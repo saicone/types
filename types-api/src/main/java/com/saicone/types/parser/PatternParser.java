@@ -69,7 +69,7 @@ public class PatternParser implements TypeParser<Pattern> {
 
     @Override
     public @Nullable Pattern parse(@NotNull Object object) {
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first instanceof Pattern) {
             return (Pattern) first;
         }

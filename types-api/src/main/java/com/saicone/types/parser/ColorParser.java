@@ -51,7 +51,7 @@ public class ColorParser implements TypeParser<Color> {
 
     @Override
     public @Nullable Color parse(@NotNull Object object) {
-        final Object first = AnyIterable.of(object).first();
+        final Object first = AnyIterable.first(object);
         if (first == null) {
             return null;
         }
