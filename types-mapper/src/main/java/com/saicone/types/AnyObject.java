@@ -120,7 +120,7 @@ public interface AnyObject<T> {
     /**
      * Convert this object with the given type parser.
      *
-     * @see TypeParser#parse(Object, Object)
+     * @see TypeParser#parseOrElse(Object, Object)
      *
      * @param parser the parser to apply this object into.
      * @param def    the type object to return if parse fails.
@@ -130,7 +130,7 @@ public interface AnyObject<T> {
     @Nullable
     @Contract("_, !null -> !null")
     default <E> E as(@NotNull TypeParser<E> parser, @Nullable E def) {
-        return parser.parse(getValue(), def);
+        return parser.parseOrElse(getValue(), def);
     }
 
     /**
@@ -142,7 +142,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> Optional<E> asOptional(@NotNull TypeParser<E> parser) {
-        return parser.optional(getValue());
+        return parser.parseOrEmpty(getValue());
     }
 
     /**

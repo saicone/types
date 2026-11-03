@@ -60,8 +60,8 @@ public class UuidParser implements TypeParser<UUID> {
     public UUID parseUuid(@NotNull ArrayIterator<?> iterator) {
         final int size = iterator.size();
         if (size == 2) {
-            final Long mostSigBits = Types.LONG.parse(iterator.next());
-            final Long leastSigBits = Types.LONG.parse(iterator.next());
+            final Long mostSigBits = Types.LONG.parseOrNull(iterator.next());
+            final Long leastSigBits = Types.LONG.parseOrNull(iterator.next());
             if (mostSigBits == null || leastSigBits == null) {
                 return null;
             }
@@ -69,7 +69,7 @@ public class UuidParser implements TypeParser<UUID> {
         } else if (size == 4) {
             StringBuilder builder = new StringBuilder(36);
             while (iterator.hasNext()) {
-                final Integer i = Types.INTEGER.parse(iterator.next());
+                final Integer i = Types.INTEGER.parseOrNull(iterator.next());
                 if (i == null) {
                     return null;
                 }

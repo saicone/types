@@ -359,7 +359,7 @@ public abstract class TypeOf<T> implements TypeParser<T> {
         if (delegate == null) {
             delegate = getParser();
         }
-        return (T) delegate.parse(object);
+        return (T) delegate.parseOrNull(object);
     }
 
     @Override

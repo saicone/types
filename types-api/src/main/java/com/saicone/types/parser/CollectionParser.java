@@ -94,7 +94,7 @@ public abstract class CollectionParser<T extends Collection<E>, E> extends Alloc
 
     @Override
     public @NotNull T parse(@Nullable Object object) {
-        return parseEach(object, (element, parser) -> parser.parse(element));
+        return parseEach(object, (element, parser) -> parser.parseOrNull(element));
     }
 
     /**

@@ -136,7 +136,7 @@ public class ArrayParser<T, C> extends AllocParser<T> {
 
     @Override
     public @NotNull T parse(@Nullable Object object) {
-        return parseEach(object, (element, parser) -> parser.parse(element));
+        return parseEach(object, (element, parser) -> parser.parseOrNull(element));
     }
 
     /**

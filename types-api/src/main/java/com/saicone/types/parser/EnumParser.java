@@ -99,7 +99,7 @@ public interface EnumParser<T extends Enum<T>> extends TypeParser<T> {
             return parse(((Enum<?>) first).ordinal());
         } else {
             try {
-                final Integer ordinal = Types.INTEGER.parse(first);
+                final Integer ordinal = Types.INTEGER.parseOrNull(first);
                 if (ordinal != null) {
                     return parse(ordinal);
                 }

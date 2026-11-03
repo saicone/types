@@ -1,13 +1,13 @@
 package com.saicone.types.iterator;
 
 import com.saicone.types.AnyIterator;
-import com.saicone.types.TypeParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.util.ConcurrentModificationException;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 /**
  * Abstract class to iterate into any array.<br>
@@ -50,7 +50,7 @@ public abstract class ArrayIterator<T> extends AnyIterator<T> implements ListIte
      * @param <T>    the type of type parser.
      */
     @NotNull
-    public static <T> ArrayIterator<T> of(@NotNull Object value, @NotNull TypeParser<T> parser) {
+    public static <T> ArrayIterator<T> of(@NotNull Object value, @NotNull Function<Object, T> parser) {
         return new ArrayIterator<T>(value) {
             @Override
             public void setValue(Object value) {
@@ -60,9 +60,9 @@ public abstract class ArrayIterator<T> extends AnyIterator<T> implements ListIte
             @Override
             public T get(int index) {
                 if (isObjectArray()) {
-                    return parser.parse(((Object[]) getValue())[index]);
+                    return parser.apply(((Object[]) getValue())[index]);
                 } else {
-                    return parser.parse(Array.get(getValue(), index));
+                    return parser.apply(Array.get(getValue(), index));
                 }
             }
         };

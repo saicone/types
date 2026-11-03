@@ -43,7 +43,7 @@ public class BitSetParser extends AllocParser<BitSet> {
         if (!iterable.isIterable()) {
             final BitSet bitSet = create();
 
-            final Integer value = Types.INTEGER.parse(object);
+            final Integer value = Types.INTEGER.parseOrNull(object);
             if (value != null) {
                 for (int bitIndex = 0; bitIndex < 32; bitIndex++) {
                     if ((value & (1 << bitIndex)) != 0) {
@@ -63,9 +63,9 @@ public class BitSetParser extends AllocParser<BitSet> {
             if (element instanceof Boolean) {
                 bitSet.set(bitIndex, (Boolean) element);
             } else if (element instanceof String && BooleanParser.isValid((String) element)) {
-                bitSet.set(bitIndex, Types.BOOLEAN.parse(element));
+                bitSet.set(bitIndex, Types.BOOLEAN.parseOrNull(element));
             } else {
-                final Integer index = Types.INTEGER.parse(element);
+                final Integer index = Types.INTEGER.parseOrNull(element);
                 if (index != null) {
                     bitSet.set(index);
                 }

@@ -470,6 +470,6 @@ public class Types {
         if (parser == null) {
             return def;
         }
-        return ((TypeParser<T>) parser).parse(object, def);
+        return ((TypeParser<T>) parser).parseOrElse(object, def);
     }
 }

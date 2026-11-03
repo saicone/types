@@ -26,7 +26,7 @@ public class TypesTest {
     }
 
     @Test
-    public void testParser() {
+    public void testParser() throws Throwable {
         // Object
         assertEquals("TEST", Types.OBJECT.parse("TEST"));
         // String
@@ -101,7 +101,7 @@ public class TypesTest {
     }
 
     @Test
-    public void testRegister() {
+    public void testRegister() throws Throwable {
         assertTrue(Types.contains(String.class));
         assertTrue(Types.contains(int.class));
         assertTrue(Types.contains("text"));

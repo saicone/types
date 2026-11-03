@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TypeParserTest {
 
     @Test
-    public void testObject() {
+    public void testObject() throws Throwable {
         final TypeParser<String> parser = String::valueOf;
         assertEquals("1234", parser.parse(1234));
     }
 
     @Test
-    public void testFirst() {
+    public void testFirst() throws Throwable {
         final TypeParser<String> parser = TypeParser.first(String::valueOf);
         assertEquals("1234", parser.parse(1234));
         assertEquals("test", parser.parse(ImmutableList.of("test", "1234")));
@@ -29,7 +29,7 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testNumber() {
+    public void testNumber() throws Throwable {
         final TypeParser<Integer> parser = NumberParser.of(Integer.class, 'i', Integer.MIN_VALUE, Integer.MAX_VALUE, Number::intValue, Integer::parseInt);
         assertEquals(1234, parser.parse("1234"));
         assertEquals(15, parser.parse(ImmutableList.of(15.2, 14.42)));
@@ -37,7 +37,7 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testCollection() {
+    public void testCollection() throws Throwable {
         final TypeParser<List<Integer>> parser = Types.INTEGER.collection(List.class, capacity -> new ArrayList<>(capacity));
         final List<Integer> expected = ImmutableList.of(1234, 55, 4, 20);
         assertEquals(expected, parser.parse(ImmutableList.of("1234", "55", "4", "20")));
@@ -45,7 +45,7 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testEnum() {
+    public void testEnum() throws Throwable {
         TypeParser<EnumType> parser = EnumParser.of(EnumType.class);
         assertEquals(EnumType.SECOND, parser.parse("SECOND"));
 
@@ -55,7 +55,7 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testMap() {
+    public void testMap() throws Throwable {
         final TypeParser<Map<Integer, Boolean>> parser = MapParser.of(Types.INTEGER, Types.BOOLEAN);
         final Map<Integer, Boolean> expected = ImmutableMap.of(1, true, 4, false);
         final Map<String, String> actual = ImmutableMap.of("1", "true", "4", "false");
@@ -64,7 +64,7 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testArray() {
+    public void testArray()  {
         final String[] expected = new String[] { "1.5", "1.3", "1.2", "1.1" };
         assertArrayEquals(expected, Types.STRING.<String[]>array().parse(ImmutableList.of(1.5, 1.3, 1.2, 1.1)));
 
@@ -73,7 +73,7 @@ public class TypeParserTest {
     }
 
     @Test
-    public void testChaining() {
+    public void testChaining() throws Throwable {
         TypeParser<Boolean> parser = Types.STRING.andThen(Types.BOOLEAN);
         assertEquals(true, parser.parse(1));
         assertEquals(false, parser.parse(0));

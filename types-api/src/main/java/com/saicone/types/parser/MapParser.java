@@ -159,7 +159,7 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
 
     @Override
     public @NotNull Map<K, V> parse(@Nullable Object object) {
-        return parseEach(object, (key, parser) -> parser.parse(key), (value, parser) -> parser.parse(value));
+        return parseEach(object, (key, parser) -> parser.parseOrNull(key), (value, parser) -> parser.parseOrNull(value));
     }
 
     /**
