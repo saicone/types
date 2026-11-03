@@ -3,6 +3,7 @@ package com.saicone.types;
 import com.saicone.types.parser.ArrayParser;
 import com.saicone.types.parser.BitSetParser;
 import com.saicone.types.parser.BooleanParser;
+import com.saicone.types.parser.CharacterParser;
 import com.saicone.types.parser.ClassParser;
 import com.saicone.types.parser.ColorParser;
 import com.saicone.types.parser.DurationParser;
@@ -13,10 +14,12 @@ import com.saicone.types.parser.NumberParser;
 import com.saicone.types.parser.PathParser;
 import com.saicone.types.parser.PatternParser;
 import com.saicone.types.parser.SetParser;
+import com.saicone.types.parser.StringParser;
 import com.saicone.types.parser.TemporalParser;
 import com.saicone.types.parser.UriParser;
 import com.saicone.types.parser.UrlParser;
 import com.saicone.types.parser.UuidParser;
+import com.saicone.types.parser.VoidParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,13 +33,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
 /**
@@ -49,9 +50,11 @@ public class Types {
     private static final Map<Object, TypeParser<?>> PARSER_MAP = new HashMap<>();
 
     /**
-     * Type parser to return null for any provided object.
+     * Void type parser.
+     *
+     * @see VoidParser
      */
-    public static final TypeParser<Void> VOID = TypeParser.of(Void.class, (object) -> null);
+    public static final TypeParser<Void> VOID = VoidParser.INSTANCE;
     /**
      * Type parser to return any object itself.
      */
@@ -59,43 +62,15 @@ public class Types {
     /**
      * String type parser.
      *
-     * @see String#valueOf(Object)
+     * @see StringParser
      */
-    public static final TypeParser<String> STRING = TypeParser.first(String.class, String::valueOf);
+    public static final TypeParser<String> STRING = StringParser.INSTANCE;
     /**
-     * Text type parser, instead of {@link Types#STRING} this parser calls {@link Arrays#toString(Object[])}
-     * if the provided object is instance of object array.
+     * Character type parser.
+     *
+     * @see CharacterParser
      */
-    public static final TypeParser<String> TEXT = TypeParser.single(String.class, (object) -> {
-        if (object instanceof Object[]) {
-            return Arrays.toString((Object[]) object);
-        } else if (object.getClass().isArray()) {
-            final StringJoiner joiner = new StringJoiner(", ", "[", "]");
-            for (Object o : AnyIterable.of(object)) {
-                joiner.add(String.valueOf(o));
-            }
-            return joiner.toString();
-        } else {
-            return String.valueOf(object);
-        }
-    });
-    /**
-     * Character type parser.<br>
-     * This parser extracts the first character from non-empty String value.
-     */
-    public static final TypeParser<Character> CHAR = TypeParser.first(Character.class, (object) -> {
-        if (object instanceof Character) {
-            return (Character) object;
-        }
-        if (object instanceof Number) {
-            final int num = ((Number) object).intValue();
-            if (num >= 0 && num <= 65535) {
-                return (char) num;
-            }
-        }
-        final String s = String.valueOf(object);
-        return s.isEmpty() ? null : s.charAt(0);
-    });
+    public static final TypeParser<Character> CHAR = CharacterParser.INSTANCE;
     /**
      * Boolean type parser.
      *
@@ -262,7 +237,6 @@ public class Types {
 
     static {
         put(Object.class, OBJECT);
-        put("text", TEXT);
         put(String.class, STRING);
         put(Character.class, CHAR);
         put(char.class, TypeParser.of(char.class, (object) -> {
