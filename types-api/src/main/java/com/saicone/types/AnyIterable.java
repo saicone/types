@@ -4,6 +4,7 @@ import com.saicone.types.iterator.ArrayIterator;
 import com.saicone.types.iterator.SingleIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -180,14 +181,16 @@ public interface AnyIterable<T> extends Iterable<T> {
      *
      * @return an iterable object
      */
+    @UnknownNullability
     Object getValue();
 
     /**
      * Set the object that can be iterated.
      *
      * @param value an iterable object
-     * @return      an object
+     * @return      the previous value of the iterable object
      */
+    @UnknownNullability
     default Object setValue(Object value) {
         throw new IllegalStateException("The current iterable type doesn't allow value override");
     }

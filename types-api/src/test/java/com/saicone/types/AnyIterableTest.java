@@ -151,8 +151,9 @@ public class AnyIterableTest {
 
         @Override
         public Object setValue(Object value) {
+            final Object previous = this.value;
             this.value = value;
-            return value;
+            return previous;
         }
     }
 }
