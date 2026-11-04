@@ -69,7 +69,7 @@ public class TypeParserTest {
         assertArrayEquals(expected, Types.STRING.<String[]>array().parse(ImmutableList.of(1.5, 1.3, 1.2, 1.1)));
 
         final int[] primitve = new int[] { 15, 1234, 14, 1 };
-        assertArrayEquals(primitve, Types.of(int.class).<int[]>array().parse(ImmutableList.of(15.2, "1234", 14.8, true)));
+        assertArrayEquals(primitve, Types.getOrDefault(int.class).<int[]>array().parse(ImmutableList.of(15.2, "1234", 14.8, true)));
     }
 
     @Test

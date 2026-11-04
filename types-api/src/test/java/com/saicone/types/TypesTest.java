@@ -23,10 +23,10 @@ public class TypesTest {
 
     @Test
     public void testParse() {
-        assertEquals(1234, Types.parse(int.class, "1234"));
-        assertEquals(3f, Types.parse(float.class, '3'));
-        assertEquals(1L, Types.parse(long.class, true));
-        assertEquals(20.5D, Types.parse(double.class, 20.5D));
+        assertEquals((Integer) 1234, Types.run(int.class, "1234", TypeParser::parseOrThrow));
+        assertEquals((Float) 3f, Types.run(float.class, '3', TypeParser::parseOrThrow));
+        assertEquals((Long) 1L, Types.run(long.class, true, TypeParser::parseOrThrow));
+        assertEquals(20.5D, Types.run(double.class, 20.5D, TypeParser::parseOrThrow));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class TypesTest {
 
         Types.put(MyObject.class, MyObject::new);
         assertTrue(Types.contains(MyObject.class));
-        assertEquals(new MyObject("test"), Types.of(MyObject.class).parse("test"));
+        assertEquals(new MyObject("test"), Types.getOrDefault(MyObject.class).parse("test"));
 
         Types.remove(MyObject.class);
         assertFalse(Types.contains(MyObject.class));

@@ -159,7 +159,7 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
 
     @Override
     public @NotNull Map<K, V> parse(@NotNull Object object) throws Throwable {
-        return parseEach(object, (key, parser) -> parser.parse(key), (value, parser) -> parser.parse(value));
+        return parseEach(object, TypeParser::parse, TypeParser::parse);
     }
 
     /**
@@ -169,10 +169,12 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
      * @param keyFunction   the function that convert a key and the parser for its object to required component type
      * @param valueFunction the function that convert a value and the parser for its object to required component type
      * @return              a converted value type, empty by default
+     * @throws X if the parsing fails
+     * @param <X> the type of exception that can be thrown
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Map<K, V> parseEach(@Nullable Object object, @NotNull TypeParserFunction<K> keyFunction, @NotNull TypeParserFunction<V> valueFunction) throws Throwable {
+    public <X extends Throwable> Map<K, V> parseEach(@Nullable Object object, @NotNull TypeParserFunction<K, K, X> keyFunction, @NotNull TypeParserFunction<V, V, X> valueFunction) throws X {
         if (object == null) {
             return create();
         } else if (isInstance(object)) {
@@ -185,20 +187,20 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
         for (Object element : iterable) {
             if (key != null) {
                 if (element instanceof Map.Entry) {
-                    map.put(keyFunction.apply(key, keyParser), null);
+                    map.put(keyFunction.apply(keyParser, key), null);
                 } else {
-                    map.put(keyFunction.apply(key, keyParser), valueFunction.apply(element, valueParser));
+                    map.put(keyFunction.apply(keyParser, key), valueFunction.apply(valueParser, element));
                     continue;
                 }
             }
             if (element instanceof Map.Entry) {
-                map.put(keyFunction.apply(((Map.Entry<?, ?>) element).getKey(), keyParser), valueFunction.apply(((Map.Entry<?, ?>) element).getValue(), valueParser));
+                map.put(keyFunction.apply(keyParser, ((Map.Entry<?, ?>) element).getKey()), valueFunction.apply(valueParser, ((Map.Entry<?, ?>) element).getValue()));
             } else {
                 key = element;
             }
         }
         if (key != null) {
-            map.put(keyFunction.apply(key, keyParser), null);
+            map.put(keyFunction.apply(keyParser, key), null);
         }
         return map;
     }

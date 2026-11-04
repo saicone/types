@@ -282,7 +282,7 @@ public abstract class TypeOf<T> implements TypeParser<T> {
             } else if (Enum.class.isAssignableFrom(raw)) {
                 return getEnumParser(raw);
             } else {
-                return Types.of(raw);
+                return Types.getOrDefault(raw);
             }
         } catch (Throwable t) {
             throw new RuntimeException(t);
@@ -344,7 +344,7 @@ public abstract class TypeOf<T> implements TypeParser<T> {
     @SuppressWarnings("all")
     private TypeParser<?> getArrayParser(@NotNull Class<?> raw) {
         final Class<?> component = raw.getComponentType();
-        return Types.of(component).array();
+        return Types.getOrDefault(component).array();
     }
 
     @NotNull

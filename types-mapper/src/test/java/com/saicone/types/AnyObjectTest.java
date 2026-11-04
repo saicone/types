@@ -91,7 +91,7 @@ public class AnyObjectTest {
         assertArrayEquals(expected, AnyObject.of(ImmutableList.of(1.5, 1.3, 1.2, 1.1)).asArray(Types.STRING));
 
         final int[] primitve = new int[] { 15, 1234, 14, 1 };
-        assertArrayEquals(primitve, AnyObject.of(ImmutableList.of(15.2, "1234", 14.8, true)).asArray(Types.of(int.class)));
+        assertArrayEquals(primitve, AnyObject.of(ImmutableList.of(15.2, "1234", 14.8, true)).asArray(Types.getOrDefault(int.class)));
     }
 
     enum EnumType {

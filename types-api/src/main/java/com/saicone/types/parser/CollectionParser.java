@@ -94,7 +94,7 @@ public abstract class CollectionParser<T extends Collection<E>, E> extends Alloc
 
     @Override
     public @NotNull T parse(@NotNull Object object) throws Throwable {
-        return parseEach(object, (element, parser) -> parser.parse(element));
+        return parseEach(object, TypeParser::parse);
     }
 
     /**
@@ -103,11 +103,12 @@ public abstract class CollectionParser<T extends Collection<E>, E> extends Alloc
      * @param object   the object to parse
      * @param function the function that convert an element and the parser for its object to required element type
      * @return         a converted value type, empty by default
-     * @throws Throwable if the parsing fails
+     * @throws X if the parsing fails
+     * @param <X> the type of exception that can be thrown
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public T parseEach(@Nullable Object object, @NotNull TypeParserFunction<E> function) throws Throwable {
+    public <X extends Throwable> T parseEach(@Nullable Object object, @NotNull TypeParserFunction<E, E, X> function) throws X {
         if (object == null) {
             return create();
         } else if (isInstance(object)) {
@@ -117,7 +118,7 @@ public abstract class CollectionParser<T extends Collection<E>, E> extends Alloc
         final T collection = create(iterable.size());
 
         for (Object element : iterable) {
-            collection.add(function.apply(element, elementParser));
+            collection.add(function.apply(elementParser, element));
         }
         return collection;
     }

@@ -66,10 +66,13 @@ public class TypeOfTest {
 
     @Test
     public void testPrimitiveArray() throws Throwable {
-        final int[] expected = new int[] { 15, 1234, 14, 1 };
+        final List<Object> actual1 = ImmutableList.of(15.2, "1234", 14.8, true);
+        final int[] expected1 = new int[] { 15, 1234, 14, 1 };
+        assertArrayEquals(expected1, PRIMITIVE_ARRAY_TYPE.parse(actual1));
 
-        assertArrayEquals(expected, PRIMITIVE_ARRAY_TYPE.parse(ImmutableList.of(15.2, "1234", 14.8, true)));
-        assertArrayEquals(new boolean[] { false, true, true, true }, new TypeOf<boolean[]>(){}.parse(ImmutableList.of(0.0, 0.1234, 0.99, true)));
+        final List<Object> actual2 = ImmutableList.of(0.0, 0.1234, 0.99, true);
+        final boolean[] expected2 = new boolean[] { false, true, true, true };
+        assertArrayEquals(expected2, new TypeOf<boolean[]>(){}.parse(actual2));
     }
 
     enum EnumType {

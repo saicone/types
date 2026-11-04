@@ -4,23 +4,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 /**
- * Represents a function that takes an object and a type parser, and returns a result of type T.
+ * Represents a function that takes an object and a type parser, and returns a result of type R.<br>
+ * This is generally to mark a function that can throw an exception during the parsing process.
  *
  * @author Rubenicos
  *
- * @param <T> the type of the result
+ * @param <T> the type result of the parser
+ * @param <R> the type result of the function
+ * @param <X> the type of exception that can be thrown
  */
 @FunctionalInterface
-public interface TypeParserFunction<T> {
+public interface TypeParserFunction<T, R, X extends Throwable> {
 
     /**
      * Applies this function to the given arguments.
      *
-     * @param object the input object
      * @param parser the type parser to use for parsing
-     * @return       the function result
-     * @throws Throwable if the parsing fails
+     * @param object the input object
+     * @return the function result
+     * @throws X if the parsing fails
      */
     @UnknownNullability
-    T apply(Object object, @NotNull TypeParser<T> parser) throws Throwable;
+    R apply(@NotNull TypeParser<T> parser, Object object) throws X;
 }

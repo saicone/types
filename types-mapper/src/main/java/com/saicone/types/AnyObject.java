@@ -76,8 +76,6 @@ public interface AnyObject<T> {
     /**
      * Convert this object into given class type.
      *
-     * @see Types#parse(Class, Object)
-     *
      * @param type the class type.
      * @return     a converted value type, null otherwise.
      * @param <E>  the type result.
@@ -90,8 +88,6 @@ public interface AnyObject<T> {
     /**
      * Convert this object into given class type.
      *
-     * @see Types#parse(Class, Object, Object)
-     *
      * @param type the class type.
      * @param def  the type object to return if the conversion fails.
      * @return     a converted value type, default object otherwise.
@@ -100,7 +96,7 @@ public interface AnyObject<T> {
     @Nullable
     @Contract("_, !null -> !null")
     default <E> E as(@NotNull Class<E> type, @Nullable E def) {
-        return Types.parse(type, getValue(), def);
+        return Types.run(type, getValue(), (parser, object) -> parser.parseOrElse(object, def));
     }
 
     /**

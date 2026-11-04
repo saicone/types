@@ -43,7 +43,7 @@ public class ArrayParser<T, C> extends AllocParser<T> {
         final int key = Objects.hash(0, componentType);
         ArrayParser<?, ?> parser = PARSERS.get(key);
         if (parser == null) {
-            parser = new ArrayParser<>(componentType, Types.of(componentType));
+            parser = new ArrayParser<>(componentType, Types.getOrDefault(componentType));
             PARSERS.put(key, parser);
         }
         return (ArrayParser<T, C>) parser;
@@ -136,7 +136,7 @@ public class ArrayParser<T, C> extends AllocParser<T> {
 
     @Override
     public @NotNull T parse(@NotNull Object object) throws Throwable {
-        return parseEach(object, (element, parser) -> parser.parse(element));
+        return parseEach(object, TypeParser::parse);
     }
 
     /**
@@ -145,11 +145,12 @@ public class ArrayParser<T, C> extends AllocParser<T> {
      * @param object   the object to parse
      * @param function the function that convert a component and the parser for its object to required component type
      * @return         a converted value type, empty by default
-     * @throws Throwable if the parsing fails
+     * @throws X if the parsing fails
+     * @param <X> the type of exception that can be thrown
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public T parseEach(@Nullable Object object, @NotNull TypeParserFunction<C> function) throws Throwable {
+    public <X extends Throwable> T parseEach(@Nullable Object object, @NotNull TypeParserFunction<C, C, X> function) throws X {
         if (object == null) {
             return create();
         } else if (isInstance(object)) {
@@ -166,7 +167,7 @@ public class ArrayParser<T, C> extends AllocParser<T> {
                 System.arraycopy(array, 0, arrayCopy, 0, i);
                 array = arrayCopy;
             }
-            Array.set(array, i, function.apply(element, componentParser));
+            Array.set(array, i, function.apply(componentParser, element));
             i++;
         }
 

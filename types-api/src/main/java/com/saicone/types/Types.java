@@ -20,12 +20,13 @@ import com.saicone.types.parser.UriParser;
 import com.saicone.types.parser.UrlParser;
 import com.saicone.types.parser.UuidParser;
 import com.saicone.types.parser.VoidParser;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.awt.Color;
 import java.io.File;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
@@ -47,7 +48,7 @@ import java.util.regex.Pattern;
  */
 public class Types {
 
-    private static final Map<Object, TypeParser<?>> PARSER_MAP = new HashMap<>();
+    private static final Map<Type, TypeParser<?>> PARSER_MAP = new HashMap<>();
 
     /**
      * Void type parser.
@@ -239,46 +240,22 @@ public class Types {
         put(Object.class, OBJECT);
         put(String.class, STRING);
         put(Character.class, CHAR);
-        put(char.class, TypeParser.of(char.class, (object) -> {
-            final Character c = CHAR.parse(object);
-            return c != null ? c : '\0';
-        }));
+        put(char.class, TypeParser.of(char.class, CHAR));
         put(Boolean.class, BOOLEAN);
-        put(boolean.class, TypeParser.of(boolean.class, (object) -> {
-            final Boolean bool = BOOLEAN.parse(object);
-            return bool != null ? bool : Boolean.FALSE;
-        }));
+        put(boolean.class, TypeParser.of(boolean.class, BOOLEAN));
         put(Number.class, NUMBER);
         put(Byte.class, BYTE);
-        put(byte.class, TypeParser.of(byte.class, object -> {
-            final Byte num = BYTE.parse(object);
-            return num != null ? num : Byte.MIN_VALUE;
-        }));
+        put(byte.class, TypeParser.of(byte.class, BYTE));
         put(Short.class, SHORT);
-        put(short.class, TypeParser.of(short.class, object -> {
-            final Short num = SHORT.parse(object);
-            return num != null ? num : Short.MIN_VALUE;
-        }));
+        put(short.class, TypeParser.of(short.class, SHORT));
         put(Integer.class, INTEGER);
-        put(int.class, TypeParser.of(int.class, object -> {
-            final Integer num = INTEGER.parse(object);
-            return num != null ? num : Integer.MIN_VALUE;
-        }));
+        put(int.class, TypeParser.of(int.class, INTEGER));
         put(Float.class, FLOAT);
-        put(float.class, TypeParser.of(float.class, object -> {
-            final Float num = FLOAT.parse(object);
-            return num != null ? num : Float.MIN_VALUE;
-        }));
+        put(float.class, TypeParser.of(float.class, FLOAT));
         put(Long.class, LONG);
-        put(long.class, TypeParser.of(long.class, object -> {
-            final Long num = LONG.parse(object);
-            return num != null ? num : Long.MIN_VALUE;
-        }));
+        put(long.class, TypeParser.of(long.class, LONG));
         put(Double.class, DOUBLE);
-        put(double.class, TypeParser.of(double.class, object -> {
-            final Double num = DOUBLE.parse(object);
-            return num != null ? num : Double.MIN_VALUE;
-        }));
+        put(double.class, TypeParser.of(double.class, DOUBLE));
         put(BigInteger.class, BIG_INTEGER);
         put(BigDecimal.class, BIG_DECIMAL);
         put(Class.class, CLASS);
@@ -306,20 +283,20 @@ public class Types {
     /**
      * Check if any type object is registered as parser key.
      *
-     * @param type the key object.
-     * @return     true if is already registered.
+     * @param type the key object
+     * @return     true if is already registered
      */
-    public static boolean contains(@NotNull Object type) {
+    public static boolean contains(@NotNull Type type) {
         return PARSER_MAP.containsKey(type);
     }
 
     /**
      * Register provided type parser associated by class type.
      *
-     * @param type   the key class type.
-     * @param parser the type parser.
-     * @return       the previous type parsed associated with provided class.
-     * @param <T>    the type result of the parser.
+     * @param type   the key class type
+     * @param parser the type parser
+     * @return       the previous type parsed associated with provided class
+     * @param <T> the type result of the parser
      */
     @Nullable
     public static <T> TypeParser<?> put(@NotNull Class<T> type, @NotNull TypeParser<T> parser) {
@@ -329,49 +306,49 @@ public class Types {
     /**
      * Register provided type parser associated with type object.
      *
-     * @param type   the key object.
-     * @param parser the type parser.
-     * @return       the previous type parsed associated with provided class.
-     * @param <T>    the type result of the parser.
+     * @param type   the key object
+     * @param parser the type parser
+     * @return       the previous type parsed associated with provided class
+     * @param <T> the type result of the parser
      */
     @Nullable
-    public static <T> TypeParser<?> put(@NotNull Object type, @NotNull TypeParser<T> parser) {
-        return PARSER_MAP.put(type instanceof String ? ((String) type).toLowerCase() : type, parser);
+    public static <T> TypeParser<?> put(@NotNull Type type, @NotNull TypeParser<T> parser) {
+        return PARSER_MAP.put(type, parser);
     }
 
     /**
      * Remove any registered type parsed associated by object.
      *
-     * @param type the object key.
-     * @return     the previous type parsed associated with provided class.
+     * @param type the object key
+     * @return     the previous type parsed associated with provided class
      */
     @Nullable
-    public static TypeParser<?> remove(@NotNull Object type) {
-        return PARSER_MAP.remove(type instanceof String ? ((String) type).toLowerCase() : type);
+    public static TypeParser<?> remove(@NotNull Type type) {
+        return PARSER_MAP.remove(type);
     }
 
     /**
-     * Get the previously registered type parser from class type.
+     * Get the previously registered type parser from object type or a parser that return the object itself.
      *
-     * @param type the class type.
-     * @return     the registered type parser if found, parser by cast object otherwise.
-     * @param <T>  the type result of the parser.
+     * @param type the class type
+     * @return     the registered type parser if found, parser by cast object otherwise
+     * @param <T> the type result of the parser
      */
     @NotNull
-    public static <T> TypeParser<T> of(@NotNull Class<T> type) {
-        return of((Object) type);
+    public static <T> TypeParser<T> getOrDefault(@NotNull Class<T> type) {
+        return getOrDefault((Type) type);
     }
 
     /**
-     * Get the previously registered type parser from object type.
+     * Get the previously registered type parser from object type or a parser that return the object itself.
      *
-     * @param type the key object.
-     * @return     the registered type parser if found, parser by cast object otherwise.
-     * @param <T>  the type result of the parser.
+     * @param type the key object
+     * @return     the registered type parser if found, parser by cast object otherwise
+     * @param <T> the type result of the parser
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public static <T> TypeParser<T> of(@NotNull Object type) {
+    public static <T> TypeParser<T> getOrDefault(@NotNull Type type) {
         TypeParser<?> parser = PARSER_MAP.get(type);
         if (parser == null) {
             parser = PARSER_MAP.get(type.getClass());
@@ -383,67 +360,60 @@ public class Types {
     }
 
     /**
-     * Parse any object by providing a type class to find previously registered type parser.<br>
-     * This method can also parse into primitive class objects and instead of null the failed
-     * value to return will be MIN value for number types, FALSE for boolean and empty for char.
+     * Get the previously registered type parser from object type or null if not found.
      *
-     * @param type   the class type.
-     * @param object the object to parse.
-     * @return       a converted value type, null otherwise.
-     * @param <T>    the type result.
+     * @param type the class type
+     * @return     the registered type parser if found, null otherwise
+     * @param <T> the type result of the parser
      */
     @Nullable
-    public static <T> T parse(@NotNull Class<T> type, @Nullable Object object) {
-        return parse((Object) type, object, null);
+    public static <T> TypeParser<T> getOrNull(@NotNull Class<T> type) {
+        return getOrNull((Type) type);
     }
 
     /**
-     * Parse any object by providing a type class to find previously registered type parser.
+     * Get the previously registered type parser from object type or null if not found.
      *
-     * @param type   the key object.
-     * @param object the object to parse.
-     * @return       a converted value type, null otherwise.
-     * @param <T>    the type result.
+     * @param type the key object
+     * @return     the registered type parser if found, null otherwise
+     * @param <T> the type result of the parser
      */
     @Nullable
-    public static <T> T parse(@NotNull Object type, @Nullable Object object) {
-        return parse(type, object, null);
-    }
-
-    /**
-     * Parse any object by providing a type class to find previously registered type parser.<br>
-     * This method can also parse into primitive class objects and instead of default object the failed
-     * value to return will be MIN value for number types, FALSE for boolean and empty for char.
-     *
-     * @param type   the class type.
-     * @param object the object to parse.
-     * @param def    the type object to return if parser fails or doesn't exist.
-     * @return       a converted value type, default object otherwise.
-     * @param <T>    the type result.
-     */
-    @Nullable
-    @Contract("_, _, !null -> !null")
-    public static <T> T parse(@NotNull Class<T> type, @Nullable Object object, @Nullable T def) {
-        return parse((Object) type, object, def);
-    }
-
-    /**
-     * Parse any object by providing a type object to find previously registered type parser.
-     *
-     * @param type   the key object.
-     * @param object the object to parse.
-     * @param def    the type object to return if parser fails or doesn't exist.
-     * @return       a converted value type, default object otherwise.
-     * @param <T>    the type result.
-     */
-    @Nullable
-    @Contract("_, _, !null -> !null")
     @SuppressWarnings("unchecked")
-    public static <T> T parse(@NotNull Object type, @Nullable Object object, @Nullable T def) {
-        final TypeParser<?> parser = PARSER_MAP.get(type);
-        if (parser == null) {
-            return def;
-        }
-        return ((TypeParser<T>) parser).parseOrElse(object, def);
+    public static <T> TypeParser<T> getOrNull(@NotNull Type type) {
+        return (TypeParser<T>) PARSER_MAP.get(type);
+    }
+
+    /**
+     * Run a function with the provided object and the type parser associated with the provided type.
+     *
+     * @param type     the key class type
+     * @param object   the object to parse
+     * @param function the function to run with the object and the type parser
+     * @return         the result of the function
+     * @throws X if the parsing fails
+     * @param <T> the type result of the parser
+     * @param <R> the type result of the function
+     * @param <X> the type of exception that can be thrown
+     */
+    @Nullable
+    public static <T, R, X extends Throwable> R run(@NotNull Class<T> type, @Nullable Object object, @NotNull TypeParserFunction<T, R, X> function) throws X {
+        return run((Type) type, object, function);
+    }
+
+    /**
+     * Run a function with the provided object and the type parser associated with the provided type.
+     *
+     * @param type     the key object
+     * @param object   the object to parse
+     * @param function the function to run with the object and the type parser
+     * @return         the result of the function
+     * @throws X if the parsing fails
+     * @param <R> the type result of the function
+     * @param <X> the type of exception that can be thrown
+     */
+    @UnknownNullability
+    public static <R, X extends Throwable> R run(@NotNull Type type, @Nullable Object object, @NotNull TypeParserFunction<?, R, X> function) throws X {
+        return function.apply(getOrDefault(type), object);
     }
 }
