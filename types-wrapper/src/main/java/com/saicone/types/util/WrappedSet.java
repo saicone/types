@@ -31,8 +31,8 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
     }
 
     @Override
-    public @NotNull Set<A> getDelegated() {
-        return (Set<A>) super.getDelegated();
+    public @NotNull Set<A> getUnwrapped() {
+        return (Set<A>) super.getUnwrapped();
     }
 
     /**
@@ -56,39 +56,39 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
         }
 
         @Override
-        public @NotNull SortedSet<A> getDelegated() {
-            return (SortedSet<A>) super.getDelegated();
+        public @NotNull SortedSet<A> getUnwrapped() {
+            return (SortedSet<A>) super.getUnwrapped();
         }
 
         @Override
         public @Nullable Comparator<? super B> comparator() {
-            final Comparator<? super A> comparator = getDelegated().comparator();
+            final Comparator<? super A> comparator = this.getUnwrapped().comparator();
             return comparator == null ? null : (b1, b2) -> comparator.compare(unwrap(b1), unwrap(b2));
         }
 
         @Override
         public @NotNull SortedSet<B> subSet(B fromElement, B toElement) {
-            return new Sorted<>(getDelegated().subSet(unwrap(fromElement), unwrap(toElement)), getWrapper());
+            return new Sorted<>(this.getUnwrapped().subSet(unwrap(fromElement), unwrap(toElement)), getWrapper());
         }
 
         @Override
         public @NotNull SortedSet<B> headSet(B toElement) {
-            return new Sorted<>(getDelegated().headSet(unwrap(toElement)), getWrapper());
+            return new Sorted<>(this.getUnwrapped().headSet(unwrap(toElement)), getWrapper());
         }
 
         @Override
         public @NotNull SortedSet<B> tailSet(B fromElement) {
-            return new Sorted<>(getDelegated().tailSet(unwrap(fromElement)), getWrapper());
+            return new Sorted<>(this.getUnwrapped().tailSet(unwrap(fromElement)), getWrapper());
         }
 
         @Override
         public B first() {
-            return wrap(getDelegated().first());
+            return wrap(this.getUnwrapped().first());
         }
 
         @Override
         public B last() {
-            return wrap(getDelegated().last());
+            return wrap(this.getUnwrapped().last());
         }
     }
 
@@ -113,13 +113,13 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
         }
 
         @Override
-        public @NotNull NavigableSet<A> getDelegated() {
-            return (NavigableSet<A>) super.getDelegated();
+        public @NotNull NavigableSet<A> getUnwrapped() {
+            return (NavigableSet<A>) super.getUnwrapped();
         }
 
         @Override
         public @Nullable B lower(B b) {
-            return wrap(getDelegated().lower(unwrap(b)));
+            return wrap(this.getUnwrapped().lower(unwrap(b)));
         }
 
         /**
@@ -130,12 +130,12 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
          */
         @Nullable
         public B lowerAny(Object o) {
-            return wrap(getDelegated().lower(unwrap(o)));
+            return wrap(this.getUnwrapped().lower(unwrap(o)));
         }
 
         @Override
         public @Nullable B floor(B b) {
-            return wrap(getDelegated().floor(unwrap(b)));
+            return wrap(this.getUnwrapped().floor(unwrap(b)));
         }
 
         /**
@@ -146,12 +146,12 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
          */
         @Nullable
         public B floorAny(Object o) {
-            return wrap(getDelegated().floor(unwrap(o)));
+            return wrap(this.getUnwrapped().floor(unwrap(o)));
         }
 
         @Override
         public @Nullable B ceiling(B b) {
-            return wrap(getDelegated().ceiling(unwrap(b)));
+            return wrap(this.getUnwrapped().ceiling(unwrap(b)));
         }
 
         /**
@@ -162,12 +162,12 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
          */
         @Nullable
         public B ceilingAny(Object o) {
-            return wrap(getDelegated().ceiling(unwrap(o)));
+            return wrap(this.getUnwrapped().ceiling(unwrap(o)));
         }
 
         @Override
         public @Nullable B higher(B b) {
-            return wrap(getDelegated().higher(unwrap(b)));
+            return wrap(this.getUnwrapped().higher(unwrap(b)));
         }
 
         /**
@@ -178,42 +178,42 @@ public class WrappedSet<A, B> extends WrappedCollection<A, B> implements Set<B> 
          */
         @Nullable
         public B higherAny(Object o) {
-            return wrap(getDelegated().higher(unwrap(o)));
+            return wrap(this.getUnwrapped().higher(unwrap(o)));
         }
 
         @Override
         public @Nullable B pollFirst() {
-            return wrap(getDelegated().pollFirst());
+            return wrap(this.getUnwrapped().pollFirst());
         }
 
         @Override
         public @Nullable B pollLast() {
-            return wrap(getDelegated().pollLast());
+            return wrap(this.getUnwrapped().pollLast());
         }
 
         @Override
         public @NotNull NavigableSet<B> descendingSet() {
-            return new Navigable<>(getDelegated().descendingSet(), getWrapper());
+            return new Navigable<>(this.getUnwrapped().descendingSet(), getWrapper());
         }
 
         @Override
         public @NotNull Iterator<B> descendingIterator() {
-            return new WrappedIterator<>(getDelegated().descendingIterator(), getWrapper());
+            return new WrappedIterator<>(this.getUnwrapped().descendingIterator(), getWrapper());
         }
 
         @Override
         public @NotNull NavigableSet<B> subSet(B fromElement, boolean fromInclusive, B toElement, boolean toInclusive) {
-            return new Navigable<>(getDelegated().subSet(unwrap(fromElement), fromInclusive, unwrap(toElement), toInclusive), getWrapper());
+            return new Navigable<>(this.getUnwrapped().subSet(unwrap(fromElement), fromInclusive, unwrap(toElement), toInclusive), getWrapper());
         }
 
         @Override
         public @NotNull NavigableSet<B> headSet(B toElement, boolean inclusive) {
-            return new Navigable<>(getDelegated().headSet(unwrap(toElement), inclusive), getWrapper());
+            return new Navigable<>(this.getUnwrapped().headSet(unwrap(toElement), inclusive), getWrapper());
         }
 
         @Override
         public @NotNull NavigableSet<B> tailSet(B fromElement, boolean inclusive) {
-            return new Navigable<>(getDelegated().tailSet(unwrap(fromElement), inclusive), getWrapper());
+            return new Navigable<>(this.getUnwrapped().tailSet(unwrap(fromElement), inclusive), getWrapper());
         }
     }
 }

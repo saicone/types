@@ -28,8 +28,8 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
     }
 
     @Override
-    public @NotNull List<A> getDelegated() {
-        return (List<A>) super.getDelegated();
+    public @NotNull List<A> getUnwrapped() {
+        return (List<A>) super.getUnwrapped();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
     @SuppressWarnings("unchecked")
     public boolean addAnyAll(int index, @NotNull Collection<?> c) {
         if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
-            return getDelegated().addAll(index, (Collection<? extends A>) ((WrappedCollection<?, ?>) c).getDelegated());
+            return getUnwrapped().addAll(index, (Collection<? extends A>) ((WrappedCollection<?, ?>) c).getUnwrapped());
         }
         boolean result = false;
         for (Object o : c) {
@@ -60,12 +60,12 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
 
     @Override
     public B get(int index) {
-        return wrap(getDelegated().get(index));
+        return wrap(getUnwrapped().get(index));
     }
 
     @Override
     public B set(int index, B element) {
-        return wrap(getDelegated().set(index, unwrap(element)));
+        return wrap(getUnwrapped().set(index, unwrap(element)));
     }
 
     /**
@@ -76,12 +76,12 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
      * @return        the element previously at the specified position
      */
     public B setAny(int index, Object element) {
-        return wrap(getDelegated().set(index, unwrap(element)));
+        return wrap(getUnwrapped().set(index, unwrap(element)));
     }
 
     @Override
     public void add(int index, B element) {
-        getDelegated().add(index, unwrap(element));
+        getUnwrapped().add(index, unwrap(element));
     }
 
     /**
@@ -91,37 +91,37 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
      * @param element element to be inserted
      */
     public void addAny(int index, Object element) {
-        getDelegated().add(index, unwrap(element));
+        getUnwrapped().add(index, unwrap(element));
     }
 
     @Override
     public B remove(int index) {
-        return wrap(getDelegated().remove(index));
+        return wrap(getUnwrapped().remove(index));
     }
 
     @Override
     public int indexOf(Object o) {
-        return getDelegated().indexOf(unwrap(o));
+        return getUnwrapped().indexOf(unwrap(o));
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return getDelegated().lastIndexOf(unwrap(o));
+        return getUnwrapped().lastIndexOf(unwrap(o));
     }
 
     @Override
     public @NotNull ListIterator<B> listIterator() {
-        return new Iterator<>(getDelegated().listIterator(), getWrapper());
+        return new Iterator<>(getUnwrapped().listIterator(), getWrapper());
     }
 
     @Override
     public @NotNull ListIterator<B> listIterator(int index) {
-        return new Iterator<>(getDelegated().listIterator(index), getWrapper());
+        return new Iterator<>(getUnwrapped().listIterator(index), getWrapper());
     }
 
     @Override
     public @NotNull List<B> subList(int fromIndex, int toIndex) {
-        return new WrappedList<>(getDelegated().subList(fromIndex, toIndex), getWrapper());
+        return new WrappedList<>(getUnwrapped().subList(fromIndex, toIndex), getWrapper());
     }
 
     /**
@@ -143,33 +143,33 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
         }
 
         @Override
-        public @NotNull ListIterator<A> getDelegated() {
-            return (ListIterator<A>) super.getDelegated();
+        public @NotNull ListIterator<A> getUnwrapped() {
+            return (ListIterator<A>) super.getUnwrapped();
         }
 
         @Override
         public boolean hasPrevious() {
-            return getDelegated().hasPrevious();
+            return this.getUnwrapped().hasPrevious();
         }
 
         @Override
         public B previous() {
-            return wrap(getDelegated().previous());
+            return wrap(this.getUnwrapped().previous());
         }
 
         @Override
         public int nextIndex() {
-            return getDelegated().nextIndex();
+            return this.getUnwrapped().nextIndex();
         }
 
         @Override
         public int previousIndex() {
-            return getDelegated().previousIndex();
+            return this.getUnwrapped().previousIndex();
         }
 
         @Override
         public void set(B b) {
-            getDelegated().set(unwrap(b));
+            this.getUnwrapped().set(unwrap(b));
         }
 
         /**
@@ -178,12 +178,12 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
          * @param o the element with which to replace the last element returned by {@code next} or {@code previous}
          */
         public void setAny(Object o) {
-            getDelegated().set(unwrap(o));
+            this.getUnwrapped().set(unwrap(o));
         }
 
         @Override
         public void add(B b) {
-            getDelegated().add(unwrap(b));
+            this.getUnwrapped().add(unwrap(b));
         }
 
         /**
@@ -192,7 +192,7 @@ public class WrappedList<A, B> extends WrappedCollection<A, B> implements List<B
          * @param o the element to insert
          */
         public void addAny(Object o) {
-            getDelegated().add(unwrap(o));
+            this.getUnwrapped().add(unwrap(o));
         }
     }
 }

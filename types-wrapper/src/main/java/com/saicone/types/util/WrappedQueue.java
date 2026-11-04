@@ -28,13 +28,13 @@ public class WrappedQueue<A, B> extends WrappedCollection<A, B> implements Queue
     }
 
     @Override
-    public @NotNull Queue<A> getDelegated() {
-        return (Queue<A>) super.getDelegated();
+    public @NotNull Queue<A> getUnwrapped() {
+        return (Queue<A>) super.getUnwrapped();
     }
 
     @Override
     public boolean offer(B b) {
-        return getDelegated().offer(unwrap(b));
+        return getUnwrapped().offer(unwrap(b));
     }
 
     /**
@@ -44,27 +44,27 @@ public class WrappedQueue<A, B> extends WrappedCollection<A, B> implements Queue
      * @return  {@code true} if the element was added to this queue, else {@code false}
      */
     public boolean offerAny(Object o) {
-        return getDelegated().offer(unwrap(o));
+        return getUnwrapped().offer(unwrap(o));
     }
 
     @Override
     public B remove() {
-        return wrap(getDelegated().remove());
+        return wrap(getUnwrapped().remove());
     }
 
     @Override
     public B poll() {
-        return wrap(getDelegated().poll());
+        return wrap(getUnwrapped().poll());
     }
 
     @Override
     public B element() {
-        return wrap(getDelegated().element());
+        return wrap(getUnwrapped().element());
     }
 
     @Override
     public B peek() {
-        return wrap(getDelegated().peek());
+        return wrap(getUnwrapped().peek());
     }
 
     /**
@@ -89,8 +89,8 @@ public class WrappedQueue<A, B> extends WrappedCollection<A, B> implements Queue
         }
 
         @Override
-        public @NotNull PriorityQueue<A> getDelegated() {
-            return (PriorityQueue<A>) super.getDelegated();
+        public @NotNull PriorityQueue<A> getUnwrapped() {
+            return (PriorityQueue<A>) super.getUnwrapped();
         }
 
         /**
@@ -104,7 +104,7 @@ public class WrappedQueue<A, B> extends WrappedCollection<A, B> implements Queue
          */
         @NotNull
         public Comparator<? super B> comparator() {
-            final Comparator<? super A> comparator = getDelegated().comparator();
+            final Comparator<? super A> comparator = getUnwrapped().comparator();
             return (b1, b2) -> comparator.compare(unwrap(b1), unwrap(b2));
         }
     }

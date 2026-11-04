@@ -29,33 +29,33 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
 
     @Override
     @SuppressWarnings("unchecked")
-    public @NotNull Collection<A> getDelegated() {
-        return (Collection<A>) super.getDelegated();
+    public @NotNull Collection<A> getUnwrapped() {
+        return (Collection<A>) super.getUnwrapped();
     }
 
     @Override
     public int size() {
-        return getDelegated().size();
+        return getUnwrapped().size();
     }
 
     @Override
     public boolean isEmpty() {
-        return getDelegated().isEmpty();
+        return getUnwrapped().isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return getDelegated().contains(unwrap(o));
+        return getUnwrapped().contains(unwrap(o));
     }
 
     @Override
     public @NotNull Iterator<B> iterator() {
-        return new WrappedIterator<>(getDelegated().iterator(), getWrapper());
+        return new WrappedIterator<>(getUnwrapped().iterator(), getWrapper());
     }
 
     @Override
     public @NotNull Object @NotNull [] toArray() {
-        final Object[] delegated = getDelegated().toArray();
+        final Object[] delegated = getUnwrapped().toArray();
         final Object[] array = new Object[delegated.length];
         for (int i = 0; i < delegated.length; i++) {
             array[i] = wrap(delegated[i]);
@@ -66,7 +66,7 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull <T> T @NotNull [] toArray(@NotNull T @NotNull [] a) {
-        final T[] delegated = getDelegated().toArray(a);
+        final T[] delegated = getUnwrapped().toArray(a);
         final T[] array = (T[]) Array.newInstance(a.getClass(), delegated.length);
         for (int i = 0; i < delegated.length; i++) {
             array[i] = (T) wrap(delegated[i]);
@@ -76,7 +76,7 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
 
     @Override
     public boolean add(B b) {
-        return getDelegated().add(unwrap(b));
+        return getUnwrapped().add(unwrap(b));
     }
 
     /**
@@ -86,21 +86,21 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
      * @return  {@code true} if this collection changed as a result of the call
      */
     public boolean addAny(Object o) {
-        return getDelegated().add(unwrap(o));
+        return getUnwrapped().add(unwrap(o));
     }
 
     @Override
     public boolean remove(Object o) {
-        return getDelegated().remove(unwrap(o));
+        return getUnwrapped().remove(unwrap(o));
     }
 
     @Override
     public boolean containsAll(@NotNull Collection<?> c) {
         if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
-            return getDelegated().containsAll(((WrappedCollection<?, ?>) c).getDelegated());
+            return getUnwrapped().containsAll(((WrappedCollection<?, ?>) c).getUnwrapped());
         }
         for (Object o : c) {
-            if (!getDelegated().contains(unwrap(o))) {
+            if (!getUnwrapped().contains(unwrap(o))) {
                 return false;
             }
         }
@@ -121,7 +121,7 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
     @SuppressWarnings("unchecked")
     public boolean addAnyAll(@NotNull Collection<?> c) {
         if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
-            return getDelegated().addAll((Collection<? extends A>) ((WrappedCollection<?, ?>) c).getDelegated());
+            return getUnwrapped().addAll((Collection<? extends A>) ((WrappedCollection<?, ?>) c).getUnwrapped());
         }
         boolean result = false;
         for (Object o : c) {
@@ -135,7 +135,7 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
     @Override
     public boolean removeAll(@NotNull Collection<?> c) {
         if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
-            return getDelegated().removeAll(((WrappedCollection<?, ?>) c).getDelegated());
+            return getUnwrapped().removeAll(((WrappedCollection<?, ?>) c).getUnwrapped());
         }
         boolean result = false;
         for (Object o : c) {
@@ -149,13 +149,13 @@ public class WrappedCollection<A, B> extends WrappedObject<A, B> implements Coll
     @Override
     public boolean retainAll(@NotNull Collection<?> c) {
         if (c instanceof WrappedCollection && isSimilar((WrappedObject<?, ?>) c)) {
-            return getDelegated().retainAll(((WrappedCollection<?, ?>) c).getDelegated());
+            return getUnwrapped().retainAll(((WrappedCollection<?, ?>) c).getUnwrapped());
         }
         return this.removeIf(object -> !c.contains(object));
     }
 
     @Override
     public void clear() {
-        getDelegated().clear();
+        getUnwrapped().clear();
     }
 }

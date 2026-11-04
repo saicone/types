@@ -43,7 +43,7 @@ public class WrappedObject<A, B> {
      * @return a delegated object.
      */
     @NotNull
-    public Object getDelegated() {
+    public Object getUnwrapped() {
         return delegated;
     }
 
@@ -85,22 +85,22 @@ public class WrappedObject<A, B> {
 
     @Override
     public String toString() {
-        return getDelegated().toString();
+        return getUnwrapped().toString();
     }
 
     @Override
     public final boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof WrappedObject)) {
-            return getDelegated().equals(object);
+            return getUnwrapped().equals(object);
         }
 
         WrappedObject<?, ?> that = (WrappedObject<?, ?>) object;
-        return getDelegated().equals(that.getDelegated());
+        return getUnwrapped().equals(that.getUnwrapped());
     }
 
     @Override
     public int hashCode() {
-        return getDelegated().hashCode();
+        return getUnwrapped().hashCode();
     }
 }

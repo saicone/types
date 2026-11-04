@@ -27,18 +27,18 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
     }
 
     @Override
-    public @NotNull Deque<A> getDelegated() {
-        return (Deque<A>) super.getDelegated();
+    public @NotNull Deque<A> getUnwrapped() {
+        return (Deque<A>) super.getUnwrapped();
     }
 
     @Override
     public void addFirst(B b) {
-        getDelegated().addFirst(unwrap(b));
+        getUnwrapped().addFirst(unwrap(b));
     }
 
     @Override
     public void addLast(B b) {
-        getDelegated().addLast(unwrap(b));
+        getUnwrapped().addLast(unwrap(b));
     }
 
     /**
@@ -47,7 +47,7 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
      * @param o the element to add
      */
     public void addAnyFirst(Object o) {
-        getDelegated().addFirst(unwrap(o));
+        getUnwrapped().addFirst(unwrap(o));
     }
 
     /**
@@ -56,17 +56,17 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
      * @param o the element to add
      */
     public void addAnyLast(Object o) {
-        getDelegated().addLast(unwrap(o));
+        getUnwrapped().addLast(unwrap(o));
     }
 
     @Override
     public boolean offerFirst(B b) {
-        return getDelegated().offerFirst(unwrap(b));
+        return getUnwrapped().offerFirst(unwrap(b));
     }
 
     @Override
     public boolean offerLast(B b) {
-        return getDelegated().offerLast(unwrap(b));
+        return getUnwrapped().offerLast(unwrap(b));
     }
 
     /**
@@ -76,7 +76,7 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
      * @return  {@code true} if the element was added to this deque, else {@code false}
      */
     public boolean offerAnyFirst(Object o) {
-        return getDelegated().offerFirst(unwrap(o));
+        return getUnwrapped().offerFirst(unwrap(o));
     }
 
     /**
@@ -86,62 +86,62 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
      * @return  {@code true} if the element was added to this deque, else {@code false}
      */
     public boolean offerAnyLast(Object o) {
-        return getDelegated().offerLast(unwrap(o));
+        return getUnwrapped().offerLast(unwrap(o));
     }
 
     @Override
     public B removeFirst() {
-        return wrap(getDelegated().removeFirst());
+        return wrap(getUnwrapped().removeFirst());
     }
 
     @Override
     public B removeLast() {
-        return wrap(getDelegated().removeLast());
+        return wrap(getUnwrapped().removeLast());
     }
 
     @Override
     public B pollFirst() {
-        return wrap(getDelegated().pollFirst());
+        return wrap(getUnwrapped().pollFirst());
     }
 
     @Override
     public B pollLast() {
-        return wrap(getDelegated().pollLast());
+        return wrap(getUnwrapped().pollLast());
     }
 
     @Override
     public B getFirst() {
-        return wrap(getDelegated().getFirst());
+        return wrap(getUnwrapped().getFirst());
     }
 
     @Override
     public B getLast() {
-        return wrap(getDelegated().getLast());
+        return wrap(getUnwrapped().getLast());
     }
 
     @Override
     public B peekFirst() {
-        return wrap(getDelegated().peekFirst());
+        return wrap(getUnwrapped().peekFirst());
     }
 
     @Override
     public B peekLast() {
-        return wrap(getDelegated().peekLast());
+        return wrap(getUnwrapped().peekLast());
     }
 
     @Override
     public boolean removeFirstOccurrence(Object o) {
-        return getDelegated().removeFirstOccurrence(unwrap(o));
+        return getUnwrapped().removeFirstOccurrence(unwrap(o));
     }
 
     @Override
     public boolean removeLastOccurrence(Object o) {
-        return getDelegated().removeLastOccurrence(unwrap(o));
+        return getUnwrapped().removeLastOccurrence(unwrap(o));
     }
 
     @Override
     public void push(B b) {
-        getDelegated().push(unwrap(b));
+        getUnwrapped().push(unwrap(b));
     }
 
     /**
@@ -150,16 +150,16 @@ public class WrappedDeque<A, B> extends WrappedQueue<A, B> implements Deque<B> {
      * @param o the element to push
      */
     public void pushAny(Object o) {
-        getDelegated().push(unwrap(o));
+        getUnwrapped().push(unwrap(o));
     }
 
     @Override
     public B pop() {
-        return wrap(getDelegated().pop());
+        return wrap(getUnwrapped().pop());
     }
 
     @Override
     public @NotNull Iterator<B> descendingIterator() {
-        return new WrappedIterator<>(getDelegated().descendingIterator(), getWrapper());
+        return new WrappedIterator<>(getUnwrapped().descendingIterator(), getWrapper());
     }
 }

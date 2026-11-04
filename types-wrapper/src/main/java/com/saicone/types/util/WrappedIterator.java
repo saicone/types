@@ -27,22 +27,22 @@ public class WrappedIterator<A, B> extends WrappedObject<A, B> implements Iterat
 
     @Override
     @SuppressWarnings("unchecked")
-    public @NotNull Iterator<A> getDelegated() {
-        return (Iterator<A>) super.getDelegated();
+    public @NotNull Iterator<A> getUnwrapped() {
+        return (Iterator<A>) super.getUnwrapped();
     }
 
     @Override
     public boolean hasNext() {
-        return getDelegated().hasNext();
+        return getUnwrapped().hasNext();
     }
 
     @Override
     public B next() {
-        return wrap(getDelegated().next());
+        return wrap(getUnwrapped().next());
     }
 
     @Override
     public void remove() {
-        getDelegated().remove();
+        getUnwrapped().remove();
     }
 }
