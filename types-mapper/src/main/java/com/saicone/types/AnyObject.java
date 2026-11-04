@@ -2,31 +2,33 @@ package com.saicone.types;
 
 import com.saicone.types.parser.ArrayParser;
 import com.saicone.types.parser.EnumParser;
+import com.saicone.types.parser.ListParser;
 import com.saicone.types.parser.MapParser;
+import com.saicone.types.parser.SetParser;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Represents a value that can be converted into different types of objects.
  *
  * @author Rubenicos
  *
- * @param <T> the value type itself.
+ * @param <T> the value type itself
  */
 @FunctionalInterface
+@SuppressWarnings("unused")
 public interface AnyObject<T> {
 
     @NotNull
@@ -43,9 +45,9 @@ public interface AnyObject<T> {
     /**
      * Create a wrapped value type from given object type.
      *
-     * @param value the object type to wrap.
-     * @return      a value type instance.
-     * @param <T>   the value type itself.
+     * @param value the object type to wrap
+     * @return      a value type instance
+     * @param <T>   the value type itself
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -62,6 +64,11 @@ public interface AnyObject<T> {
         return () -> value;
     }
 
+    /**
+     * Check if the value is null or empty, depending on the value type.
+     *
+     * @return true if the value type is null or empty, false otherwise
+     */
     default boolean isEmpty() {
         return false;
     }
@@ -69,568 +76,876 @@ public interface AnyObject<T> {
     /**
      * Get the value type that implements the interface.
      *
-     * @return the value type itself.
+     * @return the value type itself
      */
+    @UnknownNullability
     T getValue();
 
     /**
      * Convert this object into given class type.
      *
-     * @param type the class type.
-     * @return     a converted value type, null otherwise.
-     * @param <E>  the type result.
+     * @param type the class type
+     * @return     a converted value type
+     * @param <E>  the type result
      */
-    @Nullable
+    @NotNull
     default <E> E as(@NotNull Class<E> type) {
-        return as(type, null);
+        return as(type, TypeParser::parseOrThrow);
     }
 
     /**
      * Convert this object into given class type.
      *
-     * @param type the class type.
-     * @param def  the type object to return if the conversion fails.
-     * @return     a converted value type, default object otherwise.
-     * @param <E>  the type result.
+     * @param type     the class type
+     * @param function the function to run with the object and the type parser
+     * @return         a converted value type
+     * @throws X if the parsing fails
+     * @param <E> the type result of the parser
+     * @param <R> the type result of the function
+     * @param <X> the type of exception that can be thrown
      */
-    @Nullable
-    @Contract("_, !null -> !null")
-    default <E> E as(@NotNull Class<E> type, @Nullable E def) {
-        return Types.run(type, getValue(), (parser, object) -> parser.parseOrElse(object, def));
+    @UnknownNullability
+    default <E, R, X extends Throwable> R as(@NotNull Class<E> type, @NotNull TypeParserFunction<TypeParser<E>, R, X> function) throws X {
+        return Types.run(type, getValue(), function);
     }
 
     /**
-     * Convert this object with the given type parser.
+     * Convert this object into given class type.
      *
-     * @see TypeParser#parse(Object)
-     *
-     * @param parser the parser to apply this object into.
-     * @return       a converted value type, null otherwise.
-     * @param <E>    the type result.
-     */
-    @Nullable
-    default <E> E as(@NotNull TypeParser<E> parser) {
-        return as(parser, null);
-    }
-
-    /**
-     * Convert this object with the given type parser.
-     *
-     * @see TypeParser#parseOrElse(Object, Object)
-     *
-     * @param parser the parser to apply this object into.
-     * @param def    the type object to return if parse fails.
-     * @return       a converted value type, default object otherwise.
-     * @param <E>    the type result.
-     */
-    @Nullable
-    @Contract("_, !null -> !null")
-    default <E> E as(@NotNull TypeParser<E> parser, @Nullable E def) {
-        return parser.parseOrElse(getValue(), def);
-    }
-
-    /**
-     * Convert this object into Optional converted type with type parser.
-     *
-     * @param parser the parser to apply this object into.
-     * @return       a wrapped conversion result as Optional.
-     * @param <E>    the type result of parser.
+     * @param parser the parser to apply this object into
+     * @return       a converted value type
+     * @param <E>    the type result of the parser
      */
     @NotNull
-    default <E> Optional<E> asOptional(@NotNull TypeParser<E> parser) {
-        return parser.parseOrEmpty(getValue());
+    default <E> E as(@NotNull TypeParser<E> parser) {
+        return parser.parseOrThrow(getValue());
     }
 
     /**
-     * Convert this object into enum type.
+     * Convert this object into given class type.
      *
-     * @param type   the required enum type.
-     * @return       an enum type.
-     * @param <E>    the enum type result.
+     * @param parser   the parser to apply this object into
+     * @param function the function to run with the object and the type parser
+     * @return         a converted value type
+     * @throws X if the parsing fails
+     * @param <E> the type result of the parser
+     * @param <R> the type result of the function
+     * @param <X> the type of exception that can be thrown
      */
-    @Nullable
+    @UnknownNullability
+    default <E, R, X extends Throwable> R as(@NotNull TypeParser<E> parser, @NotNull TypeParserFunction<TypeParser<E>, R, X> function) throws X {
+        return function.apply(parser, getValue());
+    }
+
+    /**
+     * Convert this object into given enum type.
+     *
+     * @param type the type of enum to convert
+     * @return     a type enum representation
+     * @param <E> the type of provided enum class
+     */
+    @NotNull
     default <E extends Enum<E>> E asEnum(@NotNull Class<E> type) {
-        return EnumParser.of(type).parseOrThrow(getValue());
+        return asEnum(type, TypeParser::parseOrThrow);
     }
 
     /**
-     * Convert this object into enum type with provided enum values.
+     * Convert this object into given enum type.
      *
-     * @param type   the required enum type.
-     * @param values the enum value array.
-     * @return       an enum type.
-     * @param <E>    the enum type result.
+     * @param type     the type of enum to convert
+     * @param function the function to run with the object and the type parser
+     * @return         a type enum representation
+     * @throws X if the parsing fails
+     * @param <E> the type of provided enum class
+     * @param <X> the type of exception that can be thrown
      */
-    @Nullable
-    default <E extends Enum<E>> E asEnum(@NotNull Class<E> type, @NotNull E[] values) {
-        return EnumParser.of(type, values).parseOrThrow(getValue());
+    @UnknownNullability
+    default <E extends Enum<E>, X extends Throwable> E asEnum(@NotNull Class<E> type, @NotNull TypeParserFunction<EnumParser<E>, E, X> function) throws X {
+        return function.apply(EnumParser.of(type), getValue());
+    }
+
+    /**
+     * Convert this object into array type with component type, allowing primitive types.
+     *
+     * @param component the component type of array
+     * @return          a type array
+     * @param <C> the component type
+     * @param <A> the array type
+     */
+    @NotNull
+    default <C, A> A asArray(@NotNull Class<C> component) {
+        return asArray(component, TypeParser::parseOrThrow);
+    }
+
+    /**
+     * Convert this object into array type with component type, allowing primitive types.
+     *
+     * @param component the component type of array
+     * @param function  the function to run with the object and the type parser
+     * @return          a type array
+     * @throws X if the parsing fails
+     * @param <C> the component type
+     * @param <A> the array type
+     * @param <X> the type of exception that can be thrown
+     */
+    @UnknownNullability
+    default <C, A, X extends Throwable> A asArray(@NotNull Class<C> component, @NotNull TypeParserFunction<ArrayParser<A, C>, A, X> function) throws X {
+        return function.apply(ArrayParser.of(component), getValue());
     }
 
     /**
      * Convert this object into array type with component type.
      *
-     * @param component the component type of array.
-     * @return          a type array.
-     * @param <A>       the array type.
+     * @param parser the parser that objects into component type
+     * @return       a type array
+     * @param <C> the component type
+     * @param <A> the array type
      */
     @NotNull
-    @SuppressWarnings("unchecked")
-    default <A> A asArray(@NotNull Class<?> component) {
-        return (A) ArrayParser.of(component).parseOrThrow(getValue());
+    default <C, A> A asArray(@NotNull TypeParser<C> parser) {
+        return asArray(parser, TypeParser::parseOrThrow);
     }
 
     /**
-     * Convert this object into array type with parser.
+     * Convert this object into array type with component type.
      *
-     * @param parser the parser to apply this object into.
-     * @return       a type array.
-     * @param <A>    the array type.
+     * @param parser   the parser that objects into component type
+     * @param function the function to run with the object and the type parser
+     * @return         a type array
+     * @throws X if the parsing fails
+     * @param <C> the component type
+     * @param <A> the array type
+     * @param <X> the type of exception that can be thrown
      */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    default <A> A asArray(@NotNull TypeParser<?> parser) {
-        return (A) parser.array().parseOrThrow(getValue());
+    @UnknownNullability
+    default <C, A, X extends Throwable> A asArray(@NotNull TypeParser<C> parser, @NotNull TypeParserFunction<ArrayParser<A, C>, A, X> function) throws X {
+        return function.apply(ArrayParser.of(parser), getValue());
     }
 
     /**
-     * Convert this object into given array type with parser.
+     * Convert this object into a List of elements with the given type parser.
      *
-     * @param parser the parser to apply this object into.
-     * @param array  the array to add parsed values.
-     * @return       a type array.
-     * @param <A>    the array type.
-     */
-    @NotNull
-    default <A> A asArray(@NotNull TypeParser<?> parser, @NotNull A array) {
-        return parser.array(capacity -> array).parseOrThrow(getValue());
-    }
-
-    /**
-     * Convert this object into given array type with parser.
-     *
-     * @param parser the parser to apply this object into.
-     * @param array  the array to add parsed values.
-     * @return       a type array.
-     * @param <E>    the type by parser.
-     */
-    @NotNull
-    default <E> E[] asArray(@NotNull TypeParser<E> parser, @NotNull E[] array) {
-        return parser.array(capacity -> array).parseOrThrow(getValue());
-    }
-
-    /**
-     * Convert this object into given collection type with type parser.
-     *
-     * @see TypeParser#collection(Type, Function)
-     *
-     * @param parser     the parser to apply this object into.
-     * @param collection the collection to add parsed values.
-     * @return           a type collection.
-     * @param <E>        the type by parser.
-     * @param <C>        the collection type.
-     */
-    @NotNull
-    default <E, C extends Collection<E>> C asCollection(@NotNull TypeParser<E> parser, @NotNull C collection) {
-        return parser.collection(collection.getClass(), capacity -> collection).parseOrThrow(getValue());
-    }
-
-    /**
-     * Convert this object into an ArrayList with the given type parser.
-     *
-     * @see TypeParser#list()
-     *
-     * @param parser the parser to apply this object into.
-     * @return       a type list containing the parsed values.
-     * @param <E>    the type by parser.
+     * @param parser the parser to apply this object into
+     * @return       a type list containing the parsed values
+     * @param <E>    the type by parser
      */
     @NotNull
     default <E> List<E> asList(@NotNull TypeParser<E> parser) {
-        return parser.list().parseOrThrow(getValue());
+        return asList(parser, TypeParser::parseOrThrow);
     }
 
     /**
-     * Convert this object into a HashSet with the given type parser.
+     * Convert this object into a List of elements with the given type parser.
      *
-     * @see TypeParser#set()
+     * @param parser   the parser to apply this object into
+     * @param function the function to run with the object and the type parser
+     * @return         a type list containing the parsed values
+     * @throws X if the parsing fails
+     * @param <E> the type by parser
+     * @param <L> the list type result of the function
+     * @param <X> the type of exception that can be thrown
+     */
+    @UnknownNullability
+    default <E, L extends List<E>, X extends Throwable> L asList(@NotNull TypeParser<E> parser, @NotNull TypeParserFunction<ListParser<E>, L, X> function) throws X {
+        return function.apply(parser.list(), getValue());
+    }
+
+    /**
+     * Convert this object into a Set of elements with the given type parser.
      *
-     * @param parser the parser to apply this object into.
-     * @return       a type set containing the parsed values.
-     * @param <E>    the type by parser.
+     * @param parser the parser to apply this object into
+     * @return       a type set containing the parsed values
+     * @param <E>    the type by parser
      */
     @NotNull
     default <E> Set<E> asSet(@NotNull TypeParser<E> parser) {
-        return parser.set().parseOrThrow(getValue());
+        return asSet(parser, TypeParser::parseOrThrow);
     }
 
     /**
-     * Convert this object into map type.
+     * Convert this object into a Set of elements with the given type parser.
      *
-     * @param keyParser   the parser that accept keys.
-     * @param valueParser the parser that accept values.
-     * @return            a map type.
-     * @param <K>         the type of keys maintained by map.
-     * @param <V>         the type of mapped values.
-     * @param <M>         the map type result of the function.
+     * @param parser   the parser to apply this object into
+     * @param function the function to run with the object and the type parser
+     * @return         a type set containing the parsed values
+     * @throws X if the parsing fails
+     * @param <E> the type by parser
+     * @param <S> the set type result of the function
+     * @param <X> the type of exception that can be thrown
+     */
+    @UnknownNullability
+    default <E, S extends Set<E>, X extends Throwable> S asSet(@NotNull TypeParser<E> parser, @NotNull TypeParserFunction<SetParser<E>, S, X> function) throws X {
+        return function.apply(parser.set(), getValue());
+    }
+
+    /**
+     * Convert this object into map type with the given key and value type parsers.
+     *
+     * @param keyParser   the parser that accept keys
+     * @param valueParser the parser that accept values
+     * @return            a map type
+     * @param <K> the type of keys maintained by map
+     * @param <V> the type of mapped values
+     * @param <M> the map type result of the function
      */
     @NotNull
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser) {
-        return (M) MapParser.of(keyParser, valueParser).parseOrThrow(getValue());
+        return (M) asMap(keyParser, valueParser, TypeParser::parseOrThrow);
     }
 
     /**
-     * Convert this object into map type.
+     * Convert this object into map type with the given key and value type parsers.
      *
-     * @param keyParser   the parser that accept keys.
-     * @param valueParser the parser that accept values.
-     * @param map         the map to fill.
-     * @return            a map type.
-     * @param <K>         the type of keys maintained by map.
-     * @param <V>         the type of mapped values.
-     * @param <M>         the map type result of the function.
+     * @param keyParser   the parser that accept keys
+     * @param valueParser the parser that accept values
+     * @param function    the function to run with the object and the type parser
+     * @return            a map type
+     * @throws X if the parsing fails
+     * @param <K> the type of keys maintained by map
+     * @param <V> the type of mapped values
+     * @param <M> the map type result of the function
+     * @param <X> the type of exception that can be thrown
      */
-    @NotNull
-    @SuppressWarnings("all")
-    default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull M map) {
-        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parseOrThrow(getValue());
+    @UnknownNullability
+    default <K, V, M extends Map<K, V>, X extends Throwable> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull TypeParserFunction<MapParser<K, V>, M, X> function) throws X {
+        return function.apply(MapParser.of(keyParser, valueParser), getValue());
     }
 
     /**
      * Convert this object into a string.
      *
-     * @see Types#STRING
-     *
-     * @return a string, null if conversion fails.
+     * @return a string
      */
-    @Nullable
+    @NotNull
     default String asString() {
         return as(Types.STRING);
     }
 
     /**
-     * Convert this object into a string.
+     * Convert this object into a string if possible, otherwise return null.
      *
-     * @see Types#STRING
+     * @return a string, null if conversion fails
+     */
+    @Nullable
+    default String asStringOrNull() {
+        return as(Types.STRING, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a string if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    a string, default string if conversion fails.
+     * @return a string, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<String> asStringOrEmpty() {
+        return as(Types.STRING, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a string if possible, otherwise return the default string.
+     *
+     * @param def the default string
+     * @return    a string, default string if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default String asString(@Nullable String def) {
-        return as(Types.STRING, def);
+    default String asStringOrElse(@Nullable String def) {
+        return as(Types.STRING, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a string if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default string
+     * @return         a string, default string if conversion fails
+     */
+    @UnknownNullability
+    default String asStringOrGet(@NotNull Supplier<String> supplier) {
+        return as(Types.STRING, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a character.
      *
-     * @see Types#CHAR
-     *
-     * @return a character, null if conversion fails.
+     * @return a character
      */
-    @Nullable
+    @NotNull
     default Character asChar() {
         return as(Types.CHAR);
     }
 
     /**
-     * Convert this object into a character.
+     * Convert this object into a character if possible, otherwise return null.
      *
-     * @see Types#CHAR
+     * @return a character, null if conversion fails
+     */
+    @Nullable
+    default Character asCharOrNull() {
+        return as(Types.CHAR, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a character if possible, otherwise return an empty optional.
      *
-     * @param def the default character.
-     * @return    a character, default character if conversion fails.
+     * @return a character, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Character> asCharOrEmpty() {
+        return as(Types.CHAR, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a character if possible, otherwise return the default character.
+     *
+     * @param def the default character
+     * @return    a character, default character if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Character asChar(@Nullable Character def) {
-        return as(Types.CHAR, def);
+    default Character asCharOrElse(@Nullable Character def) {
+        return as(Types.CHAR, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a character if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default character
+     * @return         a character, default character if conversion fails
+     */
+    @UnknownNullability
+    default Character asCharOrGet(@NotNull Supplier<Character> supplier) {
+        return as(Types.CHAR, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a boolean.
      *
-     * @see Types#BOOLEAN
-     *
-     * @return a boolean, null if conversion fails.
+     * @return a boolean
      */
-    @Nullable
+    @NotNull
     default Boolean asBoolean() {
         return as(Types.BOOLEAN);
     }
 
     /**
-     * Convert this object into a boolean.
+     * Convert this object into a boolean if possible, otherwise return null.
      *
-     * @see Types#BOOLEAN
+     * @return a boolean, null if conversion fails
+     */
+    @Nullable
+    default Boolean asBooleanOrNull() {
+        return as(Types.BOOLEAN, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a boolean if possible, otherwise return an empty optional.
      *
-     * @param def the default boolean.
-     * @return    a boolean, default boolean if conversion fails.
+     * @return a boolean, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Boolean> asBooleanOrEmpty() {
+        return as(Types.BOOLEAN, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a boolean if possible, otherwise return the default boolean.
+     *
+     * @param def the default boolean
+     * @return    a boolean, default boolean if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Boolean asBoolean(@Nullable Boolean def) {
-        return as(Types.BOOLEAN, def);
+    default Boolean asBooleanOrElse(@Nullable Boolean def) {
+        return as(Types.BOOLEAN, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a boolean if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default boolean
+     * @return         a boolean, default boolean if conversion fails
+     */
+    @UnknownNullability
+    default Boolean asBooleanOrGet(@NotNull Supplier<Boolean> supplier) {
+        return as(Types.BOOLEAN, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a number.
      *
-     * @see Types#NUMBER
-     *
-     * @return a number, null if conversion fails.
+     * @return a number
      */
-    @Nullable
+    @NotNull
     default Number asNumber() {
         return as(Types.NUMBER);
     }
 
     /**
-     * Convert this object into a number.
+     * Convert this object into a number if possible, otherwise return null.
      *
-     * @see Types#NUMBER
+     * @return a number, null if conversion fails
+     */
+    @Nullable
+    default Number asNumberOrNull() {
+        return as(Types.NUMBER, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a number if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    a number, default byte if conversion fails.
+     * @return a number, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Number> asNumberOrEmpty() {
+        return as(Types.NUMBER, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a number if possible, otherwise return the default number.
+     *
+     * @param def the default number
+     * @return    a number, default number if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Number asNumber(@Nullable Number def) {
-        return as(Types.NUMBER, def);
+    default Number asNumberOrElse(@Nullable Number def) {
+        return as(Types.NUMBER, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a number if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default number
+     * @return         a number, default number if conversion fails
+     */
+    @UnknownNullability
+    default Number asNumberOrGet(@NotNull Supplier<Number> supplier) {
+        return as(Types.NUMBER, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a byte.
      *
-     * @see Types#BYTE
-     *
-     * @return a byte, null if conversion fails.
+     * @return a byte
      */
-    @Nullable
+    @NotNull
     default Byte asByte() {
         return as(Types.BYTE);
     }
 
     /**
-     * Convert this object into a byte.
+     * Convert this object into a byte if possible, otherwise return null.
      *
-     * @see Types#BYTE
+     * @return a byte, null if conversion fails
+     */
+    @Nullable
+    default Byte asByteOrNull() {
+        return as(Types.BYTE, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a byte if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    a byte, default byte if conversion fails.
+     * @return a byte, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Byte> asByteOrEmpty() {
+        return as(Types.BYTE, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a byte if possible, otherwise return the default byte.
+     *
+     * @param def the default byte
+     * @return    a byte, default byte if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Byte asByte(@Nullable Byte def) {
-        return as(Types.BYTE, def);
+    default Byte asByteOrElse(@Nullable Byte def) {
+        return as(Types.BYTE, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a byte if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default byte
+     * @return         a byte, default byte if conversion fails
+     */
+    @UnknownNullability
+    default Byte asByteOrGet(@NotNull Supplier<Byte> supplier) {
+        return as(Types.BYTE, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a short.
      *
-     * @see Types#SHORT
-     *
-     * @return a short, null if conversion fails.
+     * @return a short
      */
-    @Nullable
+    @NotNull
     default Short asShort() {
         return as(Types.SHORT);
     }
 
     /**
-     * Convert this object into a short.
+     * Convert this object into a short if possible, otherwise return null.
      *
-     * @see Types#SHORT
-     *
-     * @param def the default string.
-     * @return    a short, default short if conversion fails.
+     * @return a short, null if conversion fails
      */
     @Nullable
-    @Contract("!null -> !null")
-    default Short asShort(@Nullable Short def) {
-        return as(Types.SHORT, def);
+    default Short asShortOrNull() {
+        return as(Types.SHORT, TypeParser::parseOrNull);
     }
 
     /**
-     * Convert this object into an integer.
+     * Convert this object into a short if possible, otherwise return an empty optional.
      *
-     * @see Types#INTEGER
+     * @return a short, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Short> asShortOrEmpty() {
+        return as(Types.SHORT, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a short if possible, otherwise return the default short.
      *
-     * @return an integer, null if conversion fails.
+     * @param def the default short
+     * @return    a short, default short if conversion fails
      */
     @Nullable
-    default Integer asInt() {
+    @Contract("!null -> !null")
+    default Short asShortOrElse(@Nullable Short def) {
+        return as(Types.SHORT, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a short if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default short
+     * @return         a short, default short if conversion fails
+     */
+    @UnknownNullability
+    default Short asShortOrGet(@NotNull Supplier<Short> supplier) {
+        return as(Types.SHORT, (parser, object) -> parser.parseOrGet(object, supplier));
+    }
+
+    /**
+     * Convert this object into an int.
+     *
+     * @return an int
+     */
+    @NotNull
+    default Integer asInteger() {
         return as(Types.INTEGER);
     }
 
     /**
-     * Convert this object into an integer.
+     * Convert this object into an int if possible, otherwise return null.
      *
-     * @see Types#INTEGER
+     * @return an int, null if conversion fails
+     */
+    @Nullable
+    default Integer asIntegerOrNull() {
+        return as(Types.INTEGER, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into an int if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    an integer, default integer if conversion fails.
+     * @return an int, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Integer> asIntegerOrEmpty() {
+        return as(Types.INTEGER, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into an int if possible, otherwise return the default int.
+     *
+     * @param def the default int
+     * @return    an int, default int if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Integer asInt(@Nullable Integer def) {
-        return as(Types.INTEGER, def);
+    default Integer asIntegerOrElse(@Nullable Integer def) {
+        return as(Types.INTEGER, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into an int if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default int
+     * @return         an int, default int if conversion fails
+     */
+    @UnknownNullability
+    default Integer asIntegerOrGet(@NotNull Supplier<Integer> supplier) {
+        return as(Types.INTEGER, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a float.
      *
-     * @see Types#FLOAT
-     *
-     * @return a float, null if conversion fails.
+     * @return a float
      */
-    @Nullable
+    @NotNull
     default Float asFloat() {
         return as(Types.FLOAT);
     }
 
     /**
-     * Convert this object into a float.
+     * Convert this object into a float if possible, otherwise return null.
      *
-     * @see Types#FLOAT
+     * @return a float, null if conversion fails
+     */
+    @Nullable
+    default Float asFloatOrNull() {
+        return as(Types.FLOAT, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a float if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    a float, default float if conversion fails.
+     * @return a float, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Float> asFloatOrEmpty() {
+        return as(Types.FLOAT, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a float if possible, otherwise return the default float.
+     *
+     * @param def the default float
+     * @return    a float, default float if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Float asFloat(@Nullable Float def) {
-        return as(Types.FLOAT, def);
+    default Float asFloatOrElse(@Nullable Float def) {
+        return as(Types.FLOAT, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a float if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default float
+     * @return         a float, default float if conversion fails
+     */
+    @UnknownNullability
+    default Float asFloatOrGet(@NotNull Supplier<Float> supplier) {
+        return as(Types.FLOAT, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a long.
      *
-     * @see Types#LONG
-     *
-     * @return a long, null if conversion fails.
+     * @return a long
      */
-    @Nullable
+    @NotNull
     default Long asLong() {
         return as(Types.LONG);
     }
 
     /**
-     * Convert this object into a long.
+     * Convert this object into a long if possible, otherwise return null.
      *
-     * @see Types#LONG
+     * @return a long, null if conversion fails
+     */
+    @Nullable
+    default Long asLongOrNull() {
+        return as(Types.LONG, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a long if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    a long, default long if conversion fails.
+     * @return a long, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Long> asLongOrEmpty() {
+        return as(Types.LONG, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a long if possible, otherwise return the default long.
+     *
+     * @param def the default long
+     * @return    a long, default long if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Long asLong(@Nullable Long def) {
-        return as(Types.LONG, def);
+    default Long asLongOrElse(@Nullable Long def) {
+        return as(Types.LONG, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a long if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default long
+     * @return         a long, default long if conversion fails
+     */
+    @UnknownNullability
+    default Long asLongOrGet(@NotNull Supplier<Long> supplier) {
+        return as(Types.LONG, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a double.
      *
-     * @see Types#DOUBLE
-     *
-     * @return a double, null if conversion fails.
+     * @return a double
      */
-    @Nullable
+    @NotNull
     default Double asDouble() {
         return as(Types.DOUBLE);
     }
 
     /**
-     * Convert this object into a double.
+     * Convert this object into a double if possible, otherwise return null.
      *
-     * @see Types#DOUBLE
+     * @return a double, null if conversion fails
+     */
+    @Nullable
+    default Double asDoubleOrNull() {
+        return as(Types.DOUBLE, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a double if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    a double, default double if conversion fails.
+     * @return a double, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<Double> asDoubleOrEmpty() {
+        return as(Types.DOUBLE, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a double if possible, otherwise return the default double.
+     *
+     * @param def the default double
+     * @return    a double, default double if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default Double asDouble(@Nullable Double def) {
-        return as(Types.DOUBLE, def);
+    default Double asDoubleOrElse(@Nullable Double def) {
+        return as(Types.DOUBLE, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a double if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default double
+     * @return         a double, default double if conversion fails
+     */
+    @UnknownNullability
+    default Double asDoubleOrGet(@NotNull Supplier<Double> supplier) {
+        return as(Types.DOUBLE, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a BigInteger.
      *
-     * @see Types#BIG_INTEGER
-     *
-     * @return a BigInteger, null if conversion fails.
+     * @return a BigInteger
      */
-    @Nullable
+    @NotNull
     default BigInteger asBigInteger() {
         return as(Types.BIG_INTEGER);
     }
 
     /**
-     * Convert this object into a BigInteger.
+     * Convert this object into a BigInteger if possible, otherwise return null.
      *
-     * @see Types#BIG_INTEGER
+     * @return a BigInteger, null if conversion fails
+     */
+    @Nullable
+    default BigInteger asBigIntegerOrNull() {
+        return as(Types.BIG_INTEGER, TypeParser::parseOrNull);
+    }
+
+    /**
+     * Convert this object into a BigInteger if possible, otherwise return an empty optional.
      *
-     * @param def the default string.
-     * @return    a BigInteger, default BigInteger if conversion fails.
+     * @return a BigInteger, empty optional if conversion fails
+     */
+    @NotNull
+    default Optional<BigInteger> asBigIntegerOrEmpty() {
+        return as(Types.BIG_INTEGER, TypeParser::parseOrEmpty);
+    }
+
+    /**
+     * Convert this object into a BigInteger if possible, otherwise return the default BigInteger.
+     *
+     * @param def the default BigInteger
+     * @return    a BigInteger, default BigInteger if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default BigInteger asBigInteger(@Nullable BigInteger def) {
-        return as(Types.BIG_INTEGER, def);
+    default BigInteger asBigIntegerOrElse(@Nullable BigInteger def) {
+        return as(Types.BIG_INTEGER, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a BigInteger if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default BigInteger
+     * @return         a BigInteger, default BigInteger if conversion fails
+     */
+    @UnknownNullability
+    default BigInteger asBigIntegerOrGet(@NotNull Supplier<BigInteger> supplier) {
+        return as(Types.BIG_INTEGER, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     /**
      * Convert this object into a BigDecimal.
      *
-     * @see Types#BIG_DECIMAL
-     *
-     * @return a BigDecimal, null if conversion fails.
+     * @return a BigDecimal
      */
-    @Nullable
+    @NotNull
     default BigDecimal asBigDecimal() {
         return as(Types.BIG_DECIMAL);
     }
 
     /**
-     * Convert this object into a BigDecimal.
+     * Convert this object into a BigDecimal if possible, otherwise return null.
      *
-     * @see Types#BIG_DECIMAL
-     *
-     * @param def the default string.
-     * @return    a BigDecimal, default BigDecimal if conversion fails.
+     * @return a BigDecimal, null if conversion fails
      */
     @Nullable
-    @Contract("!null -> !null")
-    default BigDecimal asBigDecimal(@Nullable BigDecimal def) {
-        return as(Types.BIG_DECIMAL, def);
+    default BigDecimal asBigDecimalOrNull() {
+        return as(Types.BIG_DECIMAL, TypeParser::parseOrNull);
     }
 
     /**
-     * Convert this object into a unique ID.
+     * Convert this object into a BigDecimal if possible, otherwise return an empty optional.
      *
-     * @see Types#UUID
-     *
-     * @return a unique ID, null if conversion fails.
+     * @return a BigDecimal, empty optional if conversion fails
      */
-    @Nullable
-    default UUID asUniqueId() {
-        return as(Types.UUID);
+    @NotNull
+    default Optional<BigDecimal> asBigDecimalOrEmpty() {
+        return as(Types.BIG_DECIMAL, TypeParser::parseOrEmpty);
     }
 
     /**
-     * Convert this object into a unique ID.
+     * Convert this object into a BigDecimal if possible, otherwise return the default BigDecimal.
      *
-     * @see Types#UUID
-     *
-     * @param def the default string.
-     * @return    a unique ID, default unique ID if conversion fails.
+     * @param def the default BigDecimal
+     * @return    a BigDecimal, default BigDecimal if conversion fails
      */
     @Nullable
     @Contract("!null -> !null")
-    default UUID asUniqueId(@Nullable UUID def) {
-        return as(Types.UUID, def);
+    default BigDecimal asBigDecimalOrElse(@Nullable BigDecimal def) {
+        return as(Types.BIG_DECIMAL, (parser, object) -> parser.parseOrElse(object, def));
+    }
+
+    /**
+     * Convert this object into a BigDecimal if possible, otherwise return the result of the supplier.
+     *
+     * @param supplier the supplier to get the default BigDecimal
+     * @return         a BigDecimal, default BigDecimal if conversion fails
+     */
+    @UnknownNullability
+    default BigDecimal asBigDecimalOrGet(@NotNull Supplier<BigDecimal> supplier) {
+        return as(Types.BIG_DECIMAL, (parser, object) -> parser.parseOrGet(object, supplier));
     }
 
     @ApiStatus.Internal

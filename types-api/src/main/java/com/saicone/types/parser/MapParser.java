@@ -174,7 +174,7 @@ public class MapParser<K, V> extends AllocParser<Map<K, V>> {
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public <X extends Throwable> Map<K, V> parseEach(@Nullable Object object, @NotNull TypeParserFunction<K, K, X> keyFunction, @NotNull TypeParserFunction<V, V, X> valueFunction) throws X {
+    public <X extends Throwable> Map<K, V> parseEach(@Nullable Object object, @NotNull TypeParserFunction<TypeParser<K>, K, X> keyFunction, @NotNull TypeParserFunction<TypeParser<V>, V, X> valueFunction) throws X {
         if (object == null) {
             return create();
         } else if (isInstance(object)) {

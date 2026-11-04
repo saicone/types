@@ -180,7 +180,7 @@ public interface TypeParser<T> extends Function<Object, T> {
      */
     @NotNull
     default T parseOrThrow(@NotNull Object object) throws RuntimeException {
-        return parseOrThrow(object, () -> new RuntimeException("Failed to parse object: " + object));
+        return parseOrThrow(object, t -> new RuntimeException("Failed to parse object: " + object, t));
     }
 
     /**
@@ -193,11 +193,11 @@ public interface TypeParser<T> extends Function<Object, T> {
      * @param <X> the type of exception to throw
      */
     @NotNull
-    default <X extends Throwable> T parseOrThrow(@NotNull Object object, @NotNull Supplier<? extends X> exception) throws X {
+    default <X extends Throwable> T parseOrThrow(@NotNull Object object, @NotNull Function<Throwable, ? extends X> exception) throws X {
         try {
             return parse(object);
         } catch (Throwable t) {
-            throw exception.get();
+            throw exception.apply(t);
         }
     }
 

@@ -396,24 +396,8 @@ public class Types {
      * @param <R> the type result of the function
      * @param <X> the type of exception that can be thrown
      */
-    @Nullable
-    public static <T, R, X extends Throwable> R run(@NotNull Class<T> type, @Nullable Object object, @NotNull TypeParserFunction<T, R, X> function) throws X {
-        return run((Type) type, object, function);
-    }
-
-    /**
-     * Run a function with the provided object and the type parser associated with the provided type.
-     *
-     * @param type     the key object
-     * @param object   the object to parse
-     * @param function the function to run with the object and the type parser
-     * @return         the result of the function
-     * @throws X if the parsing fails
-     * @param <R> the type result of the function
-     * @param <X> the type of exception that can be thrown
-     */
     @UnknownNullability
-    public static <R, X extends Throwable> R run(@NotNull Type type, @Nullable Object object, @NotNull TypeParserFunction<?, R, X> function) throws X {
+    public static <T, R, X extends Throwable> R run(@NotNull Class<T> type, @Nullable Object object, @NotNull TypeParserFunction<TypeParser<T>, R, X> function) throws X {
         return function.apply(getOrDefault(type), object);
     }
 }

@@ -150,7 +150,7 @@ public class ArrayParser<T, C> extends AllocParser<T> {
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public <X extends Throwable> T parseEach(@Nullable Object object, @NotNull TypeParserFunction<C, C, X> function) throws X {
+    public <X extends Throwable> T parseEach(@Nullable Object object, @NotNull TypeParserFunction<TypeParser<C>, C, X> function) throws X {
         if (object == null) {
             return create();
         } else if (isInstance(object)) {

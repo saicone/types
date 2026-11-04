@@ -108,7 +108,7 @@ public abstract class CollectionParser<T extends Collection<E>, E> extends Alloc
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public <X extends Throwable> T parseEach(@Nullable Object object, @NotNull TypeParserFunction<E, E, X> function) throws X {
+    public <X extends Throwable> T parseEach(@Nullable Object object, @NotNull TypeParserFunction<TypeParser<E>, E, X> function) throws X {
         if (object == null) {
             return create();
         } else if (isInstance(object)) {

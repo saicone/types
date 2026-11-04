@@ -14,7 +14,7 @@ import org.jetbrains.annotations.UnknownNullability;
  * @param <X> the type of exception that can be thrown
  */
 @FunctionalInterface
-public interface TypeParserFunction<T, R, X extends Throwable> {
+public interface TypeParserFunction<T extends TypeParser<?>, R, X extends Throwable> {
 
     /**
      * Applies this function to the given arguments.
@@ -25,5 +25,5 @@ public interface TypeParserFunction<T, R, X extends Throwable> {
      * @throws X if the parsing fails
      */
     @UnknownNullability
-    R apply(@NotNull TypeParser<T> parser, Object object) throws X;
+    R apply(@NotNull T parser, Object object) throws X;
 }
