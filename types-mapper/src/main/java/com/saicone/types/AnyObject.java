@@ -154,7 +154,7 @@ public interface AnyObject<T> {
      */
     @Nullable
     default <E extends Enum<E>> E asEnum(@NotNull Class<E> type) {
-        return EnumParser.of(type).parse(getValue());
+        return EnumParser.of(type).parseOrThrow(getValue());
     }
 
     /**
@@ -167,7 +167,7 @@ public interface AnyObject<T> {
      */
     @Nullable
     default <E extends Enum<E>> E asEnum(@NotNull Class<E> type, @NotNull E[] values) {
-        return EnumParser.of(type, values).parse(getValue());
+        return EnumParser.of(type, values).parseOrThrow(getValue());
     }
 
     /**
@@ -180,7 +180,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("unchecked")
     default <A> A asArray(@NotNull Class<?> component) {
-        return (A) ArrayParser.of(component).parse(getValue());
+        return (A) ArrayParser.of(component).parseOrThrow(getValue());
     }
 
     /**
@@ -193,7 +193,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("unchecked")
     default <A> A asArray(@NotNull TypeParser<?> parser) {
-        return (A) parser.array().parse(getValue());
+        return (A) parser.array().parseOrThrow(getValue());
     }
 
     /**
@@ -206,7 +206,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <A> A asArray(@NotNull TypeParser<?> parser, @NotNull A array) {
-        return parser.array(capacity -> array).parse(getValue());
+        return parser.array(capacity -> array).parseOrThrow(getValue());
     }
 
     /**
@@ -219,7 +219,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> E[] asArray(@NotNull TypeParser<E> parser, @NotNull E[] array) {
-        return parser.array(capacity -> array).parse(getValue());
+        return parser.array(capacity -> array).parseOrThrow(getValue());
     }
 
     /**
@@ -235,7 +235,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E, C extends Collection<E>> C asCollection(@NotNull TypeParser<E> parser, @NotNull C collection) {
-        return parser.collection(collection.getClass(), capacity -> collection).parse(getValue());
+        return parser.collection(collection.getClass(), capacity -> collection).parseOrThrow(getValue());
     }
 
     /**
@@ -249,7 +249,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> List<E> asList(@NotNull TypeParser<E> parser) {
-        return parser.list().parse(getValue());
+        return parser.list().parseOrThrow(getValue());
     }
 
     /**
@@ -263,7 +263,7 @@ public interface AnyObject<T> {
      */
     @NotNull
     default <E> Set<E> asSet(@NotNull TypeParser<E> parser) {
-        return parser.set().parse(getValue());
+        return parser.set().parseOrThrow(getValue());
     }
 
     /**
@@ -279,7 +279,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("all")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser) {
-        return (M) MapParser.of(keyParser, valueParser).parse(getValue());
+        return (M) MapParser.of(keyParser, valueParser).parseOrThrow(getValue());
     }
 
     /**
@@ -296,7 +296,7 @@ public interface AnyObject<T> {
     @NotNull
     @SuppressWarnings("all")
     default <K, V, M extends Map<K, V>> M asMap(@NotNull TypeParser<K> keyParser, @NotNull TypeParser<V> valueParser, @NotNull M map) {
-        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parse(getValue());
+        return (M) new MapParser<>(capacity -> map, keyParser, valueParser).parseOrThrow(getValue());
     }
 
     /**

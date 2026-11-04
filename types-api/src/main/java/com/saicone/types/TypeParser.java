@@ -172,6 +172,36 @@ public interface TypeParser<T> extends Function<Object, T> {
     T parse(@NotNull Object object) throws Throwable;
 
     /**
+     * Parse the given object into required type, if fails throw a runtime exception.
+     *
+     * @param object the object to parse
+     * @return       a converted value type
+     * @throws RuntimeException if the parsing fails
+     */
+    @NotNull
+    default T parseOrThrow(@NotNull Object object) throws RuntimeException {
+        return parseOrThrow(object, () -> new RuntimeException("Failed to parse object: " + object));
+    }
+
+    /**
+     * Parse the given object into required type, if fails throw a custom exception.
+     *
+     * @param object    the object to parse
+     * @param exception the supplier to create a custom exception
+     * @return          a converted value type
+     * @throws X if the parsing fails
+     * @param <X> the type of exception to throw
+     */
+    @NotNull
+    default <X extends Throwable> T parseOrThrow(@NotNull Object object, @NotNull Supplier<? extends X> exception) throws X {
+        try {
+            return parse(object);
+        } catch (Throwable t) {
+            throw exception.get();
+        }
+    }
+
+    /**
      * Try to parse the given object into required type, if fails return null.
      *
      * @param object the object to parse

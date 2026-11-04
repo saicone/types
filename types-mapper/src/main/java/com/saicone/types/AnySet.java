@@ -1,7 +1,6 @@
 package com.saicone.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -17,11 +16,11 @@ public class AnySet<E> extends AnyCollection<E> {
 
         @Override
         @SuppressWarnings("unchecked")
-        public @Nullable AnySet<Object> parse(@NotNull Object object) {
+        public @NotNull AnySet<Object> parse(@NotNull Object object) throws Throwable {
             if (object instanceof Set) {
                 return of((Set<Object>) object);
             }
-            return null;
+            throw new IllegalArgumentException("Cannot parse object to AnySet: " + object);
         }
     };
 

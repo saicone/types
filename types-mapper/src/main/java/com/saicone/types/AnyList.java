@@ -22,11 +22,11 @@ public class AnyList<E> extends AnyCollection<E> {
 
         @Override
         @SuppressWarnings("unchecked")
-        public @Nullable AnyList<Object> parse(@NotNull Object object) {
+        public @NotNull AnyList<Object> parse(@NotNull Object object) throws Throwable {
             if (object instanceof List) {
                 return of((List<Object>) object);
             }
-            return null;
+            throw new IllegalArgumentException("Cannot parse object to AnyList: " + object);
         }
     };
 

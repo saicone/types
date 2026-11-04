@@ -29,11 +29,11 @@ public class AnyMap<K, V> implements AnyStructure<Map<K, V>>, Iterable<Map.Entry
 
         @Override
         @SuppressWarnings("unchecked")
-        public @Nullable AnyMap<Object, Object> parse(@NotNull Object object) {
+        public @NotNull AnyMap<Object, Object> parse(@NotNull Object object) throws Throwable {
             if (object instanceof Map) {
                 return of((Map<Object, Object>) object);
             }
-            return null;
+            throw new IllegalArgumentException("Cannot parse object to AnyMap: " + object);
         }
     };
 
