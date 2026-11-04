@@ -61,7 +61,7 @@ public abstract class TypeWrapper<A, B> {
                     new TypeWrapper<A, B>() {
                         @Override
                         public B wrap(Object object) {
-                            return parser.parseOrNull(object);
+                            return parser.parseOrThrow(object);
                         }
 
                         @Override
@@ -74,7 +74,7 @@ public abstract class TypeWrapper<A, B> {
         return new TypeWrapper<A, B>() {
             @Override
             public B wrap(Object object) {
-                return parser.parseOrNull(object);
+                return parser.parseOrThrow(object);
             }
 
             @Override
@@ -107,7 +107,7 @@ public abstract class TypeWrapper<A, B> {
 
                         @Override
                         public A unwrap(Object object) {
-                            return parser.parseOrNull(object);
+                            return parser.parseOrThrow(object);
                         }
                     }
             );
@@ -120,7 +120,7 @@ public abstract class TypeWrapper<A, B> {
 
             @Override
             public A unwrap(Object object) {
-                return parser.parseOrNull(object);
+                return parser.parseOrThrow(object);
             }
         };
     }
@@ -143,12 +143,12 @@ public abstract class TypeWrapper<A, B> {
                     new TypeWrapper<A, B>() {
                         @Override
                         public B wrap(Object object) {
-                            return parserB.parseOrNull(object);
+                            return parserB.parseOrThrow(object);
                         }
 
                         @Override
                         public A unwrap(Object object) {
-                            return parserA.parseOrNull(object);
+                            return parserA.parseOrThrow(object);
                         }
                     }
             );
@@ -156,12 +156,12 @@ public abstract class TypeWrapper<A, B> {
         return new TypeWrapper<A, B>() {
             @Override
             public B wrap(Object object) {
-                return parserB.parseOrNull(object);
+                return parserB.parseOrThrow(object);
             }
 
             @Override
             public A unwrap(Object object) {
-                return parserA.parseOrNull(object);
+                return parserA.parseOrThrow(object);
             }
         };
     }
