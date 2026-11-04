@@ -116,7 +116,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone:types-api:1.4.4'
+    implementation 'com.saicone:types-api:1.5.0'
 }
 ```
 
@@ -127,7 +127,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone:types-api:1.4.4")
+    implementation("com.saicone:types-api:1.5.0")
 }
 ```
 
@@ -137,7 +137,7 @@ pom.xml
     <dependency>
         <groupId>com.saicone</groupId>
         <artifactId>types-api</artifactId>
-        <version>1.4.4</version>
+        <version>1.5.0</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
@@ -146,29 +146,11 @@ pom.xml
 ## Supported types
 
 A "supported" type (for example) doesn't mean you can magically convert a `Map<String, Integer>` into `Boolean`,
-every object type that you want to parse must have a minimum sense with the conversion or `null` will be return,
+every object type that you want to parse must have a minimum sense with the conversion or an exception will be thrown,
 for example a `"1.4"` can be converted into any `Number` type.
 
 > [!NOTE]
 > Any supported (primitive) object type can be returned as array value of its type.
-
-### Primitives
-
-Since primitive types cannot be explicitly `null`, they will be returned with a fallback value.
-
-<details>
-  <summary>Click to show</summary>
-
-* `char` or `'\0'`
-* `boolean` or `Boolean.FALSE`
-* `byte` or `Byte.MIN_VALUE`
-* `short` or `Short.MIN_VALUE`
-* `int` or `Integer.MIN_VALUE`
-* `float` or `Float.MIN_VALUE`
-* `long` or `Long.MIN_VALUE`
-* `double` or `Double.MIN_VALUE`
-
-</details>
 
 ### Objects
 
@@ -180,6 +162,8 @@ Well known Java objects and the accepted types to properly parse them.
 * `java.lang.Object`
 * `java.lang.String`
 * `java.lang.Character`
+    1. Number character code, for example `65` or `0x41`
+    2. First character of a `String`
 * `java.lang.Boolean`
   1. `true` / `false` or `yes` / `no` string
   2. Integer `0` or `1`
@@ -295,8 +279,8 @@ Functional Java objects to handle any type parser in a flexible way.
 <details>
   <summary>Click to show</summary>
 
-* `java.util.Optional<E>` - Contains parsed value, empty optional type is return when parse fails or throw exception
-* `java.util.concurrent.CompletableFuture<E>` - Maintain parse function into non-null return value (may throw NullPointerException)
+* `java.util.Optional<E>` - Contains parsed value, empty optional type is return when parse fails
+* `java.util.concurrent.CompletableFuture<E>` - Maintain parse function into exceptionally future object
 
 (The type parameter `E` can be any supported type)
 
@@ -308,10 +292,17 @@ How to use Types library.
 
 ### Conversion
 
-By default, Types library can convert 6 data types using 4 different methods.
+By default, Types library can convert objects into 6 data definitions:
+* Single object - Any single object type.
+* Collection - Any object that implements `Collection` interface.
+* Object array - Any instance of `Object[]` array.
+* Primitive array - Any primitive array type.
+* Enum - Any object that implements `Enum` type.
+* Map - Any object that implements `Map` interface.
 
+Using 4 different methods:
 * TypeParser - Make your own implementation of type conversion.
-* Types - Same as TypeParser, but every parser is cached.
+* Types - Same as TypeParser, but every parser is a built-in parser with a wide range of conversion capabilities.
 * AnyObject - Encapsulated object with methods to convert with Types or create one-time use TypeParser.
 * TypeOf - Same as Types, but computes automatically the required type object parser (including generic objects).
 
@@ -324,7 +315,7 @@ String str = "1234";
 TypeParser<Double> parser = (object) -> Double.parseDouble(String.valueOf(object));
 double number = parser.parse(str);
 
-// Using Types (Same as TypeParser, but extract first element of any iterable or array object)
+// Using Types
 int number = Types.INTEGER.parse(str);
 
 // Using AnyObject
@@ -418,7 +409,7 @@ MyEnum value = type.parse(str);
 Map<String, String> map = new HashMap<>();
 map.put("1234", "true");
 map.put("55", "false");
-map.put("12", "true")
+map.put("12", "true");
 
 // Using TypeParser
 TypeParser<Map<Integer, Boolean>> parser = MapParser.of(Types.INTEGER, Types.BOOLEAN);
@@ -433,7 +424,7 @@ Map<Integer, Boolean> value = type.parse(map);
 ```
 
 > [!TIP]
-> If you create a `TypeParser` or use `TypeOf` is suggested to save as `static final` field.
+> If you create a `TypeParser` or use `TypeOf` is suggested to save as `static final` field to reduce memory footprint.
 
 ### Iterate
 
@@ -469,7 +460,7 @@ Type wrapping is a lazy object conversion that work in different dimensions usin
 
 **Type B:** Is the type of object that `wrap` type A, in other words, to show A as B.
 
-**One dimension wrapper:**
+**1. One dimension wrapper:**
 
 A one dimension `TypeWrapper` can be created using one type parser to `wrap` or `unwrap` any representation of a type.
 
@@ -503,7 +494,7 @@ if (integerList.contains("2")) {
 }
 ```
 
-**Two dimension wrapper with cast:**
+**2. Two dimension wrapper with cast:**
 
 A two dimension `TypeWrapper` can be created using one type parser to `wrap` type A or `unwrap` type B and expect that the other type must be obtained using a regular cast.
 
@@ -540,7 +531,7 @@ if (integerList.contains(2L)) {
 }
 ```
 
-**Two dimension wrapper:**
+**3. Two dimension wrapper:**
 
 A two dimension `TypeWrapper` can be created using one type parser to `wrap` type A and other type parser to `unwrap` type B.
 
